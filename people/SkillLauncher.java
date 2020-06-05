@@ -48,4 +48,8 @@ public interface SkillLauncher {
     default void beforeHurt() {
 
     }
+
+    default boolean useSkillInUsePhase(String order) {
+        return false;
+    }
 }

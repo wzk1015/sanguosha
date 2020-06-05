@@ -1,6 +1,7 @@
 package cards.basic;
 
 import cards.BasicCard;
+import cards.Card;
 import cards.Color;
 import cards.equipments.Shield;
 import manager.GameManager;
@@ -9,7 +10,10 @@ import people.Person;
 
 import java.util.ArrayList;
 
-import static cards.EquipType.*;
+import static cards.EquipType.minusOneHorse;
+import static cards.EquipType.plusOneHorse;
+import static cards.EquipType.shield;
+import static cards.EquipType.weapon;
 
 public class Sha extends BasicCard {
     private HurtType type;
@@ -113,7 +117,7 @@ public class Sha extends BasicCard {
             if (getSource().hasEquipment(weapon, "贯石斧")) {
                 String option = IO.chooseFromProvided("throw two cards and hurt", "pass");
                 if (option.equals("throw two cards")) {
-                    getSource().throwCard(IO.chooseCards(2, getTarget().getCards()));
+                    getSource().throwCard(IO.chooseCards(2, getTarget().getCardsAndEquipments()));
                     shaHit();
                 } else {
                     getSource().shaGotShan();

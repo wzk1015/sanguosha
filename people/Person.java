@@ -12,7 +12,6 @@ import cards.basic.Shan;
 import cards.basic.Tao;
 import cards.equipments.Shield;
 import cards.equipments.Weapon;
-import cards.equipments.weapons.ZhuGeLianNu;
 import cards.strategy.WuXieKeJi;
 import cardsheap.CardsHeap;
 import manager.GameManager;
@@ -85,41 +84,60 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     }
 
     public void parseOrder(String order) {
-        try {
-            Card card = cards.get(Integer.parseInt(order));
-            if (!GameManager.askTarget(card, this)) {
-                return;
-            }
-            if (card instanceof Sha) {
-                if (shaCount != 0 || hasEquipment(weapon, "诸葛连弩")) {
-                    shaCount--;
-                } else {
-                    IO.println("You can't 杀 anymore");
-                    return;
-                }
-            }
-            if ((card instanceof Tao && currentHP == maxHP) || card instanceof Shan ||
-                    card instanceof WuXieKeJi) {
-                IO.println("You can't use that");
-                return;
-            }
-            if (card instanceof Equipment) {
-                if (this.equipments.get(((Equipment) card).getEquipType()) != null) {
-                    lostEquipment();
-                }
-                this.equipments.put(((Equipment) card).getEquipType(), (Equipment) card);
-                throwCard(card);
-                return;
-            }
-            throwCard(card);
-            if (card instanceof Strategy && !(card instanceof JudgeCard)) {
-                useStrategy();
-            }
-
-            card.use();
-        } catch (NumberFormatException e) {
-            IO.println("Wrong input");
+        Card card;
+        if (useSkillInUsePhase(order)) {
+            return;
         }
+        else if (order.equals("丈八蛇矛") && cards.size() >= 2) {
+            ArrayList<Card> cs = IO.chooseCards(2, cards);
+            throwCard(cs);
+            if (cs.get(0).isRed() && cs.get(1).isRed()) {
+                card = new Sha(Color.DIAMOND, 0);
+            } else if (cs.get(1).isBlack() && cs.get(1).isBlack()) {
+                card = new Sha(Color.CLUB, 0);
+            } else {
+                card = new Sha(Color.NOCOLOR, 0);
+            }
+        }
+        else {
+            try {
+                card = cards.get(Integer.parseInt(order));
+            } catch (NumberFormatException e) {
+                IO.println("Wrong input");
+                return;
+            }
+        }
+
+        if (!GameManager.askTarget(card, this)) {
+            return;
+        }
+        if (card instanceof Sha) {
+            if (shaCount != 0 || hasEquipment(weapon, "诸葛连弩")) {
+                shaCount--;
+            } else {
+                IO.println("You can't 杀 anymore");
+                return;
+            }
+        }
+        if ((card instanceof Tao && currentHP == maxHP) || card instanceof Shan ||
+                card instanceof WuXieKeJi) {
+            IO.println("You can't use that");
+            return;
+        }
+        if (card instanceof Equipment) {
+            if (this.equipments.get(((Equipment) card).getEquipType()) != null) {
+                lostEquipment();
+            }
+            this.equipments.put(((Equipment) card).getEquipType(), (Equipment) card);
+            throwCard(card);
+            return;
+        }
+        throwCard(card);
+        if (card instanceof Strategy && !(card instanceof JudgeCard)) {
+            useStrategy();
+        }
+
+        card.use();
     }
 
     public void usePhase() {
@@ -185,9 +203,15 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     }
 
     public void throwCard(Card c) {
-        cards.remove(c);
-        CardsHeap.discard(c);
-        lostCard();
+        if (c instanceof Equipment && equipments.containsValue(c)) {
+            equipments.remove(((Equipment) c).getEquipType(), c);
+            CardsHeap.discard(c);
+            lostEquipment();
+        } else {
+            cards.remove(c);
+            CardsHeap.discard(c);
+            lostCard();
+        }
     }
 
     public void hurt(int num) {
@@ -252,7 +276,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     }
 
     public boolean requestShan() {
-        if (hasEquipment(shield,"八卦阵") && ((Shield) equipments.get(shield)).isValid()) {
+        if (hasEquipment(shield, "八卦阵") && ((Shield) equipments.get(shield)).isValid()) {
             if ((boolean) equipments.get(shield).use()) {
                 return true;
             }
@@ -264,9 +288,17 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     }
 
     public Sha requestSha() {
-        if (hasEquipment(weapon,"丈八蛇矛")) {
-            if ((boolean) equipments.get(shield).use()) {
-                return new Sha(Color.CLUB, 0);
+        if (hasEquipment(weapon, "丈八蛇矛") && cards.size() >= 2) {
+            if (IO.chooseFromProvided("throw two cards to sha", "pass").equals(
+                    "throw two cards to sha")) {
+                ArrayList<Card> cs = IO.chooseCards(2, cards);
+                throwCard(cs);
+                if (cs.get(0).isRed() && cs.get(1).isRed()) {
+                    return new Sha(Color.DIAMOND, 0);
+                } else if (cs.get(1).isBlack() && cs.get(1).isBlack()) {
+                    return new Sha(Color.CLUB, 0);
+                }
+                return new Sha(Color.NOCOLOR, 0);
             }
         }
         if (skillSha()) {
@@ -289,12 +321,12 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     }
 
     public boolean canBeSha(Sha sha) {
-        if (hasEquipment(shield,"藤甲") && ((Shield) equipments.get(shield)).isValid()) {
+        if (hasEquipment(shield, "藤甲") && ((Shield) equipments.get(shield)).isValid()) {
             if (sha.getType() == HurtType.normal) {
                 return false;
             }
         }
-        if (hasEquipment(shield,"仁王盾") && ((Shield) equipments.get(shield)).isValid()) {
+        if (hasEquipment(shield, "仁王盾") && ((Shield) equipments.get(shield)).isValid()) {
             return sha.isRed();
         }
         return true;
@@ -312,6 +344,12 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
 
     public ArrayList<JudgeCard> getJudgeCards() {
         return judgeCards;
+    }
+
+    public ArrayList<Card> getCardsAndEquipments() {
+        ArrayList<Card> ans = new ArrayList<>(cards);
+        ans.addAll(equipments.values());
+        return ans;
     }
 
     public int getShaDistance() {
