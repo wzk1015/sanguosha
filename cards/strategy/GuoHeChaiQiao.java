@@ -16,7 +16,7 @@ public class GuoHeChaiQiao extends Strategy {
     public Object use() {
         if (!gotWuXie()) {
             ArrayList<Card> cards = IO.printAllCards(getTarget());
-            Card c = getSource().chooseCard(cards);
+            Card c = IO.chooseCard(getSource(), cards);
             getTarget().loseCard(c);
             return true;
         }

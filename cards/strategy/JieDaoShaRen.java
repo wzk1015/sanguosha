@@ -1,7 +1,10 @@
 package cards.strategy;
 
 import cards.Color;
+import cards.EquipType;
 import cards.Strategy;
+import cards.basic.Sha;
+import manager.Utils;
 import people.Person;
 
 public class JieDaoShaRen extends Strategy {
@@ -13,8 +16,20 @@ public class JieDaoShaRen extends Strategy {
 
     @Override
     public Object use() {
-        //TODO
-        return null;
+        if (!gotWuXie()) {
+            Utils.assertTrue(getTarget().hasEquipment(EquipType.weapon, null), "target has no weapon");
+            Sha sha = getTarget().requestSha();
+            if (sha != null) {
+                sha.setSource(getTarget());
+                sha.setTarget(getTarget2());
+                sha.use();
+            } else {
+                getSource().addCard(getTarget().getEquipments().get(EquipType.weapon));
+                getTarget().getEquipments().put(EquipType.weapon, null);
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override

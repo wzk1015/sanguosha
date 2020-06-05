@@ -15,7 +15,7 @@ public class IO {
         return sn.nextLine();
     }
 
-    public static String input() {
+    public static String input(Person p) {
         return sn.nextLine();
     }
 
@@ -44,7 +44,7 @@ public class IO {
             println("choose a card");
         }
         printCards(p.getCards());
-        String order = IO.input();
+        String order = IO.input(p);
         if (order.equals("q")) {
             return null;
         }
@@ -80,12 +80,12 @@ public class IO {
     }
 
     @SafeVarargs
-    public static <E> E chooseFromProvided(E... choices) {
+    public static <E> E chooseFromProvided(Person p, E... choices) {
         ArrayList<E> options = new ArrayList<>(Arrays.asList(choices));
-        return chooseFromProvided(options);
+        return chooseFromProvided(p, options);
     }
 
-    public static <E> E chooseFromProvided(ArrayList<E> choices) {
+    public static <E> E chooseFromProvided(Person p, ArrayList<E> choices) {
         if (choices.isEmpty()) {
             return null;
         }
@@ -99,17 +99,17 @@ public class IO {
             return choices.get(option);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             println("wrong choice");
-            return chooseFromProvided(choices);
+            return chooseFromProvided(p, choices);
         }
     }
 
     @SafeVarargs
-    public static <E> ArrayList<E> chooseManyFromProvided(int num, E... choices) {
+    public static <E> ArrayList<E> chooseManyFromProvided(Person p, int num, E... choices) {
         ArrayList<E> options = new ArrayList<>(Arrays.asList(choices));
-        return chooseManyFromProvided(num, options);
+        return chooseManyFromProvided(p, num, options);
     }
 
-    public static <E> ArrayList<E> chooseManyFromProvided(int num, ArrayList<E> choices) {
+    public static <E> ArrayList<E> chooseManyFromProvided(Person p, int num, ArrayList<E> choices) {
         if (choices.isEmpty()) {
             return null;
         }
@@ -123,7 +123,7 @@ public class IO {
             String[] split = input.split(" ");
             if (split.length != num && num != 0) {
                 println("wrong number of choices");
-                return chooseManyFromProvided(num, choices);
+                return chooseManyFromProvided(p, num, choices);
             }
             ArrayList<E> ans = new ArrayList<>();
             for (String s: split) {
@@ -133,15 +133,15 @@ public class IO {
             return ans;
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             println("wrong choices");
-            return chooseManyFromProvided(num, choices);
+            return chooseManyFromProvided(p, num, choices);
         }
     }
 
-    public static Card chooseCard(ArrayList<Card> cs) {
-        return chooseFromProvided(cs);
+    public static Card chooseCard(Person p, ArrayList<Card> cs) {
+        return chooseFromProvided(p, cs);
     }
 
-    public static ArrayList<Card> chooseCards(int num, ArrayList<Card> cs) {
-        return chooseManyFromProvided(num, cs);
+    public static ArrayList<Card> chooseCards(Person p, int num, ArrayList<Card> cs) {
+        return chooseManyFromProvided(p, num, cs);
     }
 }

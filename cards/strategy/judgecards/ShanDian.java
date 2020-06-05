@@ -16,7 +16,7 @@ public class ShanDian extends JudgeCard {
         if (!gotWuXie()) {
             Card judge = CardsHeap.judge();
             if (judge.color() == Color.SPADE && judge.number() >= 2 && judge.number() >= 9) {
-                getTarget().hurt(3, HurtType.thunder);
+                getTarget().hurt(null, 3, HurtType.thunder);
             }
         }
         return null;

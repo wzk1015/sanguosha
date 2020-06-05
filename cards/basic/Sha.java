@@ -29,9 +29,9 @@ public class Sha extends BasicCard {
 
     public void sha(int num) {
         getTarget().hurtBySha();
-        getTarget().hurt(2, type);
+        int realNum = getTarget().hurt(getSource(),2, type);
         if (type != HurtType.normal) {
-            GameManager.linkHurt(num, type);
+            GameManager.linkHurt(getSource(), realNum, type);
         }
     }
 
@@ -41,9 +41,10 @@ public class Sha extends BasicCard {
         }
         if (getSource().hasEquipment(weapon, "雌雄双股剑")) {
             if (!getSource().getSex().equals(getTarget().getSex())) {
-                String choice = IO.chooseFromProvided("you throw a card", "he draw a card");
+                String choice = IO.chooseFromProvided(getTarget(),
+                        "you throw a card", "he draw a card");
                 if (choice.equals("you throw a card")) {
-                    getTarget().throwCard(IO.chooseCard(getTarget().getCards()));
+                    getTarget().throwCard(IO.chooseCard(getTarget(), getTarget().getCards()));
                 } else {
                     getSource().drawCard();
                 }
@@ -74,7 +75,7 @@ public class Sha extends BasicCard {
         if (getSource().hasEquipment(weapon, "麒麟弓")) {
             if (getTarget().hasEquipment(plusOneHorse, null) &&
                     getTarget().hasEquipment(minusOneHorse, null)) {
-                String choice = IO.chooseFromProvided("shoot down plusonehorse",
+                String choice = IO.chooseFromProvided(getSource(), "shoot down plusonehorse",
                         "shoot down minusonehorse", "pass");
                 if (choice.equals("shoot down minusonehorse")) {
                     getTarget().getEquipments().put(minusOneHorse, null);
@@ -84,7 +85,7 @@ public class Sha extends BasicCard {
             }
             else if (getTarget().hasEquipment(plusOneHorse, null) ||
                     getTarget().hasEquipment(minusOneHorse, null)) {
-                String choice = IO.chooseFromProvided("shoot down horse", "pass");
+                String choice = IO.chooseFromProvided(getSource(), "shoot down horse", "pass");
                 if (choice.equals("shoot down horse")) {
                     if (getTarget().hasEquipment(plusOneHorse, null)) {
                         getTarget().getEquipments().put(plusOneHorse, null);
@@ -98,8 +99,8 @@ public class Sha extends BasicCard {
         if (getSource().hasEquipment(weapon, "三尖两刃刀")) {
             ArrayList<Person> nearbyPerson = GameManager.reachablePeople(getSource(), 1);
             if (!nearbyPerson.isEmpty()) {
-                Person p = GameManager.selectPlayer(nearbyPerson);
-                p.hurt(1);
+                Person p = GameManager.selectPlayer(getSource(), nearbyPerson);
+                p.hurt(getSource(), 1);
             }
         }
     }
@@ -115,9 +116,9 @@ public class Sha extends BasicCard {
 
         if (!getTarget().requestShan()) {
             if (getSource().hasEquipment(weapon, "贯石斧")) {
-                String option = IO.chooseFromProvided("throw two cards and hurt", "pass");
+                String option = IO.chooseFromProvided(getSource(), "throw two cards and hurt", "pass");
                 if (option.equals("throw two cards")) {
-                    getSource().throwCard(IO.chooseCards(2, getTarget().getCardsAndEquipments()));
+                    getSource().throwCard(IO.chooseCards(getSource(), 2, getTarget().getCardsAndEquipments()));
                     shaHit();
                 } else {
                     getSource().shaGotShan();
@@ -138,9 +139,10 @@ public class Sha extends BasicCard {
 
         else {
             if (getSource().hasEquipment(weapon, "寒冰剑")) {
-                String option = IO.chooseFromProvided("throw two cards", "hurt");
+                String option = IO.chooseFromProvided(getSource(), "throw two cards", "hurt");
                 if (option.equals("throw two cards")) {
-                    getTarget().throwCard(IO.chooseCards(2, getTarget().getCards()));
+                    getTarget().throwCard(IO.chooseCards(getSource(), 2,
+                            getTarget().getCardsAndEquipments()));
                 } else {
                     shaHit();
                 }

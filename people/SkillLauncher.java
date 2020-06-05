@@ -1,5 +1,7 @@
 package people;
 
+import cards.Card;
+
 public interface SkillLauncher {
     default void shaGotShan() {
 
@@ -47,6 +49,10 @@ public interface SkillLauncher {
 
     default void beforeHurt() {
 
+    }
+
+    default Card changeJudge() {
+        return null;
     }
 
     default boolean useSkillInUsePhase(String order) {

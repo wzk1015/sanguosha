@@ -17,7 +17,7 @@ public class ShunShouQianYang extends Strategy {
     public Object use() {
         if (!gotWuXie()) {
             ArrayList<Card> cards = IO.printAllCards(getTarget());
-            Card c = getSource().chooseCard(cards);
+            Card c = IO.chooseCard(getSource(), cards);
             getTarget().loseCard(c);
             getSource().addCard(c);
             return true;

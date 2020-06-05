@@ -8,6 +8,7 @@ import cards.basic.Sha;
 import cards.strategy.HuoGong;
 import cards.strategy.JieDaoShaRen;
 import cards.strategy.TieSuoLianHuan;
+import cardsheap.CardsHeap;
 import people.Person;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class GameManager {
         //initailize cards and identity
 
         numPlayers = players.size();
-        while (!endGame()) {
+        while (!gameEnd()) {
             for (Person p : players) {
                 p.run();
                 if (p.isDead()) {
@@ -34,29 +35,92 @@ public class GameManager {
     }
 
     public static boolean requestWuXie() {
-        //TODO
-        return false;
+        while (true) {
+            boolean mark = false;
+            for (Person p : players) {
+                if (p.requestWuXie()) {
+                    mark = true;
+                    break;
+                }
+            }
+            if (mark) {
+                continue;
+            }
+            return false;
+        }
     }
 
     public static Card askChangeJudge() {
+        for (Person p: players) {
+            Card c = p.changeJudge();
+            if (c != null) {
+                return c;
+            }
+        }
         return null;
     }
 
     public static boolean askTao() {
+        for (Person p: players) {
+            if (p.requestTao()) {
+                return true;
+            }
+        }
         return false;
     }
 
-    public static void linkHurt(int num, HurtType type) {
-        for (Person p : players) {
-            if (p.isLinked()) {
-                p.hurt(num, type);
-                p.link();
+    public static void nanManRuQin(Person source) {
+        for (Person p: players) {
+            if (!requestWuXie() && p.requestSha() == null && !p.hasEquipment(EquipType.shield, "藤甲")) {
+                p.hurt(source, 1);
             }
         }
     }
 
-    public boolean endGame() {
-        return false;
+    public static void wanJianQiFa(Person source) {
+        for (Person p: players) {
+            if (!requestWuXie() && !p.requestShan() && !p.hasEquipment(EquipType.shield, "藤甲")) {
+                p.hurt(source, 1);
+            }
+        }
+    }
+
+    public static void taoYuanJieYi() {
+        for (Person p: players) {
+            if (!requestWuXie()) {
+                p.recover(1);
+            }
+        }
+    }
+
+    public static void wuGuFengDeng() {
+        ArrayList<Card> cards = CardsHeap.draw(8);
+        for (Person p: players) {
+            if (!requestWuXie()) {
+                Card c = IO.chooseCard(p, cards);
+                p.addCard(c);
+                cards.remove(c);
+            }
+        }
+        if (!cards.isEmpty()) {
+            CardsHeap.discard(cards);
+        }
+    }
+
+    public static void linkHurt(Person source, int num, HurtType type) {
+        Utils.assertTrue(type == HurtType.fire ||
+                type == HurtType.thunder, "link hurt wrong type");
+        int realNum = num;
+        for (Person p : players) {
+            if (p.isLinked()) {
+                realNum = p.hurt(source, realNum, type);
+            }
+        }
+    }
+
+    public boolean gameEnd() {
+        //TODO
+        return players.isEmpty();
     }
 
     public static int calDistance(Person p1, Person p2) {
@@ -85,18 +149,17 @@ public class GameManager {
     }
 
     public static boolean askTarget(Card card, Person currentPerson) {
+        card.setSource(currentPerson);
+
         if (!card.needChooseTarget()) {
             card.setTarget(currentPerson);
             return true;
         }
 
-        card.setSource(currentPerson);
-
         while (true) {
-
             if (card instanceof TieSuoLianHuan || card instanceof JieDaoShaRen) {
-                Person p1 = selectPlayer(players);
-                Person p2 = selectPlayer(players);
+                Person p1 = selectPlayer(currentPerson, players);
+                Person p2 = selectPlayer(currentPerson, players);
                 if (p1 == null || p2 == null) {
                     return false;
                 }
@@ -107,7 +170,7 @@ public class GameManager {
                     ((JieDaoShaRen) card).setTarget2(p2);
                 }
             }
-            Person p = selectPlayer(players);
+            Person p = selectPlayer(currentPerson, players);
             if (p == null) {
                 return false;
             }
@@ -129,7 +192,7 @@ public class GameManager {
         }
     }
 
-    public static Person selectPlayer(ArrayList<Person> people) {
-        return IO.chooseFromProvided(people);
+    public static Person selectPlayer(Person p, ArrayList<Person> people) {
+        return IO.chooseFromProvided(p, people);
     }
 }

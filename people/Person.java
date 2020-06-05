@@ -12,6 +12,8 @@ import cards.basic.Shan;
 import cards.basic.Tao;
 import cards.equipments.Shield;
 import cards.equipments.Weapon;
+import cards.strategy.JieDaoShaRen;
+import cards.strategy.TieSuoLianHuan;
 import cards.strategy.WuXieKeJi;
 import cardsheap.CardsHeap;
 import manager.GameManager;
@@ -89,7 +91,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
             return;
         }
         else if (order.equals("丈八蛇矛") && cards.size() >= 2) {
-            ArrayList<Card> cs = IO.chooseCards(2, cards);
+            ArrayList<Card> cs = IO.chooseCards(this, 2, cards);
             throwCard(cs);
             if (cs.get(0).isRed() && cs.get(1).isRed()) {
                 card = new Sha(Color.DIAMOND, 0);
@@ -111,6 +113,11 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
         if (!GameManager.askTarget(card, this)) {
             return;
         }
+
+        useCard(card);
+    }
+
+    public void useCard(Card card) {
         if (card instanceof Sha) {
             if (shaCount != 0 || hasEquipment(weapon, "诸葛连弩")) {
                 shaCount--;
@@ -120,7 +127,8 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
             }
         }
         if ((card instanceof Tao && currentHP == maxHP) || card instanceof Shan ||
-                card instanceof WuXieKeJi) {
+                card instanceof WuXieKeJi || (card instanceof JieDaoShaRen &&
+                !card.getTarget().hasEquipment(weapon, null))) {
             IO.println("You can't use that");
             return;
         }
@@ -132,12 +140,20 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
             throwCard(card);
             return;
         }
+        if (card instanceof TieSuoLianHuan) {
+            if (IO.chooseFromProvided(this,"throw", "use").equals("throw")) {
+                throwCard(card);
+                drawCard();
+                return;
+            }
+        }
         throwCard(card);
         if (card instanceof Strategy && !(card instanceof JudgeCard)) {
             useStrategy();
         }
 
         card.use();
+        IO.println(toString() + " uses " + card);
     }
 
     public void usePhase() {
@@ -159,7 +175,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
         if (num > 0) {
             IO.println(String.format("You need to throw %d cards", num));
             IO.printCards(cards);
-            throwCard(IO.chooseCards(num, cards));
+            throwCard(IO.chooseCards(this, num, cards));
         }
     }
 
@@ -214,11 +230,11 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
         }
     }
 
-    public void hurt(int num) {
-        hurt(num, HurtType.normal);
+    public int hurt(Person source, int num) {
+        return hurt(source, num, HurtType.normal);
     }
 
-    public void hurt(int num, HurtType type) {
+    public int hurt(Person source, int num, HurtType type) {
         int realNum = num;
 
         if (hasEquipment(shield, "藤甲") && ((Shield) equipments.get(shield)).isValid()) {
@@ -233,13 +249,14 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
         }
 
         currentHP -= realNum;
-        if (type != HurtType.normal) {
+        if (type != HurtType.normal && isLinked()) {
             link();
         }
         if (currentHP < 0) {
             dying();
         }
         gotHurt(realNum);
+        return realNum;
     }
 
     public void recover(int num) {
@@ -255,7 +272,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     public boolean requestColor(Color color) {
         IO.println("choose a " + color + ", 'q' to ignore");
         IO.printCards(cards);
-        String order = IO.input();
+        String order = IO.input(this);
         if (order.equals("q")) {
             return false;
         }
@@ -289,9 +306,9 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
 
     public Sha requestSha() {
         if (hasEquipment(weapon, "丈八蛇矛") && cards.size() >= 2) {
-            if (IO.chooseFromProvided("throw two cards to sha", "pass").equals(
+            if (IO.chooseFromProvided(this, "throw two cards to sha", "pass").equals(
                     "throw two cards to sha")) {
-                ArrayList<Card> cs = IO.chooseCards(2, cards);
+                ArrayList<Card> cs = IO.chooseCards(this, 2, cards);
                 throwCard(cs);
                 if (cs.get(0).isRed() && cs.get(1).isRed()) {
                     return new Sha(Color.DIAMOND, 0);
@@ -305,6 +322,14 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
             return new Sha(Color.NOCOLOR, 0);
         }
         return (Sha) IO.requestCard("杀", this);
+    }
+
+    public boolean requestWuXie() {
+        return IO.requestCard("无懈可击", this) != null;
+    }
+
+    public boolean requestTao() {
+        return IO.requestCard("桃", this) != null;
     }
 
     public void dying() {

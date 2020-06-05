@@ -4,6 +4,7 @@ import cards.Card;
 import cards.Color;
 import cards.Strategy;
 import cards.basic.HurtType;
+import manager.GameManager;
 import manager.IO;
 
 public class HuoGong extends Strategy {
@@ -15,10 +16,11 @@ public class HuoGong extends Strategy {
     @Override
     public Object use() {
         if (!gotWuXie()) {
-            Card c = getTarget().chooseCard(getTarget().getCards());
+            Card c = IO.chooseCard(getTarget(), getTarget().getCards());
             IO.printCard(c);
             if (getSource().requestColor(c.color())) {
-                getTarget().hurt(1, HurtType.fire);
+                int realNum = getTarget().hurt(getSource(), 1, HurtType.fire);
+                GameManager.linkHurt(getSource(), realNum, HurtType.fire);
             }
             return true;
         }
