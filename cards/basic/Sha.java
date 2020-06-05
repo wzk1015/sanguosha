@@ -5,6 +5,9 @@ import cards.Color;
 import cards.equipments.Shield;
 import manager.GameManager;
 import manager.IO;
+import people.Person;
+
+import java.util.ArrayList;
 
 import static cards.EquipType.*;
 
@@ -85,6 +88,14 @@ public class Sha extends BasicCard {
                         getTarget().getEquipments().put(minusOneHorse, null);
                     }
                 }
+            }
+        }
+
+        if (getSource().hasEquipment(weapon, "三尖两刃刀")) {
+            ArrayList<Person> nearbyPerson = GameManager.reachablePeople(getSource(), 1);
+            if (!nearbyPerson.isEmpty()) {
+                Person p = GameManager.selectPlayer(nearbyPerson);
+                p.hurt(1);
             }
         }
     }

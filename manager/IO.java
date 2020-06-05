@@ -4,6 +4,7 @@ import cards.Card;
 import people.Person;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class IO {
@@ -34,11 +35,6 @@ public class IO {
 
     public static void printCard(Card card) {
         println(card.info() + card);
-    }
-
-    public static Person inputPlayer() {
-        //TODO: forbid select dead person
-        return null;
     }
 
     public static Card requestCard(String type, Person p) {
@@ -83,24 +79,44 @@ public class IO {
         return ans;
     }
 
-    public static String chooseFromProvided(String... choices) {
+    @SafeVarargs
+    public static <E> E chooseFromProvided(E... choices) {
+        ArrayList<E> options = new ArrayList<>(Arrays.asList(choices));
+        return chooseFromProvided(options);
+    }
+
+    public static <E> E chooseFromProvided(ArrayList<E> choices) {
+        if (choices.isEmpty()) {
+            return null;
+        }
+
         int i = 0;
-        for (String choice : choices) {
-            print(i++ + ": " + choice);
+        for (E choice : choices) {
+            print(i++ + ": " + choice.toString());
         }
         try {
             int option = Integer.parseInt(input("make a choice"));
-            return choices[option];
+            return choices.get(option);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             println("wrong choice");
             return chooseFromProvided(choices);
         }
     }
 
-    public static ArrayList<String> chooseManyFromProvided(int num, String... choices) {
+    @SafeVarargs
+    public static <E> ArrayList<E> chooseManyFromProvided(int num, E... choices) {
+        ArrayList<E> options = new ArrayList<>(Arrays.asList(choices));
+        return chooseManyFromProvided(num, options);
+    }
+
+    public static <E> ArrayList<E> chooseManyFromProvided(int num, ArrayList<E> choices) {
+        if (choices.isEmpty()) {
+            return null;
+        }
+
         int i = 0;
-        for (String choice : choices) {
-            print(i++ + ": " + choice);
+        for (E choice : choices) {
+            print(i++ + ": " + choice.toString());
         }
         try {
             String input = input("choose " + num);
@@ -109,10 +125,10 @@ public class IO {
                 println("wrong number of choices");
                 return chooseManyFromProvided(num, choices);
             }
-            ArrayList<String> ans = new ArrayList<>();
+            ArrayList<E> ans = new ArrayList<>();
             for (String s: split) {
                 int option = Integer.parseInt(s);
-                ans.add(choices[option]);
+                ans.add(choices.get(option));
             }
             return ans;
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
@@ -122,33 +138,10 @@ public class IO {
     }
 
     public static Card chooseCard(ArrayList<Card> cs) {
-        String[] choices = new String[cs.size()];
-        for (int i = 0; i < cs.size(); i++) {
-            choices[i] = cs.get(i).info() + cs.get(i).toString();
-        }
-        String option = chooseFromProvided(choices);
-        for (Card c: cs) {
-            if ((c.toString() + c.toString()).equals(option)) {
-                return c;
-            }
-        }
-        return null;
+        return chooseFromProvided(cs);
     }
 
     public static ArrayList<Card> chooseCards(int num, ArrayList<Card> cs) {
-        String[] choices = new String[cs.size()];
-        for (int i = 0; i < cs.size(); i++) {
-            choices[i] = cs.get(i).info() + cs.get(i).toString();
-        }
-        ArrayList<String> options = chooseManyFromProvided(num,choices);
-        ArrayList<Card> ans = new ArrayList<>();
-        for (Card c: cs) {
-            for (String option: options) {
-                if ((c.toString() + c.toString()).equals(option)) {
-                    ans.add(c);
-                }
-            }
-        }
-        return ans;
+        return chooseManyFromProvided(num, cs);
     }
 }

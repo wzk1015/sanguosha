@@ -4,7 +4,9 @@ import cards.Card;
 import cards.EquipType;
 import cards.Strategy;
 import cards.basic.HurtType;
+import cards.basic.Sha;
 import cards.strategy.HuoGong;
+import cards.strategy.JieDaoShaRen;
 import cards.strategy.TieSuoLianHuan;
 import people.Person;
 
@@ -25,6 +27,7 @@ public class GameManager {
                 p.run();
                 if (p.isDead()) {
                     players.remove(p);
+                    numPlayers--;
                 }
             }
         }
@@ -70,31 +73,63 @@ public class GameManager {
         return dis;
     }
 
-    public static void askTarget(Card card, Person currentPerson) {
+    public static ArrayList<Person> reachablePeople(Person p1, int distance) {
+        ArrayList<Person> ans = new ArrayList<>();
+        for (Person p: players) {
+            if (calDistance(p1, p) < distance) {
+                ans.add(p);
+            }
+        }
+        ans.remove(p1);
+        return ans;
+    }
+
+    public static boolean askTarget(Card card, Person currentPerson) {
+        if (!card.needChooseTarget()) {
+            card.setTarget(currentPerson);
+            return true;
+        }
+
+        card.setSource(currentPerson);
+
         while (true) {
-            if (!card.needChooseTarget()) {
-                card.setTarget(currentPerson);
-                return;
-            }
-            card.setSource(currentPerson);
-            if (card instanceof TieSuoLianHuan) {
-                //借刀杀人
-                Person p1 = IO.inputPlayer();
-                Person p2 = IO.inputPlayer();
+
+            if (card instanceof TieSuoLianHuan || card instanceof JieDaoShaRen) {
+                Person p1 = selectPlayer(players);
+                Person p2 = selectPlayer(players);
+                if (p1 == null || p2 == null) {
+                    return false;
+                }
                 card.setTarget(p1);
-                ((TieSuoLianHuan) card).setTarget2(p2);
+                if (card instanceof TieSuoLianHuan) {
+                    ((TieSuoLianHuan) card).setTarget2(p2);
+                } else {
+                    ((JieDaoShaRen) card).setTarget2(p2);
+                }
             }
-            Person p = IO.inputPlayer();
+            Person p = selectPlayer(players);
+            if (p == null) {
+                return false;
+            }
             if (card instanceof Strategy &&
                     calDistance(currentPerson, p) > ((Strategy) card).getDistance()) {
                 IO.println("distance unreachable");
                 continue;
             }
-            if (!(card instanceof HuoGong) && currentPerson.equals(null)) {
+            if (card instanceof Sha
+                    && calDistance(currentPerson, p) > currentPerson.getShaDistance()) {
+                IO.println("distance unreachable");
+                continue;
+            }
+            if (!(card instanceof HuoGong) && currentPerson.equals(p)) {
                 IO.println("you can't select yourself");
             }
             card.setTarget(p);
-            return;
+            return true;
         }
+    }
+
+    public static Person selectPlayer(ArrayList<Person> people) {
+        return IO.chooseFromProvided(people);
     }
 }

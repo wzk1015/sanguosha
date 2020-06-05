@@ -87,7 +87,9 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     public void parseOrder(String order) {
         try {
             Card card = cards.get(Integer.parseInt(order));
-            GameManager.askTarget(card, this);
+            if (!GameManager.askTarget(card, this)) {
+                return;
+            }
             if (card instanceof Sha) {
                 if (shaCount != 0 || hasEquipment(weapon, "诸葛连弩")) {
                     shaCount--;
