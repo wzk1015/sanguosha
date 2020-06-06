@@ -1,12 +1,12 @@
 package people;
 
-public class BlankPerson extends Person {
-    public BlankPerson() {
+public class BlankPerson2 extends Person {
+    public BlankPerson2() {
         super(4, "male");
     }
 
     @Override
     public String toString() {
-        return "白板1";
+        return "白板2";
     }
 }

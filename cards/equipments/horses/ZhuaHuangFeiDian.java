@@ -6,7 +6,7 @@ import cards.Equipment;
 
 public class ZhuaHuangFeiDian extends Equipment {
 
-    ZhuaHuangFeiDian(Color color, int number) {
+    public ZhuaHuangFeiDian(Color color, int number) {
         super(color, number, EquipType.plusOneHorse);
     }
 

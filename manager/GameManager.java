@@ -5,8 +5,10 @@ import cards.EquipType;
 import cards.Strategy;
 import cards.basic.HurtType;
 import cards.basic.Sha;
+import cards.strategy.GuoHeChaiQiao;
 import cards.strategy.HuoGong;
 import cards.strategy.JieDaoShaRen;
+import cards.strategy.ShunShouQianYang;
 import cards.strategy.TieSuoLianHuan;
 import cardsheap.CardsHeap;
 import people.PeoplePool;
@@ -26,6 +28,7 @@ public class GameManager {
 
         for (int i = 0; i < numPlayers; i++) {
             ArrayList<Person> options = PeoplePool.allocPeople(numPlayers);
+            IO.println("player " + (i + 1) + " choose your person");
             players.add(selectPlayer(null, options));
         }
 
@@ -37,8 +40,7 @@ public class GameManager {
     public static void runGame(int num) {
         GameManager.numPlayers = num;
         startGame();
-        //TODO: intiallize CardsHeap and players;
-        //initailize cards and identity
+        //TODO: initialize identities
         while (!gameIsEnd()) {
             for (Person p : players) {
                 p.run();
@@ -87,7 +89,8 @@ public class GameManager {
 
     public static void nanManRuQin(Person source) {
         for (Person p: players) {
-            if (!requestWuXie() && p.requestSha() == null && !p.hasEquipment(EquipType.shield, "藤甲")) {
+            if (!requestWuXie() && p.requestSha() == null
+                    && !p.hasEquipment(EquipType.shield, "藤甲")) {
                 p.hurt(source, 1);
             }
         }
@@ -164,6 +167,11 @@ public class GameManager {
         return ans;
     }
 
+    public static void callItEven() {
+        IO.println("call it even");
+        System.exit(0);
+    }
+
     public static boolean askTarget(Card card, Person currentPerson) {
         card.setSource(currentPerson);
 
@@ -202,6 +210,12 @@ public class GameManager {
             }
             if (!(card instanceof HuoGong) && currentPerson.equals(p)) {
                 IO.println("you can't select yourself");
+                continue;
+            }
+            if ((card instanceof GuoHeChaiQiao || card instanceof ShunShouQianYang) &&
+                card.getTarget().getCardsAndEquipments().isEmpty()
+                    && card.getTarget().getJudgeCards().isEmpty()) {
+                IO.println("you can't chooose a person with no cards");
             }
             card.setTarget(p);
             return true;

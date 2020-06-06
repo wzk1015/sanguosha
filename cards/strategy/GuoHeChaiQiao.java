@@ -15,8 +15,29 @@ public class GuoHeChaiQiao extends Strategy {
     @Override
     public Object use() {
         if (!gotWuXie()) {
-            ArrayList<Card> cards = IO.printAllCards(getTarget());
-            Card c = IO.chooseCard(getSource(), cards);
+            IO.printAllCards(getTarget());
+            String option;
+            if (!getTarget().getEquipments().isEmpty() && !getTarget().getJudgeCards().isEmpty()) {
+                option = IO.chooseFromProvided(getSource(),
+                        "hand cards", "equipments", "judge cards");
+            } else if (!getTarget().getEquipments().isEmpty()) {
+                option = IO.chooseFromProvided(getSource(),
+                        "hand cards", "equipments");
+            } else if (!getTarget().getJudgeCards().isEmpty()) {
+                option = IO.chooseFromProvided(getSource(),
+                        "hand cards", "judge cards");
+            } else {
+                option = "hand cards";
+            }
+            Card c;
+            if (option.equals("hand cards")) {
+                c = IO.chooseCard(getSource(), getTarget().getCards());
+            } else if (option.equals("equipments")) {
+                c = IO.chooseCard(getSource(),
+                        new ArrayList<>(getTarget().getEquipments().values()));
+            } else {
+                c = IO.chooseCard(getSource(), new ArrayList<>(getTarget().getJudgeCards()));
+            }
             getTarget().loseCard(c);
             return true;
         }

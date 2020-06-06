@@ -6,7 +6,7 @@ import cards.Equipment;
 
 public class ChiTu extends Equipment {
 
-    ChiTu(Color color, int number) {
+    public ChiTu(Color color, int number) {
         super(color, number, EquipType.minusOneHorse);
     }
 

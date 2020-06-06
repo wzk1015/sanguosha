@@ -17,7 +17,8 @@ public class JieDaoShaRen extends Strategy {
     @Override
     public Object use() {
         if (!gotWuXie()) {
-            Utils.assertTrue(getTarget().hasEquipment(EquipType.weapon, null), "target has no weapon");
+            Utils.assertTrue(getTarget().hasEquipment(EquipType.weapon, null),
+                    "target has no weapon");
             Sha sha = getTarget().requestSha();
             if (sha != null) {
                 sha.setSource(getTarget());
@@ -43,5 +44,10 @@ public class JieDaoShaRen extends Strategy {
 
     public Person getTarget2() {
         return target2;
+    }
+
+    @Override
+    public boolean needChooseTarget() {
+        return true;
     }
 }

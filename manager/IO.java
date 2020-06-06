@@ -1,6 +1,8 @@
 package manager;
 
 import cards.Card;
+import cards.strategy.JieDaoShaRen;
+import cards.strategy.TieSuoLianHuan;
 import people.Person;
 
 import java.util.ArrayList;
@@ -31,9 +33,22 @@ public class IO {
         System.out.print(s);
     }
 
+    public static void showUsingCard(Card c) {
+        print(c.getSource().toString() + " uses " + c + " towards ");
+        if (c instanceof TieSuoLianHuan) {
+            println(c.getTarget().toString() + " and " +
+                    ((TieSuoLianHuan) c).getTarget2().toString());
+        } else if (c instanceof JieDaoShaRen) {
+            println(c.getTarget().toString() + " and " +
+                    ((JieDaoShaRen) c).getTarget2().toString());
+        } else {
+            println(c.getTarget().toString());
+        }
+    }
+
     public static void printCards(ArrayList<Card> cards) {
-        for (int i = 0; i < cards.size(); i++) {
-            println(i + ": " + cards.get(i).info() + cards.get(i) + " ");
+        for (int i = 1; i <= cards.size(); i++) {
+            println(i + ": " + cards.get(i - 1).info() + cards.get(i - 1) + " ");
         }
     }
 
@@ -43,9 +58,9 @@ public class IO {
 
     public static Card requestCard(String type, Person p) {
         if (type != null) {
-            println("choose a " + type + ", 'q' to ignore");
+            println(p + "choose a " + type + ", 'q' to ignore");
         } else {
-            println("choose a card");
+            println(p + "choose a card");
         }
         printCards(p.getCards());
         String order = IO.input(p);
@@ -54,7 +69,7 @@ public class IO {
         }
 
         try {
-            Card c = p.getCards().get(Integer.parseInt(order));
+            Card c = p.getCards().get(Integer.parseInt(order) - 1);
             if (type != null && !c.toString().equals(type)) {
                 println("Wrong type");
                 return requestCard(type, p);
@@ -69,8 +84,7 @@ public class IO {
     }
 
     public static ArrayList<Card> printAllCards(Person p) {
-        println(p + "'s cards: ");
-        printCards(p.getCards());
+        println(p + "have " + p.getCards().size() + "card(s)");
         println("equipments: ");
         printCards(new ArrayList<>(p.getEquipments().values()));
         println("judge cards: ");
@@ -95,12 +109,16 @@ public class IO {
             return null;
         }
 
-        int i = 0;
+        int i = 1;
         for (E choice : choices) {
             print(i++ + ":" + choice.toString() + "  ");
         }
         try {
-            int option = Integer.parseInt(input("make a choice"));
+            String in = input("make a choice");
+            if (in.equals("q")) {
+                return null;
+            }
+            int option = Integer.parseInt(in) - 1;
             return choices.get(option);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             println("wrong choice");

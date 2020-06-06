@@ -6,7 +6,7 @@ import cards.Equipment;
 
 public class ZiXing extends Equipment {
 
-    ZiXing(Color color, int number) {
+    public ZiXing(Color color, int number) {
         super(color, number, EquipType.minusOneHorse);
     }
 

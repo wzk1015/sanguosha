@@ -34,4 +34,9 @@ public class TieSuoLianHuan extends Strategy {
     public void setTarget2(Person target2) {
         this.target2 = target2;
     }
+
+    @Override
+    public boolean needChooseTarget() {
+        return true;
+    }
 }

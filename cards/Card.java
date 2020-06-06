@@ -1,5 +1,6 @@
 package cards;
 
+import manager.Utils;
 import people.Person;
 
 public abstract class Card {
@@ -59,6 +60,31 @@ public abstract class Card {
     public abstract String toString();
 
     public String info() {
-        return color.toString() + number + " ";
+        String num;
+        if (number == 1) {
+            num = "A";
+        } else if (number <= 10 && number >= 2) {
+            num = number + "";
+        } else if (number == 11) {
+            num = "J";
+        } else if (number == 12) {
+            num = "Q";
+        } else {
+            Utils.assertTrue(number == 13, "wrong number: " + number);
+            num = "K";
+        }
+        String col;
+        if (color == Color.DIAMOND) {
+            col = "方片";
+        } else if (color == Color.HEART) {
+            col = "红桃";
+        } else if (color == Color.SPADE) {
+            col = "黑桃";
+        } else if (color == Color.CLUB) {
+            col = "梅花";
+        } else {
+            col = "无色";
+        }
+        return col + num + " ";
     }
 }

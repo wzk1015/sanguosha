@@ -6,7 +6,7 @@ import cards.Equipment;
 
 public class DiLu extends Equipment {
 
-    DiLu(Color color, int number) {
+    public DiLu(Color color, int number) {
         super(color, number, EquipType.plusOneHorse);
     }
 

@@ -6,7 +6,7 @@ import cards.Equipment;
 
 public class JueYing extends Equipment {
 
-    JueYing(Color color, int number) {
+    public JueYing(Color color, int number) {
         super(color, number, EquipType.plusOneHorse);
     }
 

@@ -6,7 +6,7 @@ import cards.Equipment;
 
 public class HuaLiu extends Equipment {
 
-    HuaLiu(Color color, int number) {
+    public HuaLiu(Color color, int number) {
         super(color, number, EquipType.plusOneHorse);
     }
 

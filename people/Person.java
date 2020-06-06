@@ -46,8 +46,10 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     }
 
     public void run() {
+        IO.println("----------" + this + "'s round begins" + "----------");
         if (isTurnedOver()) {
             turnover();
+            IO.println(this + "turns over");
             return;
         }
         beginPhase();
@@ -69,6 +71,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
         }
         throwPhase();
         endPhase();
+        IO.println("----------" + this + "'s round ends" + "----------");
     }
 
     public void beginPhase() {
@@ -84,7 +87,8 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     }
 
     public void drawPhase() {
-        cards.addAll(CardsHeap.draw(2));
+        IO.println(this + " draw two cards from cards heap");
+        drawCards(2);
     }
 
     public void parseOrder(String order) {
@@ -105,8 +109,8 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
         }
         else {
             try {
-                card = cards.get(Integer.parseInt(order));
-            } catch (NumberFormatException e) {
+                card = cards.get(Integer.parseInt(order) - 1);
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
                 IO.println("Wrong input");
                 return;
             }
@@ -127,6 +131,26 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
                 IO.println("You can't 杀 anymore");
                 return;
             }
+            if (cards.isEmpty() && hasEquipment(weapon, "方天画戟")) {
+                String option = IO.chooseFromProvided(this,"1target", "2targets", "3targets");
+                Person target3 = null;
+                if (option.equals("3targets")) {
+                    Sha s3 = new Sha(card.color(), card.number(), ((Sha) card).getType());
+                    if (GameManager.askTarget(s3, this) && s3.getTarget() != card.getTarget()) {
+                        target3 = s3.getTarget();
+                        Utils.assertTrue(target3 != null, "sha3 target is null");
+                        s3.use();
+                    }
+                }
+                if (option.equals("3targets") || option.equals("2targets")) {
+                    Sha s2 = new Sha(card.color(), card.number(), ((Sha) card).getType());
+                    if (GameManager.askTarget(s2, this) && s2.getTarget() != card.getTarget()
+                        && s2.getTarget() != target3) {
+                        Utils.assertTrue(s2.getTarget() != null, "sha2 target is null");
+                        s2.use();
+                    }
+                }
+            }
         }
         if ((card instanceof Tao && currentHP == maxHP) || card instanceof Shan ||
                 card instanceof WuXieKeJi || (card instanceof JieDaoShaRen &&
@@ -136,8 +160,11 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
         }
         if (card instanceof Equipment) {
             if (this.equipments.get(((Equipment) card).getEquipType()) != null) {
+                IO.println(this + " lost equipment " +
+                        equipments.get(((Equipment) card).getEquipType()));
                 lostEquipment();
             }
+            IO.println(this + "put on equipment " + card);
             this.equipments.put(((Equipment) card).getEquipType(), (Equipment) card);
             throwCard(card);
             return;
@@ -154,15 +181,14 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
             useStrategy();
         }
 
+        IO.showUsingCard(card);
         card.use();
-        IO.println(toString() + " uses " + card);
     }
 
     public void usePhase() {
-        IO.println("Your current cards: ");
-        IO.printCards(cards);
-
         while (true) {
+            IO.println(this + "'s current cards: ");
+            IO.printCards(getCardsAndEquipments());
             String order = IO.input("Number for using card, 'q' for ending phase");
             if (order.equals("q")) {
                 break;
@@ -187,6 +213,8 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
 
     public void addCard(Card c) {
         cards.add(c);
+        IO.print(this + " got card: ");
+        IO.printCard(c);
     }
 
     public void addCard(ArrayList<Card> cs) {
@@ -206,6 +234,8 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     }
 
     public void loseCard(Card c) {
+        IO.print(this + " lost card: ");
+        IO.printCard(c);
         if (c instanceof JudgeCard && judgeCards.contains((Card) c)) {
             judgeCards.remove(c);
             CardsHeap.discard(c);
@@ -263,6 +293,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
         if (currentHP < 0) {
             dying();
         }
+        IO.println(this + " lost " + realNum + " HP, current HP: " + currentHP + "/" + maxHP);
         gotHurt(realNum);
         return realNum;
     }
@@ -389,12 +420,18 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     }
 
     public int getShaDistance() {
-        return ((Weapon) equipments.get(weapon)).getDistance();
+        if (equipments.get(weapon) != null) {
+            return ((Weapon) equipments.get(weapon)).getDistance();
+        }
+        return 1;
     }
 
     public boolean hasEquipment(EquipType type, String name) {
         if (name == null) {
             return equipments.get(type) != null;
+        }
+        if (equipments.get(type) == null) {
+            return false;
         }
         return equipments.get(type).toString().equals(name);
     }

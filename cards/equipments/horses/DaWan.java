@@ -6,7 +6,7 @@ import cards.Equipment;
 
 public class DaWan extends Equipment {
 
-    DaWan(Color color, int number) {
+    public DaWan(Color color, int number) {
         super(color, number, EquipType.minusOneHorse);
     }
 

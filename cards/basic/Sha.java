@@ -1,7 +1,6 @@
 package cards.basic;
 
 import cards.BasicCard;
-import cards.Card;
 import cards.Color;
 import cards.equipments.Shield;
 import manager.GameManager;
@@ -116,9 +115,11 @@ public class Sha extends BasicCard {
 
         if (!getTarget().requestShan()) {
             if (getSource().hasEquipment(weapon, "贯石斧")) {
-                String option = IO.chooseFromProvided(getSource(), "throw two cards and hurt", "pass");
+                String option = IO.chooseFromProvided(getSource(),
+                        "throw two cards and hurt", "pass");
                 if (option.equals("throw two cards")) {
-                    getSource().throwCard(IO.chooseCards(getSource(), 2, getTarget().getCardsAndEquipments()));
+                    getSource().throwCard(IO.chooseCards(getSource(), 2,
+                            getTarget().getCardsAndEquipments()));
                     shaHit();
                 } else {
                     getSource().shaGotShan();
