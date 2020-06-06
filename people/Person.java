@@ -18,6 +18,7 @@ import cards.strategy.WuXieKeJi;
 import cardsheap.CardsHeap;
 import manager.GameManager;
 import manager.IO;
+import manager.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,13 +34,14 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     private HashMap<EquipType, Equipment> equipments = new HashMap<>();
     private ArrayList<JudgeCard> judgeCards = new ArrayList<>();
 
-    Person(int maxHP, String sex) {
+    public Person(int maxHP, String sex) {
+        Utils.assertTrue(sex.equals("male") || sex.equals("female"), "invalid sex");
         this.maxHP = maxHP;
         this.currentHP = maxHP;
         this.setSex(sex);
     }
 
-    Person(int maxHP) {
+    public Person(int maxHP) {
         this(maxHP, "male");
     }
 
@@ -187,8 +189,14 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
         cards.add(c);
     }
 
+    public void addCard(ArrayList<Card> cs) {
+        for (Card c: cs) {
+            addCard(c);
+        }
+    }
+
     public void drawCard() {
-        cards.add(CardsHeap.draw());
+        addCard(CardsHeap.draw());
     }
 
     public void drawCards(int num) {
@@ -325,6 +333,9 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     }
 
     public boolean requestWuXie() {
+        if (skillWuxie()) {
+            return true;
+        }
         return IO.requestCard("无懈可击", this) != null;
     }
 

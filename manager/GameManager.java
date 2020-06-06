@@ -9,21 +9,37 @@ import cards.strategy.HuoGong;
 import cards.strategy.JieDaoShaRen;
 import cards.strategy.TieSuoLianHuan;
 import cardsheap.CardsHeap;
+import people.PeoplePool;
 import people.Person;
 
 import java.util.ArrayList;
 
 public class GameManager {
     private static ArrayList<Person> players;
-    private static int numPlayers;
-
-    public void runGame() {
+    private static int numPlayers = 2;
+    
+    public static void startGame() {
         players = new ArrayList<>();
+
+        PeoplePool.init();
+        CardsHeap.init();
+
+        for (int i = 0; i < numPlayers; i++) {
+            ArrayList<Person> options = PeoplePool.allocPeople(numPlayers);
+            players.add(selectPlayer(null, options));
+        }
+
+        for (Person p: players) {
+            p.addCard(CardsHeap.draw(2));
+        }
+    }
+    
+    public static void runGame(int num) {
+        GameManager.numPlayers = num;
+        startGame();
         //TODO: intiallize CardsHeap and players;
         //initailize cards and identity
-
-        numPlayers = players.size();
-        while (!gameEnd()) {
+        while (!gameIsEnd()) {
             for (Person p : players) {
                 p.run();
                 if (p.isDead()) {
@@ -118,7 +134,7 @@ public class GameManager {
         }
     }
 
-    public boolean gameEnd() {
+    public static boolean gameIsEnd() {
         //TODO
         return players.isEmpty();
     }

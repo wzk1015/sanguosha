@@ -8,7 +8,11 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class IO {
-    private static Scanner sn = new Scanner(System.in);
+    private static final Scanner sn = new Scanner(System.in);
+
+    public static void debug(String s) {
+        println(s);
+    }
 
     public static String input(String s) {
         print(s + ":    ");
@@ -86,13 +90,14 @@ public class IO {
     }
 
     public static <E> E chooseFromProvided(Person p, ArrayList<E> choices) {
+        //TODO: consider p is null
         if (choices.isEmpty()) {
             return null;
         }
 
         int i = 0;
         for (E choice : choices) {
-            print(i++ + ": " + choice.toString());
+            print(i++ + ":" + choice.toString() + "  ");
         }
         try {
             int option = Integer.parseInt(input("make a choice"));
