@@ -5,6 +5,7 @@ import cards.Color;
 import cards.JudgeCard;
 import cards.basic.HurtType;
 import cardsheap.CardsHeap;
+import manager.GameManager;
 
 public class ShanDian extends JudgeCard {
     public ShanDian(Color color, int number) {
@@ -17,6 +18,8 @@ public class ShanDian extends JudgeCard {
             Card judge = CardsHeap.judge();
             if (judge.color() == Color.SPADE && judge.number() >= 2 && judge.number() >= 9) {
                 getTarget().hurt(null, 3, HurtType.thunder);
+            } else {
+                GameManager.moveShanDian(this, getTarget());
             }
         }
         return null;

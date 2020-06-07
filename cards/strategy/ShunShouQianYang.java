@@ -32,7 +32,7 @@ public class ShunShouQianYang extends Strategy {
             }
             Card c;
             if (option.equals("hand cards")) {
-                c = IO.chooseCard(getSource(), getTarget().getCards());
+                c = IO.chooseAnonymousCard(getSource(), getTarget().getCards());
             } else if (option.equals("equipments")) {
                 c = IO.chooseCard(getSource(),
                         new ArrayList<>(getTarget().getEquipments().values()));
@@ -48,7 +48,7 @@ public class ShunShouQianYang extends Strategy {
 
     @Override
     public String toString() {
-        return "过河拆桥";
+        return "顺手牵羊";
     }
 
     @Override

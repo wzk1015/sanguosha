@@ -1,5 +1,7 @@
 package people;
 
+import manager.GameManager;
+
 public abstract class PersonAttributes {
     private boolean isTurnedOver = false;
     private boolean isLinked = false;
@@ -41,6 +43,9 @@ public abstract class PersonAttributes {
 
     public void die() {
         isDead = true;
+        if (GameManager.gameIsEnd()) {
+            GameManager.endGame();
+        }
     }
 
     public boolean isTurnedOver() {

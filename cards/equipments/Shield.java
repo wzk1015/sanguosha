@@ -5,7 +5,7 @@ import cards.EquipType;
 import cards.Equipment;
 
 public abstract class Shield extends Equipment {
-    private boolean valid;
+    private boolean valid = true;
 
     public Shield(Color color, int number) {
         super(color, number, EquipType.shield);

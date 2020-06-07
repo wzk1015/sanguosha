@@ -1,6 +1,7 @@
 package cards;
 
 import manager.GameManager;
+import manager.IO;
 
 public abstract class Strategy extends Card {
     private int distance;
@@ -16,6 +17,7 @@ public abstract class Strategy extends Card {
     }
 
     public boolean gotWuXie() {
+        IO.println("requesting wuxie for " + this);
         return GameManager.requestWuXie();
     }
 

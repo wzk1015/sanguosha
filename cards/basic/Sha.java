@@ -28,7 +28,7 @@ public class Sha extends BasicCard {
 
     public void sha(int num) {
         getTarget().hurtBySha();
-        int realNum = getTarget().hurt(getSource(),2, type);
+        int realNum = getTarget().hurt(getSource(), num, type);
         if (type != HurtType.normal) {
             GameManager.linkHurt(getSource(), realNum, type);
         }
@@ -110,10 +110,11 @@ public class Sha extends BasicCard {
         getSource().shaBegin();
 
         if (!getTarget().canBeSha(this)) {
+            IO.println("invalid sha");
             return false;
         }
 
-        if (!getTarget().requestShan()) {
+        if (getTarget().requestShan()) {
             if (getSource().hasEquipment(weapon, "贯石斧")) {
                 String option = IO.chooseFromProvided(getSource(),
                         "throw two cards and hurt", "pass");
@@ -131,6 +132,8 @@ public class Sha extends BasicCard {
                 if (getSource().hasEquipment(weapon, "青龙偃月刀")) {
                     Sha s = getSource().requestSha();
                     if (s != null) {
+                        s.setTarget(getTarget());
+                        s.setSource(getSource());
                         s.use();
                     }
                 }

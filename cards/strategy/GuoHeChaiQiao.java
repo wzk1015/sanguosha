@@ -31,7 +31,7 @@ public class GuoHeChaiQiao extends Strategy {
             }
             Card c;
             if (option.equals("hand cards")) {
-                c = IO.chooseCard(getSource(), getTarget().getCards());
+                c = IO.chooseAnonymousCard(getSource(), getTarget().getCards());
             } else if (option.equals("equipments")) {
                 c = IO.chooseCard(getSource(),
                         new ArrayList<>(getTarget().getEquipments().values()));

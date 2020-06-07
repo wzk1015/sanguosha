@@ -12,10 +12,8 @@ public class PeoplePool {
 
     public static void init() {
         //TODO
-        //for (int i = 0; i < 100; i++) {
-        //    people.add(new BlankPerson());
-        //}
         people.add(new BlankPerson());
+        //people.add(new AI());
         people.add(new BlankPerson2());
         Collections.shuffle(people);
     }

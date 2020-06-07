@@ -90,7 +90,7 @@ public class CardsHeap {
     public static void addCards(Class<? extends Card> cls,HurtType type,
                                 Color color, int... numbers) {
         for (int value: numbers) {
-            addCard(cls, color, value);
+            addCard(cls, color, value, type);
         }
     }
 

@@ -3,7 +3,9 @@ package cards;
 import manager.Utils;
 import people.Person;
 
-public abstract class Card {
+import java.io.Serializable;
+
+public abstract class Card implements Serializable {
     private Color color;
     private int number;
     private Person target;
@@ -61,7 +63,9 @@ public abstract class Card {
 
     public String info() {
         String num;
-        if (number == 1) {
+        if (number == 0) {
+            num = "-";
+        } else if (number == 1) {
             num = "A";
         } else if (number <= 10 && number >= 2) {
             num = number + "";

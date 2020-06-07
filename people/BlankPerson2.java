@@ -7,6 +7,6 @@ public class BlankPerson2 extends Person {
 
     @Override
     public String toString() {
-        return "白板2";
+        return "黑板";
     }
 }

@@ -20,19 +20,20 @@ import manager.GameManager;
 import manager.IO;
 import manager.Utils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static cards.EquipType.shield;
 import static cards.EquipType.weapon;
 
-public abstract class Person extends PersonAttributes implements SkillLauncher {
-    private int maxHP;
+public abstract class Person extends PersonAttributes implements SkillLauncher, Serializable {
+    private final int maxHP;
     private int currentHP;
     private int shaCount = 1;
-    private ArrayList<Card> cards = new ArrayList<>();
-    private HashMap<EquipType, Equipment> equipments = new HashMap<>();
-    private ArrayList<JudgeCard> judgeCards = new ArrayList<>();
+    private final ArrayList<Card> cards = new ArrayList<>();
+    private final HashMap<EquipType, Equipment> equipments = new HashMap<>();
+    private final ArrayList<JudgeCard> judgeCards = new ArrayList<>();
 
     public Person(int maxHP, String sex) {
         Utils.assertTrue(sex.equals("male") || sex.equals("female"), "invalid sex");
@@ -66,6 +67,8 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
         if (!states.contains("skip use")) {
             usePhase();
         }
+        shaCount = 1;
+        setDrunk(false);
         if (isDead()) {
             return;
         }
@@ -81,8 +84,16 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     public ArrayList<String> judgePhase() {
         ArrayList<String> states = new ArrayList<>();
         for (JudgeCard jc : judgeCards) {
-            states.add(jc.use());
+            IO.println("judging " + jc);
+            String state = jc.use();
+            if (state != null) {
+                IO.println(state);
+                states.add(state);
+            } else {
+                IO.println("judgecard failed");
+            }
         }
+        judgeCards.clear();
         return states;
     }
 
@@ -91,12 +102,11 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
         drawCards(2);
     }
 
-    public void parseOrder(String order) {
+    public boolean parseOrder(String order) {
         Card card;
         if (useSkillInUsePhase(order)) {
-            return;
-        }
-        else if (order.equals("丈八蛇矛") && cards.size() >= 2) {
+            return true;
+        } else if (order.equals("丈八蛇矛") && cards.size() >= 2) {
             ArrayList<Card> cs = IO.chooseCards(this, 2, cards);
             throwCard(cs);
             if (cs.get(0).isRed() && cs.get(1).isRed()) {
@@ -106,104 +116,128 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
             } else {
                 card = new Sha(Color.NOCOLOR, 0);
             }
-        }
-        else {
+        } else {
             try {
                 card = cards.get(Integer.parseInt(order) - 1);
             } catch (NumberFormatException | IndexOutOfBoundsException e) {
                 IO.println("Wrong input");
-                return;
+                return false;
+            }
+        }
+
+        if (card instanceof TieSuoLianHuan) {
+            if (IO.chooseFromProvided(this, "throw", "use").equals("throw")) {
+                throwCard(card);
+                drawCard();
+                return true;
             }
         }
 
         if (!GameManager.askTarget(card, this)) {
-            return;
+            return false;
         }
 
-        useCard(card);
+        return useCard(card);
     }
 
-    public void useCard(Card card) {
-        if (card instanceof Sha) {
-            if (shaCount != 0 || hasEquipment(weapon, "诸葛连弩")) {
-                shaCount--;
-            } else {
-                IO.println("You can't 杀 anymore");
-                return;
+    public boolean useSha(Card card) {
+        if (shaCount != 0 || hasEquipment(weapon, "诸葛连弩")) {
+            shaCount--;
+        } else {
+            IO.println("You can't 杀 anymore");
+            return false;
+        }
+        if (cards.isEmpty() && hasEquipment(weapon, "方天画戟")) {
+            String option = IO.chooseFromProvided(this, "1target", "2targets", "3targets");
+            Person target3 = null;
+            if (option.equals("3targets")) {
+                Sha s3 = new Sha(card.color(), card.number(), ((Sha) card).getType());
+                if (GameManager.askTarget(s3, this) && s3.getTarget() != card.getTarget()) {
+                    target3 = s3.getTarget();
+                    Utils.assertTrue(target3 != null, "sha3 target is null");
+                    s3.use();
+                }
             }
-            if (cards.isEmpty() && hasEquipment(weapon, "方天画戟")) {
-                String option = IO.chooseFromProvided(this,"1target", "2targets", "3targets");
-                Person target3 = null;
-                if (option.equals("3targets")) {
-                    Sha s3 = new Sha(card.color(), card.number(), ((Sha) card).getType());
-                    if (GameManager.askTarget(s3, this) && s3.getTarget() != card.getTarget()) {
-                        target3 = s3.getTarget();
-                        Utils.assertTrue(target3 != null, "sha3 target is null");
-                        s3.use();
-                    }
-                }
-                if (option.equals("3targets") || option.equals("2targets")) {
-                    Sha s2 = new Sha(card.color(), card.number(), ((Sha) card).getType());
-                    if (GameManager.askTarget(s2, this) && s2.getTarget() != card.getTarget()
+            if (option.equals("3targets") || option.equals("2targets")) {
+                Sha s2 = new Sha(card.color(), card.number(), ((Sha) card).getType());
+                if (GameManager.askTarget(s2, this) && s2.getTarget() != card.getTarget()
                         && s2.getTarget() != target3) {
-                        Utils.assertTrue(s2.getTarget() != null, "sha2 target is null");
-                        s2.use();
-                    }
+                    Utils.assertTrue(s2.getTarget() != null, "sha2 target is null");
+                    s2.use();
                 }
+            }
+        }
+        return true;
+    }
+
+    public void putOnEquipment(Card card) {
+        if (this.equipments.get(((Equipment) card).getEquipType()) != null) {
+            loseCard(equipments.get(((Equipment) card).getEquipType()));
+            lostEquipment();
+        }
+        IO.println(this + " puts on equipment " + card);
+        throwCard(card);
+        this.equipments.put(((Equipment) card).getEquipType(), (Equipment) card);
+    }
+
+    public boolean useCard(Card card) {
+        if (card instanceof Sha) {
+            if (!useSha(card)) {
+                return false;
             }
         }
         if ((card instanceof Tao && currentHP == maxHP) || card instanceof Shan ||
                 card instanceof WuXieKeJi || (card instanceof JieDaoShaRen &&
                 !card.getTarget().hasEquipment(weapon, null))) {
             IO.println("You can't use that");
-            return;
+            return false;
         }
         if (card instanceof Equipment) {
-            if (this.equipments.get(((Equipment) card).getEquipType()) != null) {
-                IO.println(this + " lost equipment " +
-                        equipments.get(((Equipment) card).getEquipType()));
-                lostEquipment();
-            }
-            IO.println(this + "put on equipment " + card);
-            this.equipments.put(((Equipment) card).getEquipType(), (Equipment) card);
-            throwCard(card);
-            return;
+            putOnEquipment(card);
+            return true;
         }
-        if (card instanceof TieSuoLianHuan) {
-            if (IO.chooseFromProvided(this,"throw", "use").equals("throw")) {
-                throwCard(card);
-                drawCard();
-                return;
-            }
+
+        if (card instanceof JudgeCard) {
+            card.getTarget().getJudgeCards().add((JudgeCard) card);
+            throwCard(card);
+            IO.showUsingCard(card);
+            return true;
         }
         throwCard(card);
-        if (card instanceof Strategy && !(card instanceof JudgeCard)) {
+        if (card instanceof Strategy) {
             useStrategy();
         }
 
         IO.showUsingCard(card);
         card.use();
+        return true;
     }
 
     public void usePhase() {
+        IO.println(this + "'s current HP: " + currentHP + "/" + maxHP);
+        IO.printAllCards(this);
         while (true) {
-            IO.println(this + "'s current cards: ");
-            IO.printCards(getCardsAndEquipments());
+            IO.println(this + "'s current hand cards: ");
+            IO.printCards(getCards());
+            if (hasEquipment(weapon, "丈八蛇矛")) {
+                IO.println("【丈八蛇矛】");
+            }
             String order = IO.input("Number for using card, 'q' for ending phase");
             if (order.equals("q")) {
                 break;
             }
             parseOrder(order);
         }
-        shaCount = 1;
     }
 
     public void throwPhase() {
         int num = cards.size() - currentHP;
         if (num > 0) {
             IO.println(String.format("You need to throw %d cards", num));
-            IO.printCards(cards);
-            throwCard(IO.chooseCards(this, num, cards));
+            ArrayList<Card> cs = IO.chooseCards(this, num, cards);
+            IO.print(this + " throws ");
+            IO.printCards(cs);
+            throwCard(cs);
         }
     }
 
@@ -218,7 +252,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     }
 
     public void addCard(ArrayList<Card> cs) {
-        for (Card c: cs) {
+        for (Card c : cs) {
             addCard(c);
         }
     }
@@ -236,10 +270,10 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     public void loseCard(Card c) {
         IO.print(this + " lost card: ");
         IO.printCard(c);
-        if (c instanceof JudgeCard && judgeCards.contains((Card) c)) {
+        if (c instanceof JudgeCard && judgeCards.contains(c)) {
             judgeCards.remove(c);
             CardsHeap.discard(c);
-        } else if (c instanceof Equipment && equipments.containsValue((Equipment) c)) {
+        } else if (c instanceof Equipment && equipments.containsValue(c)) {
             equipments.remove(((Equipment) c).getEquipType());
             CardsHeap.discard(c);
             if (c.toString().equals("白银狮子")) {
@@ -287,13 +321,13 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
         }
 
         currentHP -= realNum;
+        IO.println(this + " lost " + realNum + " HP, current HP: " + currentHP + "/" + maxHP);
+        if (currentHP <= 0) {
+            dying();
+        }
         if (type != HurtType.normal && isLinked()) {
             link();
         }
-        if (currentHP < 0) {
-            dying();
-        }
-        IO.println(this + " lost " + realNum + " HP, current HP: " + currentHP + "/" + maxHP);
         gotHurt(realNum);
         return realNum;
     }
@@ -301,6 +335,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
     public void recover(int num) {
         if (currentHP < maxHP) {
             currentHP += num;
+            IO.println(this + " recover " + num + " HP, current HP: " + currentHP + "/" + maxHP);
         }
     }
 
@@ -317,7 +352,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
         }
 
         try {
-            Card c = cards.get(Integer.parseInt(order));
+            Card c = cards.get(Integer.parseInt(order) - 1);
             if (c.color() != color) {
                 IO.println("Wrong color");
                 return requestColor(color);
@@ -380,10 +415,10 @@ public abstract class Person extends PersonAttributes implements SkillLauncher {
             return;
         }
         for (int i = 0; i < needTao; i++) {
-            if (!GameManager.askTao()) {
+            if (!GameManager.askTao(this)) {
                 die();
             }
-            currentHP++;
+            recover(1);
         }
     }
 
