@@ -27,7 +27,7 @@ public interface SkillLauncher {
 
     }
 
-    default void gotHurt(int num) {
+    default void gotHurt(Person p, int num) {
 
     }
 

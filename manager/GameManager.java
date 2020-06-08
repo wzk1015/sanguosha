@@ -182,6 +182,19 @@ public class GameManager {
         }
     }
 
+    public static boolean pinDian(Person source, Person target) {
+        Utils.assertTrue(source.getCards().size() >= 1, "pindian source has no cards");
+        Utils.assertTrue(target.getCards().size() >= 1, "pindian target has no cards");
+
+        Card c1 = null;
+        Card c2 = null;
+        while (c1 == null || c2 == null) {
+            c1 = IO.requestCard(null, source);
+            c2 = IO.requestCard(null, target);
+        }
+        return c1.number() > c2.number();
+    }
+
     public static void moveShanDian(ShanDian sd, Person p) {
         int index = players.indexOf(p);
         Utils.assertTrue(index != -1, "shandian target not found");
@@ -304,6 +317,7 @@ public class GameManager {
         if (!chooseSelf && p != null) {
             options.remove(p.toString());
         }
+        IO.println("choose a player:");
         String option = IO.chooseFromProvided(p, options);
         for (Person p1 : people) {
             if (p1.toString().equals(option)) {
@@ -311,5 +325,13 @@ public class GameManager {
             }
         }
         return null;
+    }
+
+    public static Person selectPlayer(Person p) {
+        return selectPlayer(p, players);
+    }
+
+    public static Person selectPlayer(Person p, boolean chooseSelf) {
+        return selectPlayer(p, players, chooseSelf);
     }
 }

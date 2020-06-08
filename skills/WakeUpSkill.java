@@ -1,4 +1,6 @@
 package skills;
 
-public interface WakeUpSkill {
+@Skill("觉醒技")
+public @interface WakeUpSkill {
+    String value();
 }

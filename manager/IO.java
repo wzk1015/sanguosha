@@ -229,4 +229,8 @@ public class IO {
         Collections.shuffle(cs);
         return cs.get(Integer.parseInt(opt.replace("card","")) - 1);
     }
+
+    public static boolean launchSkill(Person p, String skillName) {
+        return chooseFromProvided(p, skillName, "pass").equals(skillName);
+    }
 }

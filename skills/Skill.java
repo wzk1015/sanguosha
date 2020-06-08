@@ -1,6 +1,8 @@
 package skills;
 
-public abstract class Skill {
+import java.lang.annotation.Inherited;
 
-    public abstract Object use();
+@Inherited
+public @interface Skill {
+    String value();
 }

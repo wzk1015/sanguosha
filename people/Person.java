@@ -328,7 +328,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         if (type != HurtType.normal && isLinked()) {
             link();
         }
-        gotHurt(realNum);
+        gotHurt(source, realNum);
         return realNum;
     }
 
@@ -341,6 +341,10 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
 
     public int getHP() {
         return currentHP;
+    }
+
+    public int getMaxHP() {
+        return maxHP;
     }
 
     public boolean requestColor(Color color) {

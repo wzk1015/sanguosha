@@ -41,9 +41,10 @@ public class Sha extends BasicCard {
         if (getSource().hasEquipment(weapon, "雌雄双股剑")) {
             if (!getSource().getSex().equals(getTarget().getSex())) {
                 String choice = IO.chooseFromProvided(getTarget(),
-                        "you throw a card", "he draw a card");
+                        "you throw a card", "he draws a card");
                 if (choice.equals("you throw a card")) {
-                    getTarget().throwCard(IO.chooseCard(getTarget(), getTarget().getCards()));
+                    IO.requestCard(null, getTarget());
+                    //getTarget().throwCard(IO.chooseCard(getTarget(), getTarget().getCards()));
                 } else {
                     getSource().drawCard();
                 }

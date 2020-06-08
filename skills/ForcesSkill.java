@@ -1,4 +1,6 @@
 package skills;
 
-public interface ForcesSkill {
+@Skill("锁定技")
+public @interface ForcesSkill {
+    String value();
 }
