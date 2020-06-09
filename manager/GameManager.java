@@ -212,6 +212,9 @@ public class GameManager {
     }
 
     public static void die(Person p) {
+        p.throwCard(p.getCards());
+        p.throwCard(new ArrayList<>(p.getJudgeCards()));
+        p.throwCard(new ArrayList<>(p.getEquipments().values()));
         it.remove();
         numPlayers--;
         idMap.get(p.getIdentity()).remove(p);

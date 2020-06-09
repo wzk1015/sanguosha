@@ -306,11 +306,15 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         if (c instanceof Equipment && equipments.containsValue(c)) {
             equipments.remove(((Equipment) c).getEquipType(), c);
             CardsHeap.discard(c);
-            lostEquipment();
+            if (!isDead()) {
+                lostEquipment();
+            }
         } else {
             cards.remove(c);
             CardsHeap.discard(c);
-            lostCard();
+            if (!isDead()) {
+                lostCard();
+            }
         }
     }
 

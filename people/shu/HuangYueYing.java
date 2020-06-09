@@ -8,7 +8,7 @@ import skills.Skill;
 
 public class HuangYueYing extends Person {
     public HuangYueYing() {
-        super(3, Nation.SHU);
+        super(3, "female", Nation.SHU);
     }
 
     @Skill("急智")
