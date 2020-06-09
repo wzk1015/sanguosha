@@ -88,8 +88,6 @@ public class LiuBei extends Person {
         return false;
     }
 
-    //TODO:激将
-
     @Override
     public String toString() {
         return "刘备";

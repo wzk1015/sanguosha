@@ -58,7 +58,7 @@ public class GameManager {
     public static void runGame(int num) {
         GameManager.numPlayers = num;
         startGame();
-        //TODO: initialize identities
+
         it = players.iterator();
         while (!gameIsEnd()) {
             while (it.hasNext()) {

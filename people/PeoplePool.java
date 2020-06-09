@@ -13,7 +13,6 @@ public class PeoplePool {
     private static int identityIndex = 0;
 
     public static void init() {
-        //TODO: add people
         people.add(new BlankPerson());
         //people.add(new AI());
         people.add(new BlankPerson2());
