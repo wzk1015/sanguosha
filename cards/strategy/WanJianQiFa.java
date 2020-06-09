@@ -11,7 +11,7 @@ public class WanJianQiFa extends Strategy {
 
     @Override
     public Object use() {
-        GameManager.wanJianQiFa(getSource());
+        GameManager.wanJianQiFa(this, getSource());
         return true;
     }
 

@@ -4,7 +4,7 @@ import manager.IO;
 
 public class AI extends Person {
     public AI() {
-        super(4);
+        super(4, Nation.QUN);
     }
 
     @Override

@@ -10,6 +10,7 @@ public abstract class Card implements Serializable {
     private int number;
     private Person target;
     private Person source;
+    private boolean isTaken = false;
 
     public Card(Color color, int number, Person target) {
         this.color = color;
@@ -90,5 +91,13 @@ public abstract class Card implements Serializable {
             col = "无色";
         }
         return col + num + " ";
+    }
+
+    public void setTaken(boolean taken) {
+        isTaken = taken;
+    }
+
+    public boolean isNotTaken() {
+        return !isTaken;
     }
 }

@@ -11,7 +11,7 @@ public class BaGuaZhen extends Shield {
 
     @Override
     public Object use() {
-        return CardsHeap.judge().isRed();
+        return CardsHeap.judge(getSource()).isRed();
     }
 
     @Override

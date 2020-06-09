@@ -2,7 +2,7 @@ package people;
 
 public class BlankPerson extends Person {
     public BlankPerson() {
-        super(4, "male");
+        super(4,  "male", Nation.QUN);
     }
 
     @Override

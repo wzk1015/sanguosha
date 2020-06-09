@@ -11,7 +11,7 @@ public class NanManRuQin extends Strategy {
 
     @Override
     public Object use() {
-        GameManager.nanManRuQin(getSource());
+        GameManager.nanManRuQin(this, getSource());
         return true;
     }
 

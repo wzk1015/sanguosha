@@ -12,27 +12,41 @@ import cards.strategy.ShunShouQianYang;
 import cards.strategy.TieSuoLianHuan;
 import cards.strategy.judgecards.ShanDian;
 import cardsheap.CardsHeap;
+import people.Identity;
+import people.Nation;
 import people.PeoplePool;
 import people.Person;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class GameManager {
-    private static ArrayList<Person> players;
+    private static ArrayList<Person> players = new ArrayList<>();
     private static int numPlayers = 2;
+    private static HashMap<Identity, ArrayList<Person>> idMap = new HashMap<>();
+    private static ArrayList<Person> winners = new ArrayList<>();
+    private static Iterator<Person> it;
     
     public static void startGame() {
         IO.println("wzk's sanguosha begins!");
-        players = new ArrayList<>();
 
         PeoplePool.init();
         CardsHeap.init();
+        idMap.put(Identity.KING, new ArrayList<>());
+        idMap.put(Identity.MINISTER, new ArrayList<>());
+        idMap.put(Identity.TRAITOR, new ArrayList<>());
+        idMap.put(Identity.REBEL, new ArrayList<>());
 
         for (int i = 0; i < numPlayers; i++) {
-            ArrayList<Person> options = PeoplePool.allocPeople(numPlayers);
-            IO.println("player " + (i + 1) + " choose your person");
-            players.add(selectPlayer(null, options));
+            Identity identity = PeoplePool.allocIdentity();
+            ArrayList<Person> options = PeoplePool.allocPeople();
+            IO.println("player " + (i + 1) + ", your identity is " + identity.toString() +
+                    "\nchoose your person");
+            Person selected = selectPlayer(null, options);
+            selected.setIdentity(identity);
+            players.add(selected);
+            idMap.get(identity).add(selected);
         }
 
         for (Person p: players) {
@@ -45,15 +59,11 @@ public class GameManager {
         GameManager.numPlayers = num;
         startGame();
         //TODO: initialize identities
+        it = players.iterator();
         while (!gameIsEnd()) {
-            Iterator<Person> it = players.iterator();
             while (it.hasNext()) {
                 Person p = it.next();
                 p.run();
-                if (p.isDead()) {
-                    it.remove();
-                    numPlayers--;
-                }
             }
         }
         endGame();
@@ -126,20 +136,20 @@ public class GameManager {
         return false;
     }
 
-    public static void nanManRuQin(Person source) {
+    public static void nanManRuQin(Card card, Person source) {
         for (Person p: players) {
             if (p != source && !requestWuXie() && p.requestSha() == null
                     && !p.hasEquipment(EquipType.shield, "藤甲")) {
-                p.hurt(source, 1);
+                p.hurt(card, source, 1);
             }
         }
     }
 
-    public static void wanJianQiFa(Person source) {
+    public static void wanJianQiFa(Card card, Person source) {
         for (Person p: players) {
             if (p != source && !requestWuXie() && !p.requestShan()
                     && !p.hasEquipment(EquipType.shield, "藤甲")) {
-                p.hurt(source, 1);
+                p.hurt(card, source, 1);
             }
         }
     }
@@ -171,13 +181,13 @@ public class GameManager {
         }
     }
 
-    public static void linkHurt(Person source, int num, HurtType type) {
+    public static void linkHurt(Card card, Person source, int num, HurtType type) {
         Utils.assertTrue(type == HurtType.fire ||
                 type == HurtType.thunder, "link hurt wrong type");
         int realNum = num;
         for (Person p : players) {
             if (p.isLinked()) {
-                realNum = p.hurt(source, realNum, type);
+                realNum = p.hurt(card, source, realNum, type);
             }
         }
     }
@@ -202,9 +212,43 @@ public class GameManager {
         players.get(index + 1).getJudgeCards().add(sd);
     }
 
+    public static void die(Person p) {
+        it.remove();
+        numPlayers--;
+        idMap.get(p.getIdentity()).remove(p);
+        IO.println(p + " dead, identity: " + p.getIdentity());
+    }
+
+    public static boolean isExtinct(Identity id) {
+        return idMap.get(id).isEmpty();
+    }
+
     public static boolean gameIsEnd() {
-        //TODO
-        return players.size() == 1;
+        Utils.assertTrue(winners.isEmpty(), "winners are not empty");
+        if (isExtinct(Identity.KING) && numPlayers > 1) {
+            winners.addAll(idMap.get(Identity.REBEL));
+            IO.print("REBEL WIN: ");
+            for (Person p: winners) {
+                IO.print(p.toString());
+            }
+            IO.println("");
+            return true;
+        } else if (isExtinct(Identity.KING)) {
+            IO.print("TRAITOR WIN: ");
+            winners.add(players.get(0));
+            IO.println(winners.get(0).toString());
+            return true;
+        } else if (isExtinct(Identity.TRAITOR) && isExtinct(Identity.REBEL)) {
+            IO.print("KING AND MINISTER WIN: ");
+            winners.addAll(idMap.get(Identity.MINISTER));
+            winners.addAll(idMap.get(Identity.KING));
+            for (Person p: winners) {
+                IO.print(p.toString());
+            }
+            IO.println("");
+            return true;
+        }
+        return false;
     }
 
     public static int calDistance(Person p1, Person p2) {
@@ -229,6 +273,16 @@ public class GameManager {
             }
         }
         ans.remove(p1);
+        return ans;
+    }
+
+    public static ArrayList<Person> peoplefromNation(Nation n) {
+        ArrayList<Person> ans = new ArrayList<>();
+        for (Person p: players) {
+            if (p.getNation() == n) {
+                ans.add(p);
+            }
+        }
         return ans;
     }
 

@@ -69,6 +69,29 @@ public class IO {
         println(card.info() + card);
     }
 
+    public static Card requestRedBlack(Person p, String color) {
+        Utils.assertTrue(color.equals("red") || color.equals("black"), "invalid color");
+        IO.println("choose a " + color + " card, 'q' to ignore");
+        IO.printCards(p.getCards());
+        String order = input(p);
+        if (order.equals("q")) {
+            return null;
+        }
+
+        try {
+            Card c = p.getCards().get(Integer.parseInt(order) - 1);
+            if ((color.equals("red") && c.isBlack()) || (color.equals("black") && c.isRed())) {
+                IO.println("Wrong color");
+                return requestRedBlack(p, color);
+            }
+            p.throwCard(c);
+            return c;
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
+            IO.println("Wrong input");
+            return requestRedBlack(p, color);
+        }
+    }
+
     public static Card requestCard(String type, Person p) {
         if (p.getCards().isEmpty()) {
             println(p + "has no cards to choose");

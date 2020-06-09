@@ -30,20 +30,21 @@ import static cards.EquipType.weapon;
 public abstract class Person extends PersonAttributes implements SkillLauncher, Serializable {
     private final int maxHP;
     private int currentHP;
-    private int shaCount = 1;
+    private int shaCount = getMaxShaCount();
     private final ArrayList<Card> cards = new ArrayList<>();
     private final HashMap<EquipType, Equipment> equipments = new HashMap<>();
     private final ArrayList<JudgeCard> judgeCards = new ArrayList<>();
 
-    public Person(int maxHP, String sex) {
+    public Person(int maxHP, String sex, Nation nation) {
         Utils.assertTrue(sex.equals("male") || sex.equals("female"), "invalid sex");
         this.maxHP = maxHP;
         this.currentHP = maxHP;
         this.setSex(sex);
+        this.setNation(nation);
     }
 
-    public Person(int maxHP) {
-        this(maxHP, "male");
+    public Person(int maxHP, Nation nation) {
+        this(maxHP, "male", nation);
     }
 
     public void run() {
@@ -67,7 +68,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         if (!states.contains("skip use")) {
             usePhase();
         }
-        shaCount = 1;
+        shaCount = getMaxShaCount();
         setDrunk(false);
         if (isDead()) {
             return;
@@ -86,6 +87,11 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         for (JudgeCard jc : judgeCards) {
             IO.println("judging " + jc);
             String state = jc.use();
+            if (jc.isNotTaken()) {
+                CardsHeap.discard(jc);
+            } else {
+                jc.setTaken(false);
+            }
             if (state != null) {
                 IO.println(state);
                 states.add(state);
@@ -137,7 +143,13 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
             return false;
         }
 
-        return useCard(card);
+        boolean used = useCard(card);
+        if (card.isNotTaken()) {
+            throwCard(card);
+        } else {
+            card.setTaken(false);
+        }
+        return used;
     }
 
     public boolean useSha(Card card) {
@@ -203,7 +215,6 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
             IO.showUsingCard(card);
             return true;
         }
-        throwCard(card);
         if (card instanceof Strategy) {
             useStrategy();
         }
@@ -214,7 +225,8 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
     }
 
     public void usePhase() {
-        IO.println(this + "'s current HP: " + currentHP + "/" + maxHP);
+        IO.println("identity: " + getIdentity());
+        IO.println("current HP: " + currentHP + "/" + maxHP);
         IO.printAllCards(this);
         while (true) {
             IO.println(this + "'s current hand cards: ");
@@ -302,11 +314,11 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         }
     }
 
-    public int hurt(Person source, int num) {
-        return hurt(source, num, HurtType.normal);
+    public int hurt(Card card, Person source, int num) {
+        return hurt(card, source, num, HurtType.normal);
     }
 
-    public int hurt(Person source, int num, HurtType type) {
+    public int hurt(Card card, Person source, int num, HurtType type) {
         int realNum = num;
 
         if (hasEquipment(shield, "藤甲") && ((Shield) equipments.get(shield)).isValid()) {
@@ -328,7 +340,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         if (type != HurtType.normal && isLinked()) {
             link();
         }
-        gotHurt(source, realNum);
+        gotHurt(card, source, realNum);
         return realNum;
     }
 
@@ -348,7 +360,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
     }
 
     public boolean requestColor(Color color) {
-        IO.println("choose a " + color + ", 'q' to ignore");
+        IO.println("choose a " + color + " card, 'q' to ignore");
         IO.printCards(cards);
         String order = IO.input(this);
         if (order.equals("q")) {
@@ -363,7 +375,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
             }
             throwCard(c);
             return true;
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
             IO.println("Wrong input");
             return requestColor(color);
         }

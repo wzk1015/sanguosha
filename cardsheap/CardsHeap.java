@@ -46,6 +46,7 @@ import cards.strategy.judgecards.LeBuSiShu;
 import cards.strategy.judgecards.ShanDian;
 import manager.GameManager;
 import manager.IO;
+import people.Person;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -235,7 +236,7 @@ public class CardsHeap {
         usedCards.addAll(0, cs);
     }
 
-    public static Card judge() {
+    public static Card judge(Person source) {
         Card d = draw();
         System.out.print("Judge card: ");
         IO.printCard(d);
@@ -243,6 +244,7 @@ public class CardsHeap {
         if (change != null) {
             d = change;
         }
+        source.receiveJudge(d);
         return d;
     }
 }

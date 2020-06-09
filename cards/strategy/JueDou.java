@@ -14,11 +14,11 @@ public class JueDou extends Strategy {
         if (!gotWuXie()) {
             while (true) {
                 if (getTarget().requestSha() == null) {
-                    getTarget().hurt(getSource(),1);
+                    getTarget().hurt(this, getSource(),1);
                     break;
                 }
                 if (getSource().requestSha() == null) {
-                    getSource().hurt(getTarget(), 1);
+                    getSource().hurt(this, getTarget(), 1);
                     break;
                 }
             }

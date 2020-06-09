@@ -1,18 +1,30 @@
 package people.wei;
 
+import cards.Card;
 import manager.IO;
+import people.Nation;
 import people.Person;
 import skills.Skill;
 
 public class GuoJia extends Person {
-    public GuoJia(int maxHP) {
-        super(maxHP);
+    public GuoJia() {
+        super(3, Nation.WEI);
+    }
+
+    @Skill("天妒")
+    @Override
+    public void receiveJudge(Card c) {
+        if (IO.launchSkill(this, "天妒")) {
+            IO.println(this + "uses 天妒");
+            addCard(c);
+        }
     }
 
     @Skill("遗计")
     @Override
-    public void gotHurt(Person source, int num) {
+    public void gotHurt(Card card, Person source, int num) {
         if (IO.launchSkill(this, "遗计")) {
+            IO.println(this + "uses 遗计");
             drawCards(num * 2);
         }
     }

@@ -19,8 +19,8 @@ public class HuoGong extends Strategy {
             Card c = IO.chooseCard(getTarget(), getTarget().getCards());
             IO.printCard(c);
             if (getSource().requestColor(c.color())) {
-                int realNum = getTarget().hurt(getSource(), 1, HurtType.fire);
-                GameManager.linkHurt(getSource(), realNum, HurtType.fire);
+                int realNum = getTarget().hurt(this, getSource(), 1, HurtType.fire);
+                GameManager.linkHurt(this, getSource(), realNum, HurtType.fire);
             }
             return true;
         }

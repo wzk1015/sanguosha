@@ -12,7 +12,7 @@ public class BingLiangCunDuan extends JudgeCard {
     @Override
     public String use() {
         if (!gotWuXie()) {
-            if (CardsHeap.judge().color() != Color.CLUB) {
+            if (CardsHeap.judge(getTarget()).color() != Color.CLUB) {
                 return "skip draw";
             }
         }

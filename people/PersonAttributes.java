@@ -8,6 +8,33 @@ public abstract class PersonAttributes {
     private boolean isDrunk = false;
     private boolean isDead = false;
     private String sex = "male";
+    private Nation nation;
+    private Identity identity;
+    private int maxShaCount;
+
+    public int getMaxShaCount() {
+        return maxShaCount;
+    }
+
+    public void setMaxShaCount(int maxShaCount) {
+        this.maxShaCount = maxShaCount;
+    }
+
+    public Nation getNation() {
+        return nation;
+    }
+
+    public void setNation(Nation nation) {
+        this.nation = nation;
+    }
+
+    public Identity getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(Identity identity) {
+        this.identity = identity;
+    }
 
     public String getSex() {
         return sex;
@@ -43,6 +70,7 @@ public abstract class PersonAttributes {
 
     public void die() {
         isDead = true;
+        GameManager.die((Person) this);
         if (GameManager.gameIsEnd()) {
             GameManager.endGame();
         }

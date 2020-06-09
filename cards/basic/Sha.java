@@ -1,6 +1,7 @@
 package cards.basic;
 
 import cards.BasicCard;
+import cards.Card;
 import cards.Color;
 import cards.equipments.Shield;
 import manager.GameManager;
@@ -16,10 +17,15 @@ import static cards.EquipType.weapon;
 
 public class Sha extends BasicCard {
     private HurtType type;
+    private Card thisCard = this;
 
     public Sha(Color color, int number, HurtType type) {
         super(color, number);
         this.type = type;
+    }
+
+    public void setThisCard(Card thisCard) {
+        this.thisCard = thisCard;
     }
 
     public Sha(Color color, int number) {
@@ -28,9 +34,9 @@ public class Sha extends BasicCard {
 
     public void sha(int num) {
         getTarget().hurtBySha();
-        int realNum = getTarget().hurt(getSource(), num, type);
+        int realNum = getTarget().hurt(thisCard, getSource(), num, type);
         if (type != HurtType.normal) {
-            GameManager.linkHurt(getSource(), realNum, type);
+            GameManager.linkHurt(thisCard, getSource(), realNum, type);
         }
     }
 
@@ -100,7 +106,7 @@ public class Sha extends BasicCard {
             ArrayList<Person> nearbyPerson = GameManager.reachablePeople(getSource(), 1);
             if (!nearbyPerson.isEmpty()) {
                 Person p = GameManager.selectPlayer(getSource(), nearbyPerson);
-                p.hurt(getSource(), 1);
+                p.hurt(null, getSource(), 1);
             }
         }
     }

@@ -1,19 +1,22 @@
 package people.wei;
 
+import cards.Card;
 import manager.GameManager;
 import manager.IO;
+import people.Nation;
 import people.Person;
 import skills.Skill;
 
 public class XunYu extends Person {
     public XunYu() {
-        super(3);
+        super(3, Nation.WEI);
     }
 
     @Skill("驱虎")
     @Override
     public boolean useSkillInUsePhase(String order) {
         if (order.equals("驱虎")) {
+            IO.println(this + "uses" + order);
             Person p = GameManager.selectPlayer(this);
             if (p == null) {
                 return false;
@@ -46,9 +49,9 @@ public class XunYu extends Person {
                         return false;
                     }
                 }
-                p2.hurt(p, 1);
+                p2.hurt(null, p, 1);
             } else {
-                hurt(p, 1);
+                hurt(null, p, 1);
             }
             return true;
         }
@@ -57,8 +60,9 @@ public class XunYu extends Person {
 
     @Skill("节命")
     @Override
-    public void gotHurt(Person source, int num) {
+    public void gotHurt(Card card, Person source, int num) {
         if (IO.launchSkill(this, "节命")) {
+            IO.println(this + "uses 节命");
             Person p = GameManager.selectPlayer(this, true);
             if (p.getMaxHP() > p.getHP()) {
                 p.drawCards(p.getMaxHP() - p.getHP());

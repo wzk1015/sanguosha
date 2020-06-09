@@ -12,7 +12,7 @@ public class LeBuSiShu extends JudgeCard {
     @Override
     public String use() {
         if (!gotWuXie()) {
-            if (CardsHeap.judge().color() != Color.HEART) {
+            if (CardsHeap.judge(getTarget()).color() != Color.HEART) {
                 return "skip use";
             }
         }

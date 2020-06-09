@@ -27,7 +27,7 @@ public interface SkillLauncher {
 
     }
 
-    default void gotHurt(Person p, int num) {
+    default void gotHurt(Card card, Person p, int num) {
 
     }
 
@@ -48,6 +48,10 @@ public interface SkillLauncher {
     }
 
     default void beforeHurt() {
+
+    }
+
+    default void receiveJudge(Card c) {
 
     }
 

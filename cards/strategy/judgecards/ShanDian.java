@@ -15,9 +15,10 @@ public class ShanDian extends JudgeCard {
     @Override
     public String use() {
         if (!gotWuXie()) {
-            Card judge = CardsHeap.judge();
+            Card judge = CardsHeap.judge(getTarget());
             if (judge.color() == Color.SPADE && judge.number() >= 2 && judge.number() >= 9) {
-                getTarget().hurt(null, 3, HurtType.thunder);
+                int realNum = getTarget().hurt(null, null, 3, HurtType.thunder);
+                GameManager.linkHurt(this, null, realNum, HurtType.thunder);
             } else {
                 GameManager.moveShanDian(this, getTarget());
             }
