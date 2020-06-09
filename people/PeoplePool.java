@@ -1,5 +1,6 @@
 package people;
 
+import manager.IO;
 import manager.Utils;
 
 import java.util.ArrayList;
@@ -19,13 +20,15 @@ public class PeoplePool {
         Collections.shuffle(people);
 
         identities.add(Identity.KING);
-        identities.add(Identity.MINISTER);
-        identities.add(Identity.MINISTER);
+        //identities.add(Identity.MINISTER);
+        //identities.add(Identity.MINISTER);
         identities.add(Identity.TRAITOR);
-        identities.add(Identity.REBEL);
-        identities.add(Identity.REBEL);
-        identities.add(Identity.REBEL);
-        identities.add(Identity.REBEL);
+        //identities.add(Identity.REBEL);
+        //identities.add(Identity.REBEL);
+        //identities.add(Identity.REBEL);
+        //identities.add(Identity.REBEL);
+        Collections.shuffle(identities);
+        Collections.shuffle(people);
     }
 
     public static ArrayList<Person> allocPeople() {

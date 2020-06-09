@@ -2,6 +2,7 @@ package cards;
 
 import manager.GameManager;
 import manager.IO;
+import people.Person;
 
 public abstract class Strategy extends Card {
     private int distance;
@@ -17,11 +18,18 @@ public abstract class Strategy extends Card {
     }
 
     public boolean gotWuXie() {
-        IO.println("requesting wuxie for " + this);
-        return GameManager.requestWuXie();
+        return GameManager.askWuXie(this);
     }
 
     public int getDistance() {
         return distance;
+    }
+
+    @Override
+    public void setSource(Person source) {
+        super.setSource(source);
+        if (source.hasQiCai()) {
+            distance = 100;
+        }
     }
 }

@@ -121,7 +121,7 @@ public class Sha extends BasicCard {
             return false;
         }
 
-        if (getTarget().requestShan()) {
+        if (getTarget().requestShan() && getSource().shaCanBeShan(getTarget())) {
             if (getSource().hasEquipment(weapon, "贯石斧")) {
                 String option = IO.chooseFromProvided(getSource(),
                         "throw two cards and hurt", "pass");

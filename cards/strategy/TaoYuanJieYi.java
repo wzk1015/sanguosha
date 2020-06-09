@@ -11,7 +11,7 @@ public class TaoYuanJieYi extends Strategy {
 
     @Override
     public Object use() {
-        GameManager.taoYuanJieYi();
+        GameManager.taoYuanJieYi(this);
         return true;
     }
 

@@ -55,11 +55,27 @@ public interface SkillLauncher {
 
     }
 
+    default boolean shaCanBeShan(Person p) {
+        return true;
+    }
+
     default Card changeJudge() {
         return null;
     }
 
     default boolean useSkillInUsePhase(String order) {
+        return false;
+    }
+
+    default boolean hasMaShu() {
+        return false;
+    }
+
+    default boolean hasQiCai() {
+        return false;
+    }
+
+    default boolean hasKongCheng() {
         return false;
     }
 }

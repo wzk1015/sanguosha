@@ -57,9 +57,10 @@ import static cards.Color.HEART;
 import static cards.Color.SPADE;
 
 public class CardsHeap {
-    private static final ArrayList<Card> drawCards = new ArrayList<>();
+    private static ArrayList<Card> drawCards = new ArrayList<>();
     private static final ArrayList<Card> usedCards = new ArrayList<>();
     private static int remainingShuffleTimes = 5;
+    private static int numCards;
 
     public static void addCard(Class<? extends Card> cls, Color color, int num) {
         try {
@@ -199,6 +200,7 @@ public class CardsHeap {
         addStrategyCards();
         addEquipmentCards();
         Collections.shuffle(drawCards);
+        numCards = drawCards.size();
     }
 
     public static void shuffle() {
@@ -246,5 +248,24 @@ public class CardsHeap {
         }
         source.receiveJudge(d);
         return d;
+    }
+
+    public static ArrayList<Card> getDrawCards(int num) {
+        if (num > drawCards.size()) {
+            shuffle();
+        }
+        return drawCards;
+    }
+
+    public static ArrayList<Card> getUsedCards() {
+        return usedCards;
+    }
+
+    public static void setDrawCards(ArrayList<Card> drawCards) {
+        CardsHeap.drawCards = drawCards;
+    }
+
+    public static int getNumCards() {
+        return numCards;
     }
 }

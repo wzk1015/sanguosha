@@ -10,7 +10,7 @@ public abstract class PersonAttributes {
     private String sex = "male";
     private Nation nation;
     private Identity identity;
-    private int maxShaCount;
+    private int maxShaCount = 1;
 
     public int getMaxShaCount() {
         return maxShaCount;

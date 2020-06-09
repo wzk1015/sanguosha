@@ -11,7 +11,7 @@ public class WuGuFengDeng extends Strategy {
 
     @Override
     public Object use() {
-        GameManager.wuGuFengDeng();
+        GameManager.wuGuFengDeng(this);
         return true;
     }
 

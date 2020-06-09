@@ -121,7 +121,9 @@ public class IO {
 
         try {
             Card c = p.getCards().get(Integer.parseInt(order) - 1);
-            if (type != null && !c.toString().equals(type)) {
+            if (type != null && !c.toString().equals(type) &&
+                    !(type.equals("杀") && (c.toString().equals("火杀")
+                            || c.toString().equals("雷杀")))) {
                 println("Wrong type");
                 return requestCard(type, p);
             }

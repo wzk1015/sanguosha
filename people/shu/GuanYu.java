@@ -24,14 +24,17 @@ public class GuanYu extends Person {
 
     @Override
     public boolean skillSha() {
-        return wuSheng() != null;
+        if (IO.launchSkill(this, "武圣")) {
+            return wuSheng() != null;
+        }
+        return false;
     }
 
     @Override
     public boolean useSkillInUsePhase(String order) {
         if (order.equals("武圣")) {
             Card c = wuSheng();
-            if (wuSheng() != null) {
+            if (c != null) {
                 Sha sha = new Sha(c.color(), c.number());
                 sha.setThisCard(c);
                 useCard(sha);

@@ -5,11 +5,7 @@ import cards.EquipType;
 import cards.Strategy;
 import cards.basic.HurtType;
 import cards.basic.Sha;
-import cards.strategy.GuoHeChaiQiao;
-import cards.strategy.HuoGong;
-import cards.strategy.JieDaoShaRen;
-import cards.strategy.ShunShouQianYang;
-import cards.strategy.TieSuoLianHuan;
+import cards.strategy.*;
 import cards.strategy.judgecards.ShanDian;
 import cardsheap.CardsHeap;
 import people.Identity;
@@ -59,11 +55,13 @@ public class GameManager {
         GameManager.numPlayers = num;
         startGame();
 
-        it = players.iterator();
+
         while (!gameIsEnd()) {
+            it = players.iterator();
             while (it.hasNext()) {
                 Person p = it.next();
                 p.run();
+                checkCardsNum();
             }
         }
         endGame();
@@ -87,11 +85,11 @@ public class GameManager {
         return !hasWuXie;
     }
 
-    public static boolean requestWuXie() {
+    public static boolean askWuXie(Card c) {
         if (noWuXie()) {
             return false;
         }
-
+        IO.println("requesting wuxie for " + c);
         boolean ans = false;
         while (true) {
             boolean mark = false;
@@ -106,6 +104,7 @@ public class GameManager {
                 }
             }
             if (mark) {
+                IO.println("requesting wuxie for 无懈可击");
                 continue;
             }
             return ans;
@@ -138,7 +137,7 @@ public class GameManager {
 
     public static void nanManRuQin(Card card, Person source) {
         for (Person p: players) {
-            if (p != source && !requestWuXie() && p.requestSha() == null
+            if (p != source && !askWuXie(card) && p.requestSha() == null
                     && !p.hasEquipment(EquipType.shield, "藤甲")) {
                 p.hurt(card, source, 1);
             }
@@ -147,25 +146,25 @@ public class GameManager {
 
     public static void wanJianQiFa(Card card, Person source) {
         for (Person p: players) {
-            if (p != source && !requestWuXie() && !p.requestShan()
+            if (p != source && !askWuXie(card) && !p.requestShan()
                     && !p.hasEquipment(EquipType.shield, "藤甲")) {
                 p.hurt(card, source, 1);
             }
         }
     }
 
-    public static void taoYuanJieYi() {
+    public static void taoYuanJieYi(TaoYuanJieYi c) {
         for (Person p: players) {
-            if (!requestWuXie()) {
+            if (!askWuXie(c)) {
                 p.recover(1);
             }
         }
     }
 
-    public static void wuGuFengDeng() {
+    public static void wuGuFengDeng(WuGuFengDeng wgfd) {
         ArrayList<Card> cards = CardsHeap.draw(numPlayers);
         for (Person p: players) {
-            if (!requestWuXie()) {
+            if (!askWuXie(wgfd)) {
                 Card c;
                 if (cards.size() == 1) {
                     c = cards.get(0);
@@ -252,6 +251,9 @@ public class GameManager {
     }
 
     public static int calDistance(Person p1, Person p2) {
+        if (p1 == p2) {
+            return 0;
+        }
         int pos1 = players.indexOf(p1);
         int pos2 = players.indexOf(p2);
         int dis = Math.max(pos1 - pos2, pos2 - pos1);
@@ -260,6 +262,9 @@ public class GameManager {
             dis++;
         }
         if (p1.hasEquipment(EquipType.minusOneHorse, null)) {
+            dis = Math.max(dis - 1, 1);
+        }
+        if (p1.hasMaShu()) {
             dis = Math.max(dis - 1, 1);
         }
         return dis;
@@ -310,8 +315,7 @@ public class GameManager {
                 Person p2 = selectPlayer(currentPerson, players, true);
                 if (p1 == null || p2 == null) {
                     return false;
-                }
-                if (p1 == p2) {
+                } if (p1 == p2) {
                     IO.println("can't select two same people");
                     continue;
                 }
@@ -343,10 +347,14 @@ public class GameManager {
                 IO.println("distance unreachable");
                 continue;
             }
-            if (card instanceof Sha
-                    && calDistance(currentPerson, p) > currentPerson.getShaDistance()) {
-                IO.println("distance unreachable");
-                continue;
+            if (card instanceof Sha) {
+                if (calDistance(currentPerson, p) > currentPerson.getShaDistance()) {
+                    IO.println("distance unreachable");
+                    continue;
+                } else if (p.hasKongCheng() && p.getCards().isEmpty()) {
+                    IO.println("can't sha because of 空城");
+                    continue;
+                }
             }
 
             if ((card instanceof GuoHeChaiQiao || card instanceof ShunShouQianYang) &&
@@ -387,5 +395,26 @@ public class GameManager {
 
     public static Person selectPlayer(Person p, boolean chooseSelf) {
         return selectPlayer(p, players, chooseSelf);
+    }
+
+    public static int getNumPlayers() {
+        return numPlayers;
+    }
+
+    public static void checkCardsNum() {
+        int ans = CardsHeap.getDrawCards(0).size() + CardsHeap.getUsedCards().size();
+        for (Person p: players) {
+            ans += p.getCards().size();
+            ans += p.getEquipments().size();
+            ans += p.getJudgeCards().size();
+        }
+        if (ans != CardsHeap.getNumCards()) {
+            IO.println("card number not consistent");
+            for (Person p : players) {
+                IO.printAllCards(p);
+            }
+            endWithError("current number of cards: " + ans +
+                    ", expected: " + CardsHeap.getNumCards());
+        }
     }
 }
