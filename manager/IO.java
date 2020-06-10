@@ -22,16 +22,17 @@ public class IO {
         //println(s);
     }
 
-    public static String input(String s) {
+    public static String input(Person p, String s) {
         String ans = "";
         while (ans.isEmpty()) {
-            print(s + ": ");
+            print(">>>" + s + ": ");
             ans = sn.nextLine();
         }
         return ans;
     }
 
     public static String input(Person p) {
+        print(">>> ");
         return sn.nextLine();
     }
 
@@ -136,7 +137,7 @@ public class IO {
 
     }
 
-    public static ArrayList<Card> printAllCards(Person p) {
+    public static void printAllCards(Person p) {
         println(p + " have " + p.getCards().size() + " hand card(s)");
         if (!p.getEquipments().isEmpty()) {
             println("equipments: ");
@@ -150,7 +151,6 @@ public class IO {
         ans.addAll(p.getCards());
         ans.addAll(new ArrayList<>(p.getEquipments().values()));
         ans.addAll(p.getJudgeCards());
-        return ans;
     }
 
     @SafeVarargs
@@ -176,9 +176,9 @@ public class IO {
         try {
             String in;
             if (p == null) {
-                in = input("make a choice");
+                in = input(p, "make a choice");
             } else {
-                in = input(p + "make a choice");
+                in = input(p, p + "make a choice");
             }
             if (in.equals("q")) {
                 return null;
@@ -212,15 +212,18 @@ public class IO {
             return new ArrayList<>(choices.subList(0, num));
         }
         try {
-            String input = input(" choose " + num + " options");
+            String input = input(p, " choose " + num + " options");
             String[] split = input.split(" ");
             if (split.length != num && num != 0) {
-                println("wrong number of choices");
+                println("wrong number of choices: " + split.length);
                 return chooseManyFromProvided(p, num, choices);
             }
             ArrayList<E> ans = new ArrayList<>();
             for (String s: split) {
                 int option = Integer.parseInt(s) - 1;
+                if (ans.contains(choices.get(option))) {
+                    println("can't choose the same option: " + choices.get(option));
+                }
                 ans.add(choices.get(option));
             }
             return ans;

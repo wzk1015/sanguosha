@@ -46,7 +46,8 @@ public class SiMaYi extends Person {
                 c = IO.chooseCard(this,
                         new ArrayList<>(p.getEquipments().values()));
             }
-            p.loseCard(c);
+            p.loseCard(c, false);
+            addCard(c);
         }
     }
 

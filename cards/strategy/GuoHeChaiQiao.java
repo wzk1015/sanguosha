@@ -38,7 +38,7 @@ public class GuoHeChaiQiao extends Strategy {
             } else {
                 c = IO.chooseCard(getSource(), new ArrayList<>(getTarget().getJudgeCards()));
             }
-            getTarget().loseCard(c);
+            getTarget().loseCard(c, true);
             return true;
         }
         return false;

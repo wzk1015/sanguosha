@@ -46,6 +46,7 @@ import cards.strategy.judgecards.LeBuSiShu;
 import cards.strategy.judgecards.ShanDian;
 import manager.GameManager;
 import manager.IO;
+import manager.Utils;
 import people.Person;
 
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ public class CardsHeap {
     private static final ArrayList<Card> usedCards = new ArrayList<>();
     private static int remainingShuffleTimes = 5;
     private static int numCards;
+    private static Card judgeCard = null;
 
     public static void addCard(Class<? extends Card> cls, Color color, int num) {
         try {
@@ -238,6 +240,7 @@ public class CardsHeap {
         usedCards.addAll(0, cs);
     }
 
+
     public static Card judge(Person source) {
         Card d = draw();
         System.out.print("Judge card: ");
@@ -246,8 +249,15 @@ public class CardsHeap {
         if (change != null) {
             d = change;
         }
-        source.receiveJudge(d);
+        judgeCard = d;
+        source.receiveJudge();
+        discard(d);
         return d;
+    }
+
+    public static Card getJudgeCard() {
+        usedCards.remove(judgeCard);
+        return judgeCard;
     }
 
     public static ArrayList<Card> getDrawCards(int num) {

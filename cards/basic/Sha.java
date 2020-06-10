@@ -72,6 +72,9 @@ public class Sha extends BasicCard {
         if (getSource().hasEquipment(weapon, "古锭刀") && getTarget().getCards().isEmpty()) {
             numHurt++;
         }
+        if (getSource().isNaked()) {
+            numHurt++;
+        }
         sha(numHurt);
         getSource().shaSuccess();
         afterShaHit();

@@ -24,7 +24,6 @@ public class ZhuGeLiang extends Person {
             IO.println(this + " uses 观星");
             int num = Math.min(GameManager.getNumPlayers(), 5);
             ArrayList<Card> heap = CardsHeap.getDrawCards(num);
-            final int originalSize = heap.size();
 
             ArrayList<Card> view = new ArrayList<>(heap.subList(0, num));
             heap = new ArrayList<>(heap.subList(num, heap.size()));
@@ -35,12 +34,12 @@ public class ZhuGeLiang extends Person {
                 view.removeAll(heap);
                 heap.addAll(0, top);
             }
-
-            IO.println("now arrange cards to put at bottom, in your expected order");
-            ArrayList<Card> bottom = IO.chooseCards(this, view.size(), view);
-            heap.addAll(bottom);
-
-            Utils.assertTrue(heap.size() == originalSize, "invalid cards heap size after 观星");
+            if (!view.isEmpty()) {
+                IO.println("now arrange cards to put at bottom, in your expected order");
+                ArrayList<Card> bottom = IO.chooseCards(this, view.size(), view);
+                heap.addAll(bottom);
+            }
+            GameManager.checkCardsNum();
             CardsHeap.setDrawCards(heap);
         }
     }

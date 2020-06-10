@@ -104,7 +104,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
     }
 
     public void drawPhase() {
-        IO.println(this + " draw two cards from cards heap");
+        IO.println(this + " draw 2 cards from cards heap");
         drawCards(2);
     }
 
@@ -144,9 +144,9 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         }
 
         boolean used = useCard(card);
-        if (card.isNotTaken()) {
+        if (card.isNotTaken() && used) {
             throwCard(card);
-        } else {
+        } else if (!card.isNotTaken()){
             card.setTaken(false);
         }
         return used;
@@ -184,7 +184,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
 
     public void putOnEquipment(Card card) {
         if (this.equipments.get(((Equipment) card).getEquipType()) != null) {
-            loseCard(equipments.get(((Equipment) card).getEquipType()));
+            throwCard(equipments.get(((Equipment) card).getEquipType()));
             lostEquipment();
         }
         IO.println(this + " puts on equipment " + card);
@@ -234,7 +234,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
             if (hasEquipment(weapon, "丈八蛇矛")) {
                 IO.println("【丈八蛇矛】");
             }
-            String order = IO.input("Number for using card, 'q' for ending phase");
+            String order = IO.input(this, "Number for using card, 'q' for ending phase");
             if (order.equals("q")) {
                 break;
             }
@@ -279,7 +279,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         }
     }
 
-    public void loseCard(Card c) {
+    public void loseCard(Card c, boolean throwAway) {
         IO.print(this + " lost card: ");
         IO.printCard(c);
         if (c instanceof JudgeCard && judgeCards.contains(c)) {
@@ -291,8 +291,20 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
             if (c.toString().equals("白银狮子")) {
                 recover(1);
             }
+            if (!isDead()) {
+                lostEquipment();
+            }
+        } else if (cards.contains(c)) {
+            cards.remove(c);
+            if (!isDead()) {
+                lostCard();
+            }
         } else {
-            throwCard(c);
+            GameManager.endWithError("lose card not belong to " + this);
+        }
+        if (throwAway) {
+            CardsHeap.discard(c);
+            lostCard();
         }
     }
 
@@ -303,19 +315,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
     }
 
     public void throwCard(Card c) {
-        if (c instanceof Equipment && equipments.containsValue(c)) {
-            equipments.remove(((Equipment) c).getEquipType(), c);
-            CardsHeap.discard(c);
-            if (!isDead()) {
-                lostEquipment();
-            }
-        } else {
-            cards.remove(c);
-            CardsHeap.discard(c);
-            if (!isDead()) {
-                lostCard();
-            }
-        }
+        loseCard(c, true);
     }
 
     public int hurt(Card card, Person source, int num) {

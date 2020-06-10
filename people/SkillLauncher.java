@@ -43,6 +43,10 @@ public interface SkillLauncher {
         return false;
     }
 
+    default boolean isNaked() {
+        return false;
+    }
+
     default void shaBegin() {
 
     }
@@ -51,7 +55,7 @@ public interface SkillLauncher {
 
     }
 
-    default void receiveJudge(Card c) {
+    default void receiveJudge() {
 
     }
 

@@ -39,7 +39,7 @@ public class ShunShouQianYang extends Strategy {
             } else {
                 c = IO.chooseCard(getSource(), new ArrayList<>(getTarget().getJudgeCards()));
             }
-            getTarget().loseCard(c);
+            getTarget().loseCard(c, false);
             getSource().addCard(c);
             return true;
         }
