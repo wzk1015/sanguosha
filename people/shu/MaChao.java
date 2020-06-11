@@ -1,7 +1,7 @@
 package people.shu;
 
 import cardsheap.CardsHeap;
-import manager.IO;
+
 import people.Nation;
 import people.Person;
 import skills.ForcesSkill;
@@ -15,15 +15,14 @@ public class MaChao extends Person {
     @ForcesSkill("马术")
     @Override
     public boolean hasMaShu() {
-        IO.println(this + " uses 马术");
+        println(this + " uses 马术");
         return true;
     }
 
     @Skill("铁骑")
     @Override
     public boolean shaCanBeShan(Person p) {
-        if (IO.launchSkill(this, "铁骑")) {
-            IO.println(this + " uses 铁骑");
+        if (launchSkill("铁骑")) {
             return CardsHeap.judge(this).isRed();
         }
         return false;

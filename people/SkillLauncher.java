@@ -59,6 +59,10 @@ public interface SkillLauncher {
 
     }
 
+    default void gotSavedBy(Person p) {
+
+    }
+
     default boolean shaCanBeShan(Person p) {
         return true;
     }

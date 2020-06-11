@@ -2,7 +2,7 @@ package people.wei;
 
 import cards.Card;
 import cardsheap.CardsHeap;
-import manager.IO;
+
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -15,12 +15,11 @@ public class ZhenJi extends Person {
     @Skill("洛神")
     @Override
     public void beginPhase() {
-        if (IO.launchSkill(this, "洛神")) {
-            IO.println(this + " uses 洛神");
+        if (launchSkill("洛神")) {
             Card c = CardsHeap.judge(this);
             while (c.isBlack()) {
                 addCard(CardsHeap.getJudgeCard());
-                if (IO.launchSkill(this, "洛神")) {
+                if (launchSkill("洛神")) {
                     c = CardsHeap.judge(this);
                 } else {
                     break;
@@ -33,11 +32,8 @@ public class ZhenJi extends Person {
     @Override
     public boolean skillShan() {
         if (requestShan()) {
-            if (IO.launchSkill(this, "倾国")) {
-                if (IO.requestRedBlack(this, "black") != null) {
-                    IO.println(this + "uses 倾国");
-                    return true;
-                }
+            if (launchSkill("倾国")) {
+                return  requestRedBlack("black") != null;
             }
         }
         return false;

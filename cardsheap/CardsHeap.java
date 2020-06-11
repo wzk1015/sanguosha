@@ -46,7 +46,6 @@ import cards.strategy.judgecards.LeBuSiShu;
 import cards.strategy.judgecards.ShanDian;
 import manager.GameManager;
 import manager.IO;
-import manager.Utils;
 import people.Person;
 
 import java.util.ArrayList;
@@ -239,7 +238,6 @@ public class CardsHeap {
     public static void discard(ArrayList<Card> cs) {
         usedCards.addAll(0, cs);
     }
-
 
     public static Card judge(Person source) {
         Card d = draw();

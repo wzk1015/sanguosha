@@ -1,6 +1,5 @@
 package people.shu;
 
-import manager.IO;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -15,8 +14,7 @@ public class HuangZhong extends Person {
     public boolean shaCanBeShan(Person target) {
         if (getHP() <= target.getCards().size() ||
                 getShaDistance() >= target.getCards().size()) {
-            if (IO.launchSkill(this, "烈弓")) {
-                IO.println(this + " uses 烈弓");
+            if (launchSkill("烈弓")) {
                 return true;
             }
         }

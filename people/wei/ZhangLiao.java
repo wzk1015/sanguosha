@@ -2,7 +2,7 @@ package people.wei;
 
 import cards.Card;
 import manager.GameManager;
-import manager.IO;
+
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -15,8 +15,7 @@ public class ZhangLiao extends Person {
     @Skill("突袭")
     @Override
     public void drawPhase() {
-        if (IO.launchSkill(this, "突袭")) {
-            IO.println(this + "uses 突袭");
+        if (launchSkill("突袭")) {
             while (true) {
                 Person p1 = GameManager.selectPlayer(this);
                 Person p2 = GameManager.selectPlayer(this);
@@ -24,11 +23,11 @@ public class ZhangLiao extends Person {
                     break;
                 }
                 if (p1.getCards().isEmpty() || p2.getCards().isEmpty()) {
-                    IO.println("target has no hand cards");
+                    println("target has no hand cards");
                     continue;
                 }
-                Card c1 = IO.chooseAnonymousCard(this, p1.getCards());
-                Card c2 = IO.chooseAnonymousCard(this, p2.getCards());
+                Card c1 = chooseAnonymousCard(p1.getCards());
+                Card c2 = chooseAnonymousCard(p2.getCards());
                 p1.loseCard(c1, false);
                 p2.loseCard(c2, false);
                 addCard(c1);

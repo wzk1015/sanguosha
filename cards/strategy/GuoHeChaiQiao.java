@@ -3,7 +3,6 @@ package cards.strategy;
 import cards.Card;
 import cards.Color;
 import cards.Strategy;
-import manager.IO;
 
 import java.util.ArrayList;
 
@@ -15,28 +14,24 @@ public class GuoHeChaiQiao extends Strategy {
     @Override
     public Object use() {
         if (!gotWuXie()) {
-            IO.printAllCards(getTarget());
+            getTarget().printAllCards();
             String option;
             if (!getTarget().getEquipments().isEmpty() && !getTarget().getJudgeCards().isEmpty()) {
-                option = IO.chooseFromProvided(getSource(),
-                        "hand cards", "equipments", "judge cards");
+                option = getSource().chooseFromProvided("hand cards", "equipments", "judge cards");
             } else if (!getTarget().getEquipments().isEmpty()) {
-                option = IO.chooseFromProvided(getSource(),
-                        "hand cards", "equipments");
+                option = getSource().chooseFromProvided("hand cards", "equipments");
             } else if (!getTarget().getJudgeCards().isEmpty()) {
-                option = IO.chooseFromProvided(getSource(),
-                        "hand cards", "judge cards");
+                option = getSource().chooseFromProvided("hand cards", "judge cards");
             } else {
                 option = "hand cards";
             }
             Card c;
             if (option.equals("hand cards")) {
-                c = IO.chooseAnonymousCard(getSource(), getTarget().getCards());
+                c = getSource().chooseAnonymousCard(getTarget().getCards());
             } else if (option.equals("equipments")) {
-                c = IO.chooseCard(getSource(),
-                        new ArrayList<>(getTarget().getEquipments().values()));
+                c = getSource().chooseCard(new ArrayList<>(getTarget().getEquipments().values()));
             } else {
-                c = IO.chooseCard(getSource(), new ArrayList<>(getTarget().getJudgeCards()));
+                c = getSource().chooseCard(new ArrayList<>(getTarget().getJudgeCards()));
             }
             getTarget().loseCard(c, true);
             return true;

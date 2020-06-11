@@ -3,8 +3,7 @@ package people.shu;
 import cards.Card;
 import cardsheap.CardsHeap;
 import manager.GameManager;
-import manager.IO;
-import manager.Utils;
+
 import people.Nation;
 import people.Person;
 import skills.ForcesSkill;
@@ -20,23 +19,22 @@ public class ZhuGeLiang extends Person {
     @Skill("观星")
     @Override
     public void beginPhase() {
-        if (IO.launchSkill(this,"观星")) {
-            IO.println(this + " uses 观星");
+        if (launchSkill("观星")) {
             int num = Math.min(GameManager.getNumPlayers(), 5);
             ArrayList<Card> heap = CardsHeap.getDrawCards(num);
 
             ArrayList<Card> view = new ArrayList<>(heap.subList(0, num));
             heap = new ArrayList<>(heap.subList(num, heap.size()));
 
-            IO.println("choose cards that you want to put on top, in your expected order");
-            ArrayList<Card> top = IO.chooseCards(this, 0, view);
+            println("choose cards that you want to put on top, in your expected order");
+            ArrayList<Card> top = chooseCards(0, view);
             if (top != null) {
                 view.removeAll(heap);
                 heap.addAll(0, top);
             }
             if (!view.isEmpty()) {
-                IO.println("now arrange cards to put at bottom, in your expected order");
-                ArrayList<Card> bottom = IO.chooseCards(this, view.size(), view);
+                println("now arrange cards to put at bottom, in your expected order");
+                ArrayList<Card> bottom = chooseCards(view.size(), view);
                 heap.addAll(bottom);
             }
             GameManager.checkCardsNum();

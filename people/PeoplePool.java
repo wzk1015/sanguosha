@@ -1,6 +1,5 @@
 package people;
 
-import manager.IO;
 import manager.Utils;
 
 import java.util.ArrayList;

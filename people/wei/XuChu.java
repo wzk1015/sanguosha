@@ -1,6 +1,5 @@
 package people.wei;
 
-import manager.IO;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -15,9 +14,8 @@ public class XuChu extends Person {
     @Skill("裸衣")
     @Override
     public void drawPhase() {
-        if (IO.launchSkill(this, "裸衣")) {
-            IO.println(this + " uses 裸衣");
-            IO.println(this + " draw 1 card from cards heap");
+        if (launchSkill("裸衣")) {
+            println(this + " draw 1 card from cards heap");
             isNaked = true;
             return;
         }

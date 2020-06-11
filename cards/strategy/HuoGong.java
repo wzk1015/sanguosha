@@ -16,7 +16,7 @@ public class HuoGong extends Strategy {
     @Override
     public Object use() {
         if (!gotWuXie()) {
-            Card c = IO.chooseCard(getTarget(), getTarget().getCards());
+            Card c = getTarget().chooseCard(getTarget().getCards());
             IO.printCard(c);
             if (getSource().requestColor(c.color())) {
                 int realNum = getTarget().hurt(this, getSource(), 1, HurtType.fire);

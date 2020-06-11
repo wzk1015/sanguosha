@@ -2,7 +2,7 @@ package people.shu;
 
 import cards.Card;
 import cards.basic.Sha;
-import manager.IO;
+
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -14,17 +14,12 @@ public class GuanYu extends Person {
 
     @Skill("武圣")
     public Card wuSheng() {
-        Card c = IO.requestRedBlack(this, "red");
-        if (c != null) {
-            IO.println(this + " uses 武圣");
-            return c;
-        }
-        return null;
+        return requestRedBlack("red");
     }
 
     @Override
     public boolean skillSha() {
-        if (IO.launchSkill(this, "武圣")) {
+        if (launchSkill("武圣")) {
             return wuSheng() != null;
         }
         return false;

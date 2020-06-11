@@ -5,7 +5,13 @@ import cards.EquipType;
 import cards.Strategy;
 import cards.basic.HurtType;
 import cards.basic.Sha;
-import cards.strategy.*;
+import cards.strategy.GuoHeChaiQiao;
+import cards.strategy.HuoGong;
+import cards.strategy.JieDaoShaRen;
+import cards.strategy.ShunShouQianYang;
+import cards.strategy.TaoYuanJieYi;
+import cards.strategy.TieSuoLianHuan;
+import cards.strategy.WuGuFengDeng;
 import cards.strategy.judgecards.ShanDian;
 import cardsheap.CardsHeap;
 import people.Identity;
@@ -125,9 +131,10 @@ public class GameManager {
         IO.println("requesting tao for " + target);
         for (Person p: players) {
             if (p.requestTao()) {
+                target.gotSavedBy(p);
                 return true;
             } else if (p == target) {
-                if (IO.requestCard("酒", p) != null) {
+                if (p.requestCard("酒") != null) {
                     return true;
                 }
             }
@@ -169,7 +176,7 @@ public class GameManager {
                 if (cards.size() == 1) {
                     c = cards.get(0);
                 } else {
-                    c = IO.chooseCard(p, cards);
+                    c = p.chooseCard(cards);
                 }
                 p.addCard(c);
                 cards.remove(c);
@@ -198,8 +205,8 @@ public class GameManager {
         Card c1 = null;
         Card c2 = null;
         while (c1 == null || c2 == null) {
-            c1 = IO.requestCard(null, source);
-            c2 = IO.requestCard(null, target);
+            c1 = source.requestCard(null);
+            c2 = target.requestCard(null);
         }
         return c1.number() > c2.number();
     }
@@ -383,7 +390,7 @@ public class GameManager {
             options.remove(p.toString());
         }
         IO.println("choose a player:");
-        String option = IO.chooseFromProvided(p, options);
+        String option = p != null ? p.chooseFromProvided(options) : IO.chooseFromProvided(options);
         for (Person p1 : people) {
             if (p1.toString().equals(option)) {
                 return p1;
@@ -414,7 +421,7 @@ public class GameManager {
         if (ans != CardsHeap.getNumCards()) {
             IO.println("card number not consistent");
             for (Person p : players) {
-                IO.printAllCards(p);
+                p.printAllCards();
             }
             endWithError("current number of cards: " + ans +
                     ", expected: " + CardsHeap.getNumCards());

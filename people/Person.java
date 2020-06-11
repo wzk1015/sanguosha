@@ -17,7 +17,7 @@ import cards.strategy.TieSuoLianHuan;
 import cards.strategy.WuXieKeJi;
 import cardsheap.CardsHeap;
 import manager.GameManager;
-import manager.IO;
+
 import manager.Utils;
 
 import java.io.Serializable;
@@ -27,7 +27,8 @@ import java.util.HashMap;
 import static cards.EquipType.shield;
 import static cards.EquipType.weapon;
 
-public abstract class Person extends PersonAttributes implements SkillLauncher, Serializable {
+public abstract class Person extends Attributes implements SkillLauncher,
+        PlayerIO, Serializable {
     private final int maxHP;
     private int currentHP;
     private int shaCount = getMaxShaCount();
@@ -48,10 +49,10 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
     }
 
     public void run() {
-        IO.println("----------" + this + "'s round begins" + "----------");
+        println("----------" + this + "'s round begins" + "----------");
         if (isTurnedOver()) {
             turnover();
-            IO.println(this + "turns over");
+            println(this + "turns over");
             return;
         }
         beginPhase();
@@ -75,7 +76,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         }
         throwPhase();
         endPhase();
-        IO.println("----------" + this + "'s round ends" + "----------");
+        println("----------" + this + "'s round ends" + "----------");
     }
 
     public void beginPhase() {
@@ -85,7 +86,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
     public ArrayList<String> judgePhase() {
         ArrayList<String> states = new ArrayList<>();
         for (JudgeCard jc : judgeCards) {
-            IO.println("judging " + jc);
+            println("judging " + jc);
             String state = jc.use();
             if (jc.isNotTaken()) {
                 CardsHeap.discard(jc);
@@ -93,10 +94,10 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
                 jc.setTaken(false);
             }
             if (state != null) {
-                IO.println(state);
+                println(state);
                 states.add(state);
             } else {
-                IO.println("judgecard failed");
+                println("judgecard failed");
             }
         }
         judgeCards.clear();
@@ -104,7 +105,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
     }
 
     public void drawPhase() {
-        IO.println(this + " draw 2 cards from cards heap");
+        println(this + " draw 2 cards from cards heap");
         drawCards(2);
     }
 
@@ -113,7 +114,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         if (useSkillInUsePhase(order)) {
             return true;
         } else if (order.equals("丈八蛇矛") && cards.size() >= 2) {
-            ArrayList<Card> cs = IO.chooseCards(this, 2, cards);
+            ArrayList<Card> cs = this.chooseCards(2, cards);
             throwCard(cs);
             if (cs.get(0).isRed() && cs.get(1).isRed()) {
                 card = new Sha(Color.DIAMOND, 0);
@@ -126,13 +127,13 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
             try {
                 card = cards.get(Integer.parseInt(order) - 1);
             } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                IO.println("Wrong input");
+                println("Wrong input");
                 return false;
             }
         }
 
         if (card instanceof TieSuoLianHuan) {
-            if (IO.chooseFromProvided(this, "throw", "use").equals("throw")) {
+            if (chooseFromProvided("throw", "use").equals("throw")) {
                 throwCard(card);
                 drawCard();
                 return true;
@@ -146,7 +147,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         boolean used = useCard(card);
         if (card.isNotTaken() && used) {
             throwCard(card);
-        } else if (!card.isNotTaken()){
+        } else if (!card.isNotTaken()) {
             card.setTaken(false);
         }
         return used;
@@ -156,11 +157,11 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         if (shaCount != 0 || hasEquipment(weapon, "诸葛连弩")) {
             shaCount--;
         } else {
-            IO.println("You can't 杀 anymore");
+            println("You can't 杀 anymore");
             return false;
         }
         if (cards.isEmpty() && hasEquipment(weapon, "方天画戟")) {
-            String option = IO.chooseFromProvided(this, "1target", "2targets", "3targets");
+            String option = chooseFromProvided("1target", "2targets", "3targets");
             Person target3 = null;
             if (option.equals("3targets")) {
                 Sha s3 = new Sha(card.color(), card.number(), ((Sha) card).getType());
@@ -187,7 +188,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
             throwCard(equipments.get(((Equipment) card).getEquipType()));
             lostEquipment();
         }
-        IO.println(this + " puts on equipment " + card);
+        println(this + " puts on equipment " + card);
         throwCard(card);
         this.equipments.put(((Equipment) card).getEquipType(), (Equipment) card);
     }
@@ -201,7 +202,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         if ((card instanceof Tao && currentHP == maxHP) || card instanceof Shan ||
                 card instanceof WuXieKeJi || (card instanceof JieDaoShaRen &&
                 !card.getTarget().hasEquipment(weapon, null))) {
-            IO.println("You can't use that");
+            println("You can't use that");
             return false;
         }
         if (card instanceof Equipment) {
@@ -212,29 +213,30 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         if (card instanceof JudgeCard) {
             card.getTarget().getJudgeCards().add((JudgeCard) card);
             throwCard(card);
-            IO.showUsingCard(card);
+            showUsingCard(card);
             return true;
         }
         if (card instanceof Strategy) {
             useStrategy();
         }
 
-        IO.showUsingCard(card);
+        showUsingCard(card);
         card.use();
         return true;
     }
 
     public void usePhase() {
-        IO.println("identity: " + getIdentity());
-        IO.println("current HP: " + currentHP + "/" + maxHP);
-        IO.printAllCards(this);
+        println("identity: " + getIdentity());
+        println("current HP: " + currentHP + "/" + maxHP);
+        printAllCards();
         while (true) {
-            IO.println(this + "'s current hand cards: ");
-            IO.printCards(getCards());
+            println(this + "'s current hand cards: ");
+            printCards(getCards());
             if (hasEquipment(weapon, "丈八蛇矛")) {
-                IO.println("【丈八蛇矛】");
+                println("【丈八蛇矛】");
             }
-            String order = IO.input(this, "Number for using card, 'q' for ending phase");
+            String order = input("Number for using card, " +
+                    "Name for using skill or weapon, 'q' for ending phase");
             if (order.equals("q")) {
                 break;
             }
@@ -245,10 +247,10 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
     public void throwPhase() {
         int num = cards.size() - currentHP;
         if (num > 0) {
-            IO.println(String.format("You need to throw %d cards", num));
-            ArrayList<Card> cs = IO.chooseCards(this, num, cards);
-            IO.print(this + " throws ");
-            IO.printCards(cs);
+            println(String.format("You need to throw %d cards", num));
+            ArrayList<Card> cs = chooseCards(num, cards);
+            print(this + " throws ");
+            printCards(cs);
             throwCard(cs);
         }
     }
@@ -259,8 +261,8 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
 
     public void addCard(Card c) {
         cards.add(c);
-        IO.print(this + " got card: ");
-        IO.printCard(c);
+        print(this + " got card: ");
+        printCard(c);
     }
 
     public void addCard(ArrayList<Card> cs) {
@@ -280,8 +282,8 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
     }
 
     public void loseCard(Card c, boolean throwAway) {
-        IO.print(this + " lost card: ");
-        IO.printCard(c);
+        print(this + " lost card: ");
+        printCard(c);
         if (c instanceof JudgeCard && judgeCards.contains(c)) {
             judgeCards.remove(c);
             CardsHeap.discard(c);
@@ -337,7 +339,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         }
 
         currentHP -= realNum;
-        IO.println(this + " lost " + realNum + " HP, current HP: " + currentHP + "/" + maxHP);
+        println(this + " lost " + realNum + " HP, current HP: " + currentHP + "/" + maxHP);
         if (currentHP <= 0) {
             dying();
         }
@@ -351,7 +353,7 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
     public void recover(int num) {
         if (currentHP < maxHP) {
             currentHP += num;
-            IO.println(this + " recover " + num + " HP, current HP: " + currentHP + "/" + maxHP);
+            println(this + " recover " + num + " HP, current HP: " + currentHP + "/" + maxHP);
         }
     }
 
@@ -363,29 +365,6 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         return maxHP;
     }
 
-    public boolean requestColor(Color color) {
-        IO.println("choose a " + color + " card, 'q' to ignore");
-        IO.printCards(cards);
-        String order = IO.input(this);
-        if (order.equals("q")) {
-            return false;
-        }
-
-        try {
-            Card c = cards.get(Integer.parseInt(order) - 1);
-            if (c.color() != color) {
-                IO.println("Wrong color");
-                return requestColor(color);
-            }
-            throwCard(c);
-            return true;
-        } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            IO.println("Wrong input");
-            return requestColor(color);
-        }
-
-    }
-
     public boolean requestShan() {
         if (hasEquipment(shield, "八卦阵") && ((Shield) equipments.get(shield)).isValid()) {
             if ((boolean) equipments.get(shield).use()) {
@@ -395,14 +374,14 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         if (skillShan()) {
             return true;
         }
-        return IO.requestCard("闪", this) != null;
+        return requestCard("闪") != null;
     }
 
     public Sha requestSha() {
         if (hasEquipment(weapon, "丈八蛇矛") && cards.size() >= 2) {
-            if (IO.chooseFromProvided(this, "throw two cards to sha", "pass").equals(
+            if (chooseFromProvided("throw two cards to sha", "pass").equals(
                     "throw two cards to sha")) {
-                ArrayList<Card> cs = IO.chooseCards(this, 2, cards);
+                ArrayList<Card> cs = chooseCards(2, cards);
                 throwCard(cs);
                 if (cs.get(0).isRed() && cs.get(1).isRed()) {
                     return new Sha(Color.DIAMOND, 0);
@@ -415,18 +394,18 @@ public abstract class Person extends PersonAttributes implements SkillLauncher, 
         if (skillSha()) {
             return new Sha(Color.NOCOLOR, 0);
         }
-        return (Sha) IO.requestCard("杀", this);
+        return (Sha) requestCard("杀");
     }
 
     public boolean requestWuXie() {
         if (skillWuxie()) {
             return true;
         }
-        return IO.requestCard("无懈可击", this) != null;
+        return requestCard("无懈可击") != null;
     }
 
     public boolean requestTao() {
-        return IO.requestCard("桃", this) != null;
+        return requestCard("桃") != null;
     }
 
     public void dying() {

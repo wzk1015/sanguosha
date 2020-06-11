@@ -1,7 +1,7 @@
 package people.wei;
 
 import cards.Card;
-import manager.IO;
+
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -16,12 +16,8 @@ public class SiMaYi extends Person {
     @Skill("鬼才")
     @Override
     public Card changeJudge() {
-        if (IO.launchSkill(this, "鬼才")) {
-            Card c = IO.requestCard(null, this);
-            if (c != null) {
-                IO.println(this + "uses 鬼才");
-            }
-            return c;
+        if (launchSkill("鬼才")) {
+            return requestCard(null);
         }
         return null;
     }
@@ -30,21 +26,19 @@ public class SiMaYi extends Person {
     @Override
     public void gotHurt(Card card, Person p, int num) {
         if (p != null && p.getCardsAndEquipments().size() > 0
-                && IO.launchSkill(this, "反馈")) {
-            IO.printAllCards(p);
+                && launchSkill("反馈")) {
+            p.printAllCards();
             String option;
             if (!p.getEquipments().isEmpty()) {
-                option = IO.chooseFromProvided(this,
-                        "hand cards", "equipments");
+                option = chooseFromProvided("hand cards", "equipments");
             } else {
                 option = "hand cards";
             }
             Card c;
             if (option.equals("hand cards")) {
-                c = IO.chooseAnonymousCard(this, p.getCards());
+                c = chooseAnonymousCard(p.getCards());
             } else {
-                c = IO.chooseCard(this,
-                        new ArrayList<>(p.getEquipments().values()));
+                c = chooseCard(new ArrayList<>(p.getEquipments().values()));
             }
             p.loseCard(c, false);
             addCard(c);

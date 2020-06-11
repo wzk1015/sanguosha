@@ -46,11 +46,10 @@ public class Sha extends BasicCard {
         }
         if (getSource().hasEquipment(weapon, "雌雄双股剑")) {
             if (!getSource().getSex().equals(getTarget().getSex())) {
-                String choice = IO.chooseFromProvided(getTarget(),
+                String choice = getTarget().chooseFromProvided(
                         "you throw a card", "he draws a card");
                 if (choice.equals("you throw a card")) {
-                    IO.requestCard(null, getTarget());
-                    //getTarget().throwCard(IO.chooseCard(getTarget(), getTarget().getCards()));
+                    getTarget().requestCard(null);
                 } else {
                     getSource().drawCard();
                 }
@@ -84,7 +83,7 @@ public class Sha extends BasicCard {
         if (getSource().hasEquipment(weapon, "麒麟弓")) {
             if (getTarget().hasEquipment(plusOneHorse, null) &&
                     getTarget().hasEquipment(minusOneHorse, null)) {
-                String choice = IO.chooseFromProvided(getSource(), "shoot down plusonehorse",
+                String choice = getSource().chooseFromProvided("shoot down plusonehorse",
                         "shoot down minusonehorse", "pass");
                 if (choice.equals("shoot down minusonehorse")) {
                     getTarget().getEquipments().put(minusOneHorse, null);
@@ -94,7 +93,7 @@ public class Sha extends BasicCard {
             }
             else if (getTarget().hasEquipment(plusOneHorse, null) ||
                     getTarget().hasEquipment(minusOneHorse, null)) {
-                String choice = IO.chooseFromProvided(getSource(), "shoot down horse", "pass");
+                String choice = getSource().chooseFromProvided("shoot down horse", "pass");
                 if (choice.equals("shoot down horse")) {
                     if (getTarget().hasEquipment(plusOneHorse, null)) {
                         getTarget().getEquipments().put(plusOneHorse, null);
@@ -126,10 +125,10 @@ public class Sha extends BasicCard {
 
         if (getTarget().requestShan() && getSource().shaCanBeShan(getTarget())) {
             if (getSource().hasEquipment(weapon, "贯石斧")) {
-                String option = IO.chooseFromProvided(getSource(),
+                String option = getSource().chooseFromProvided(
                         "throw two cards and hurt", "pass");
                 if (option.equals("throw two cards")) {
-                    getSource().throwCard(IO.chooseCards(getSource(), 2,
+                    getSource().throwCard(getSource().chooseCards(2,
                             getTarget().getCardsAndEquipments()));
                     shaHit();
                 } else {
@@ -153,9 +152,9 @@ public class Sha extends BasicCard {
 
         else {
             if (getSource().hasEquipment(weapon, "寒冰剑")) {
-                String option = IO.chooseFromProvided(getSource(), "throw two cards", "hurt");
+                String option = getSource().chooseFromProvided("throw two cards", "hurt");
                 if (option.equals("throw two cards")) {
-                    getTarget().throwCard(IO.chooseCards(getSource(), 2,
+                    getTarget().throwCard(getSource().chooseCards(2,
                             getTarget().getCardsAndEquipments()));
                 } else {
                     shaHit();

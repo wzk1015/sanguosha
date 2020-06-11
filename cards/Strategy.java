@@ -1,7 +1,6 @@
 package cards;
 
 import manager.GameManager;
-import manager.IO;
 import people.Person;
 
 public abstract class Strategy extends Card {

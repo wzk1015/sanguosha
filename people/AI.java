@@ -1,7 +1,5 @@
 package people;
 
-import manager.IO;
-
 public class AI extends Person {
     public AI() {
         super(4, Nation.QUN);
@@ -15,8 +13,8 @@ public class AI extends Person {
     public void usePhase() {
         int index = 1;
         while (true) {
-            IO.println(this + "'s current hand cards: ");
-            IO.printCards(getCards());
+            println(this + "'s current hand cards: ");
+            printCards(getCards());
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {

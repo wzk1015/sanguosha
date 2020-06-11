@@ -1,6 +1,5 @@
 package people.shu;
 
-import manager.IO;
 import people.Nation;
 import people.Person;
 import skills.ForcesSkill;
@@ -14,7 +13,7 @@ public class HuangYueYing extends Person {
     @Skill("急智")
     @Override
     public void useStrategy() {
-        if (IO.launchSkill(this, "急智")) {
+        if (launchSkill("急智")) {
             drawCard();
         }
     }

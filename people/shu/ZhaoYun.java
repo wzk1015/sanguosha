@@ -2,7 +2,7 @@ package people.shu;
 
 import cards.Card;
 import cards.basic.Sha;
-import manager.IO;
+
 import manager.Utils;
 import people.Nation;
 import people.Person;
@@ -17,24 +17,20 @@ public class ZhaoYun extends Person {
     public Card longDan(String type) {
         Utils.assertTrue(type.equals("杀") || type.equals("闪"), "illegal 龙胆 type:" + type);
         if (type.equals("闪")) {
-            Card c = IO.requestCard("杀", this);
+            Card c = requestCard("杀");
             if (c != null) {
-                IO.println(this + " uses 龙胆");
+                println(this + " uses 龙胆");
             }
             return c;
         }
         else {
-            Card c = IO.requestCard("闪", this);
-            if (c != null) {
-                IO.println(this + " uses 龙胆");
-            }
-            return c;
+            return requestCard("闪");
         }
     }
 
     @Override
     public boolean skillShan() {
-        if (IO.launchSkill(this,"龙胆")) {
+        if (launchSkill("龙胆")) {
             return longDan("闪") != null;
         }
         return false;
@@ -42,7 +38,7 @@ public class ZhaoYun extends Person {
 
     @Override
     public boolean skillSha() {
-       if (IO.launchSkill(this, "龙胆")) {
+        if (launchSkill("龙胆")) {
             return longDan("杀") != null;
         }
         return false;
