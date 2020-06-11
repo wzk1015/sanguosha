@@ -2,6 +2,8 @@ package people;
 
 import cards.Card;
 
+import java.util.ArrayList;
+
 public interface SkillLauncher {
     default void shaGotShan() {
 
@@ -27,7 +29,7 @@ public interface SkillLauncher {
 
     }
 
-    default void gotHurt(Card card, Person p, int num) {
+    default void gotHurt(ArrayList<Card> cards, Person p, int num) {
 
     }
 

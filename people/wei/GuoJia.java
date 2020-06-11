@@ -7,6 +7,8 @@ import people.Nation;
 import people.Person;
 import skills.Skill;
 
+import java.util.ArrayList;
+
 public class GuoJia extends Person {
     public GuoJia() {
         super(3, Nation.WEI);
@@ -22,7 +24,7 @@ public class GuoJia extends Person {
 
     @Skill("遗计")
     @Override
-    public void gotHurt(Card card, Person source, int num) {
+    public void gotHurt(ArrayList<Card> cards, Person source, int num) {
         if (launchSkill("遗计")) {
             drawCards(num * 2);
         }

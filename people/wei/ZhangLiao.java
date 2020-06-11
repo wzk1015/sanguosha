@@ -22,6 +22,10 @@ public class ZhangLiao extends Person {
                 if (p1 == null || p2 == null) {
                     break;
                 }
+                if (p1 == p2) {
+                    println("can't select same person");
+                    continue;
+                }
                 if (p1.getCards().isEmpty() || p2.getCards().isEmpty()) {
                     println("target has no hand cards");
                     continue;

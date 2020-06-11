@@ -7,6 +7,8 @@ import people.Nation;
 import people.Person;
 import skills.Skill;
 
+import java.util.ArrayList;
+
 public class XunYu extends Person {
     public XunYu() {
         super(3, Nation.WEI);
@@ -36,27 +38,24 @@ public class XunYu extends Person {
                     return true;
                 }
             }
-            if (GameManager.pinDian(this, p)) {
-                Person p2 = GameManager.selectPlayer(this);
+            Person p2 = GameManager.selectPlayer(this);
+            if (p2 == null) {
+                return true;
+            }
+            while (p2 == p || p2 == this ||
+                    !GameManager.reachablePeople(p, p.getShaDistance()).contains(p2)) {
+                if (p2 == p || p2 == this) {
+                    println("you can't choose yourself or himself");
+                } else {
+                    println("can't reach this person");
+                }
+                p2 = GameManager.selectPlayer(this);
                 if (p2 == null) {
                     return true;
                 }
-                while (p2 == p || p2 == this ||
-                        !GameManager.reachablePeople(p, p.getShaDistance()).contains(p2)) {
-                    if (p2 == p || p2 == this) {
-                        println("you can't choose yourself or himself");
-                    } else {
-                        println("can't reach this person");
-                    }
-                    p2 = GameManager.selectPlayer(this);
-                    if (p2 == null) {
-                        return true;
-                    }
-                }
-                p2.hurt(null, p, 1);
-            } else {
-                hurt(null, p, 1);
             }
+            int n = GameManager.pinDian(this, p) ?
+                    p2.hurt((Card) null, p, 1) : hurt((Card) null, p,1);
             setHasUsedSkill1(true);
             return true;
         }
@@ -65,7 +64,7 @@ public class XunYu extends Person {
 
     @Skill("节命")
     @Override
-    public void gotHurt(Card card, Person source, int num) {
+    public void gotHurt(ArrayList<Card> cs, Person source, int num) {
         if (launchSkill("节命")) {
             Person p = GameManager.selectPlayer(this, true);
             if (p.getMaxHP() > p.getHP()) {

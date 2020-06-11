@@ -53,9 +53,9 @@ public class IO {
         }
         try {
             String in = input("make a choice");
-            if (in.equals("q")) {
-                return null;
-            }
+            //if (in.equals("q")) {
+            //    return null;
+            //}
             int option = Integer.parseInt(in) - 1;
             return choices.get(option);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {

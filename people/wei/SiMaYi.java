@@ -24,7 +24,7 @@ public class SiMaYi extends Person {
 
     @Skill("反馈")
     @Override
-    public void gotHurt(Card card, Person p, int num) {
+    public void gotHurt(ArrayList<Card> cards, Person p, int num) {
         if (p != null && p.getCardsAndEquipments().size() > 0
                 && launchSkill("反馈")) {
             p.printAllCards();

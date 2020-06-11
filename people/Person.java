@@ -66,10 +66,10 @@ public abstract class Person extends Attributes implements SkillLauncher,
         if (!states.contains("skip draw")) {
             drawPhase();
         }
+        shaCount = getMaxShaCount();
         if (!states.contains("skip use")) {
             usePhase();
         }
-        shaCount = getMaxShaCount();
         setDrunk(false);
         if (isDead()) {
             return;
@@ -115,7 +115,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
             return true;
         } else if (order.equals("丈八蛇矛") && cards.size() >= 2) {
             ArrayList<Card> cs = this.chooseCards(2, cards);
-            throwCard(cs);
+            loseCard(cs);
             if (cs.get(0).isRed() && cs.get(1).isRed()) {
                 card = new Sha(Color.DIAMOND, 0);
             } else if (cs.get(1).isBlack() && cs.get(1).isBlack()) {
@@ -123,6 +123,8 @@ public abstract class Person extends Attributes implements SkillLauncher,
             } else {
                 card = new Sha(Color.NOCOLOR, 0);
             }
+            card.setTaken(true);
+            ((Sha) card).setThisCard(cs);
         } else {
             try {
                 card = cards.get(Integer.parseInt(order) - 1);
@@ -134,7 +136,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
 
         if (card instanceof TieSuoLianHuan) {
             if (chooseFromProvided("throw", "use").equals("throw")) {
-                throwCard(card);
+                loseCard(card);
                 drawCard();
                 return true;
             }
@@ -185,11 +187,12 @@ public abstract class Person extends Attributes implements SkillLauncher,
 
     public void putOnEquipment(Card card) {
         if (this.equipments.get(((Equipment) card).getEquipType()) != null) {
-            throwCard(equipments.get(((Equipment) card).getEquipType()));
+            loseCard(equipments.get(((Equipment) card).getEquipType()));
             lostEquipment();
         }
         println(this + " puts on equipment " + card);
-        throwCard(card);
+        cards.remove(card);
+        card.setTaken(true);
         this.equipments.put(((Equipment) card).getEquipType(), (Equipment) card);
     }
 
@@ -212,8 +215,9 @@ public abstract class Person extends Attributes implements SkillLauncher,
 
         if (card instanceof JudgeCard) {
             card.getTarget().getJudgeCards().add((JudgeCard) card);
-            throwCard(card);
+            cards.remove(card);
             showUsingCard(card);
+            card.setTaken(true);
             return true;
         }
         if (card instanceof Strategy) {
@@ -249,9 +253,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
         if (num > 0) {
             println(String.format("You need to throw %d cards", num));
             ArrayList<Card> cs = chooseCards(num, cards);
-            print(this + " throws ");
-            printCards(cs);
-            throwCard(cs);
+            loseCard(cs);
         }
     }
 
@@ -281,15 +283,29 @@ public abstract class Person extends Attributes implements SkillLauncher,
         }
     }
 
+    public void loseCard(ArrayList<Card> cs) {
+        for (Card c: cs) {
+            loseCard(c);
+        }
+    }
+
+    public void loseCard(Card c) {
+        loseCard(c,  true);
+    }
+
     public void loseCard(Card c, boolean throwAway) {
-        print(this + " lost card: ");
-        printCard(c);
+        loseCard(c, throwAway, true);
+    }
+
+    public void loseCard(Card c, boolean throwAway, boolean print) {
+        if (print && throwAway) {
+            print(this + " lost card: ");
+            printCard(c);
+        }
         if (c instanceof JudgeCard && judgeCards.contains(c)) {
             judgeCards.remove(c);
-            CardsHeap.discard(c);
         } else if (c instanceof Equipment && equipments.containsValue(c)) {
             equipments.remove(((Equipment) c).getEquipType());
-            CardsHeap.discard(c);
             if (c.toString().equals("白银狮子")) {
                 recover(1);
             }
@@ -307,6 +323,8 @@ public abstract class Person extends Attributes implements SkillLauncher,
         if (throwAway) {
             CardsHeap.discard(c);
             lostCard();
+        } else {
+            c.setTaken(true);
         }
     }
 
@@ -317,14 +335,26 @@ public abstract class Person extends Attributes implements SkillLauncher,
     }
 
     public void throwCard(Card c) {
-        loseCard(c, true);
+        loseCard(c, true, false);
+    }
+
+    public int hurt(ArrayList<Card> cards, Person source, int num) {
+        return hurt(cards, source, num, HurtType.normal);
     }
 
     public int hurt(Card card, Person source, int num) {
-        return hurt(card, source, num, HurtType.normal);
+        ArrayList<Card> cs = new ArrayList<>();
+        cs.add(card);
+        return hurt(cs, source, num, HurtType.normal);
     }
 
     public int hurt(Card card, Person source, int num, HurtType type) {
+        ArrayList<Card> cs = new ArrayList<>();
+        cs.add(card);
+        return hurt(cs, source, num, type);
+    }
+
+    public int hurt(ArrayList<Card> cards, Person source, int num, HurtType type) {
         int realNum = num;
 
         if (hasEquipment(shield, "藤甲") && ((Shield) equipments.get(shield)).isValid()) {
@@ -346,7 +376,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
         if (type != HurtType.normal && isLinked()) {
             link();
         }
-        gotHurt(card, source, realNum);
+        gotHurt(cards, source, realNum);
         return realNum;
     }
 
@@ -382,7 +412,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
             if (chooseFromProvided("throw two cards to sha", "pass").equals(
                     "throw two cards to sha")) {
                 ArrayList<Card> cs = chooseCards(2, cards);
-                throwCard(cs);
+                loseCard(cs);
                 if (cs.get(0).isRed() && cs.get(1).isRed()) {
                     return new Sha(Color.DIAMOND, 0);
                 } else if (cs.get(1).isBlack() && cs.get(1).isBlack()) {

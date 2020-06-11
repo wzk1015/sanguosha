@@ -24,12 +24,14 @@ public class SunQuan extends Person {
     @Skill("制衡")
     @Override
     public boolean useSkillInUsePhase(String order) {
-        if (launchSkill("制衡") && !hasUsedSkill1()) {
+        if (order.equals("制衡") && !hasUsedSkill1()) {
+            println(this + " uses 制衡");
             ArrayList<Card> cs = chooseCards(0, getCards());
             if (!cs.isEmpty()) {
-                throwCard(cs);
+                loseCard(cs);
                 drawCards(cs.size());
             }
+            setHasUsedSkill1(true);
             return true;
         }
         return false;

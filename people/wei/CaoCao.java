@@ -18,11 +18,15 @@ public class CaoCao extends Person {
 
     @Skill("奸雄")
     @Override
-    public void gotHurt(Card card, Person p, int num) {
+    public void gotHurt(ArrayList<Card> cs, Person p, int num) {
         if (launchSkill("奸雄")) {
-            if (card != null && card.isNotTaken()) {
-                addCard(card);
-                card.setTaken(true);
+            if (cs != null) {
+                for (Card c: cs) {
+                    if (c.isNotTaken()) {
+                        addCard(c);
+                        c.setTaken(true);
+                    }
+                }
             }
         }
     }

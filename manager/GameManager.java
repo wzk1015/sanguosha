@@ -52,7 +52,7 @@ public class GameManager {
         }
 
         for (Person p: players) {
-            p.addCard(CardsHeap.draw(2));
+            p.addCard(CardsHeap.draw(4));
         }
 
     }
@@ -151,11 +151,11 @@ public class GameManager {
         }
     }
 
-    public static void wanJianQiFa(Card card, Person source) {
+    public static void wanJianQiFa(ArrayList<Card> thiscard, Card card, Person source) {
         for (Person p: players) {
             if (p != source && !askWuXie(card) && !p.requestShan()
                     && !p.hasEquipment(EquipType.shield, "藤甲")) {
-                p.hurt(card, source, 1);
+                p.hurt(thiscard, source, 1);
             }
         }
     }
@@ -187,13 +187,13 @@ public class GameManager {
         }
     }
 
-    public static void linkHurt(Card card, Person source, int num, HurtType type) {
+    public static void linkHurt(ArrayList<Card> cards, Person source, int num, HurtType type) {
         Utils.assertTrue(type == HurtType.fire ||
                 type == HurtType.thunder, "link hurt wrong type");
         int realNum = num;
         for (Person p : players) {
             if (p.isLinked()) {
-                realNum = p.hurt(card, source, realNum, type);
+                realNum = p.hurt(cards, source, realNum, type);
             }
         }
     }

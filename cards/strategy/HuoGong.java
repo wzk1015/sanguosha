@@ -7,6 +7,8 @@ import cards.basic.HurtType;
 import manager.GameManager;
 import manager.IO;
 
+import java.util.ArrayList;
+
 public class HuoGong extends Strategy {
 
     public HuoGong(Color color, int number) {
@@ -20,7 +22,9 @@ public class HuoGong extends Strategy {
             IO.printCard(c);
             if (getSource().requestColor(c.color())) {
                 int realNum = getTarget().hurt(this, getSource(), 1, HurtType.fire);
-                GameManager.linkHurt(this, getSource(), realNum, HurtType.fire);
+                ArrayList<Card> cs = new ArrayList<>();
+                cs.add(this);
+                GameManager.linkHurt(cs, getSource(), realNum, HurtType.fire);
             }
             return true;
         }

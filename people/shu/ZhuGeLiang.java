@@ -29,7 +29,7 @@ public class ZhuGeLiang extends Person {
             println("choose cards that you want to put on top, in your expected order");
             ArrayList<Card> top = chooseCards(0, view);
             if (top != null) {
-                view.removeAll(heap);
+                view.removeAll(top);
                 heap.addAll(0, top);
             }
             if (!view.isEmpty()) {

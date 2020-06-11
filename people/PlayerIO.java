@@ -174,7 +174,7 @@ public interface PlayerIO {
             return choices.get(option);
         }
         try {
-            String in = input(toString() + "make a choice");
+            String in = input(toString() + " make a choice");
             if (in.equals("q")) {
                 return null;
             }
@@ -206,13 +206,17 @@ public interface PlayerIO {
             return new ArrayList<>(choices.subList(0, num));
         }
         try {
-            String input = input(" choose " + num + " options");
+            String input = input(this + " choose " +
+                    (num == 0 ? "several" : num)  + " options, or q");
             String[] split = input.split(" ");
             if (split.length != num && num != 0) {
                 println("wrong number of choices: " + split.length);
                 return chooseManyFromProvided(num, choices);
             }
             ArrayList<E> ans = new ArrayList<>();
+            if (input.equals("q") && num == 0) {
+                return ans;
+            }
             for (String s: split) {
                 int option = Integer.parseInt(s) - 1;
                 if (ans.contains(choices.get(option))) {
@@ -253,7 +257,8 @@ public interface PlayerIO {
     }
 
     default boolean launchSkill(String skillName) {
-        if (chooseFromProvided(skillName, "pass").equals(skillName)) {
+        String choice = chooseFromProvided(skillName, "pass");
+        if (choice != null && choice.equals(skillName)) {
             println(this + " uses " + skillName);
             return true;
         }

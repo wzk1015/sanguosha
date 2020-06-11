@@ -8,6 +8,8 @@ import people.Nation;
 import people.Person;
 import skills.Skill;
 
+import java.util.ArrayList;
+
 public class XiaHouDun extends Person {
     public XiaHouDun() {
         super(4, Nation.WEI);
@@ -15,7 +17,7 @@ public class XiaHouDun extends Person {
 
     @Skill("刚烈")
     @Override
-    public void gotHurt(Card card, Person p, int num) {
+    public void gotHurt(ArrayList<Card> cards, Person p, int num) {
         if (launchSkill("刚烈")) {
             if (CardsHeap.judge(this).color() != Color.HEART) {
                 String option;
@@ -26,10 +28,10 @@ public class XiaHouDun extends Person {
                 }
 
                 if (option.equals("lost 1 HP")) {
-                    p.hurt(null, this, 1);
+                    p.hurt((Card) null, this, 1);
                 }
                 else {
-                    p.throwCard(p.chooseCards(2, p.getCards()));
+                    p.loseCard(p.chooseCards(2, p.getCards()));
                 }
             }
         }

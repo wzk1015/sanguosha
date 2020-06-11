@@ -16,6 +16,7 @@ public class XuChu extends Person {
     public void drawPhase() {
         if (launchSkill("裸衣")) {
             println(this + " draw 1 card from cards heap");
+            drawCard();
             isNaked = true;
             return;
         }
