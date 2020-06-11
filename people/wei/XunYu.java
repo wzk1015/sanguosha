@@ -22,7 +22,7 @@ public class XunYu extends Person {
     @Skill("驱虎")
     @Override
     public boolean useSkillInUsePhase(String order) {
-        if (order.equals("驱虎") && !hasUsedSkill1()) {
+        if (order.equals("驱虎") && hasNotUsedSkill1()) {
             Person p = GameManager.selectPlayer(this);
             if (p == null) {
                 return true;
