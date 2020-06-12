@@ -47,6 +47,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
             return;
         }
         setHasUsedSkill1(false);
+        setMyRound(true);
         beginPhase();
         if (isDead()) {
             return;
@@ -68,6 +69,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
         }
         throwPhase();
         endPhase();
+        setMyRound(false);
         Utils.assertTrue(getHP() <= getMaxHP(), "currentHP exceeds maxHP");
         println("----------" + this + "'s round ends" + "----------");
     }

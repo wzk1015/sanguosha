@@ -97,4 +97,8 @@ public interface SkillLauncher {
     default boolean hasQianXun() {
         return false;
     }
+
+    default boolean usesWuShuang() {
+        return false;
+    }
 }

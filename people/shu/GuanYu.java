@@ -31,15 +31,16 @@ public class GuanYu extends Person {
     public boolean useSkillInUsePhase(String order) {
         if (order.equals("武圣")) {
             Card c = wuSheng();
-            if (c != null) {
-                Sha sha = new Sha(c.color(), c.number());
-                sha.setThisCard(c);
-                if (GameManager.askTarget(c, this)) {
-                    showUsingCard(c);
-                    useCard(sha);
-                } else {
-                    CardsHeap.retrive(c);
-                }
+            if (c == null) {
+                return true;
+            }
+            Sha sha = new Sha(c.color(), c.number());
+            sha.setThisCard(c);
+            if (GameManager.askTarget(sha, this)) {
+                showUsingCard(sha);
+                useCard(sha);
+            } else {
+                CardsHeap.retrive(c);
             }
             return true;
         }

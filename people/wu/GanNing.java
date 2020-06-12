@@ -1,7 +1,10 @@
 package people.wu;
 
 import cards.Card;
+import cards.JudgeCard;
 import cards.strategy.GuoHeChaiQiao;
+import cardsheap.CardsHeap;
+import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -15,11 +18,18 @@ public class GanNing extends Person {
     @Override
     public boolean useSkillInUsePhase(String order) {
         if (order.equals("奇袭")) {
-            Card c = chooseCard(getCards());
-            if (c != null) {
-                loseCard(c);
-                new GuoHeChaiQiao(c.color(), c.number()).use();
+            Card c = requestRedBlack("black");
+            if (c == null) {
+                return true;
             }
+            GuoHeChaiQiao chai = new GuoHeChaiQiao(c.color(), c.number());
+            if (GameManager.askTarget(chai, this)) {
+                showUsingCard(chai);
+                useCard(chai);
+            } else {
+                CardsHeap.retrive(c);
+            }
+
             return true;
         }
         return false;

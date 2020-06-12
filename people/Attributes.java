@@ -28,6 +28,15 @@ public abstract class Attributes implements PlayerIO {
     private int maxHP = 3;
     private int currentHP;
     private int shaCount = maxShaCount;
+    private boolean myRound = false;
+
+    public boolean isMyRound() {
+        return myRound;
+    }
+
+    public void setMyRound(boolean myRound) {
+        this.myRound = myRound;
+    }
 
     public void setMaxHP(int maxHP) {
         this.maxHP = maxHP;

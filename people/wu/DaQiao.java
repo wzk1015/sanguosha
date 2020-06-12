@@ -28,9 +28,9 @@ public class DaQiao extends Person {
             }
             LeBuSiShu le  = new LeBuSiShu(c.color(), c.number());
             le.setThisCard(c);
-            if (GameManager.askTarget(c, this) && c.getTarget().addJudgeCard((JudgeCard) c)) {
-                showUsingCard(c);
-                c.setTaken(true);
+            if (GameManager.askTarget(le, this) && le.getTarget().addJudgeCard((JudgeCard) le)) {
+                showUsingCard(le);
+                useCard(le);
             } else {
                 CardsHeap.retrive(c);
             }

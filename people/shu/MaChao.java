@@ -25,7 +25,7 @@ public class MaChao extends Person {
         if (launchSkill("铁骑")) {
             return CardsHeap.judge(this).isRed();
         }
-        return false;
+        return true;
     }
 
     @Override

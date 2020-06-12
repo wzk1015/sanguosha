@@ -138,7 +138,9 @@ public class Sha extends BasicCard {
             return false;
         }
 
-        if (getTarget().requestShan() && getSource().shaCanBeShan(getTarget())) {
+        if ((getSource().shaCanBeShan(getTarget()) && getTarget().requestShan()) ||
+                (getSource().usesWuShuang() && getTarget().requestShan()
+                        && getTarget().requestShan())) {
             if (useWeapon("贯石斧")) {
                 String option = getSource().chooseFromProvided(
                         "throw two cards and hurt", "pass");

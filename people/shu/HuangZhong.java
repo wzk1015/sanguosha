@@ -14,11 +14,9 @@ public class HuangZhong extends Person {
     public boolean shaCanBeShan(Person target) {
         if (getHP() <= target.getCards().size() ||
                 getShaDistance() >= target.getCards().size()) {
-            if (launchSkill("烈弓")) {
-                return true;
-            }
+            return !launchSkill("烈弓");
         }
-        return false;
+        return true;
     }
 
     @Override
