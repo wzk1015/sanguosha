@@ -17,11 +17,12 @@ public class ShunShouQianYang extends Strategy {
         if (!gotWuXie()) {
             getTarget().printAllCards();
             String option;
-            if (!getTarget().getEquipments().isEmpty() && !getTarget().getJudgeCards().isEmpty()) {
+            if (!getTarget().getEquipments().isEmpty()
+                    && !getTarget().getRealJudgeCards().isEmpty()) {
                 option = getSource().chooseFromProvided("hand cards", "equipments", "judge cards");
             } else if (!getTarget().getEquipments().isEmpty()) {
                 option = getSource().chooseFromProvided("hand cards", "equipments");
-            } else if (!getTarget().getJudgeCards().isEmpty()) {
+            } else if (!getTarget().getRealJudgeCards().isEmpty()) {
                 option = getSource().chooseFromProvided("hand cards", "judge cards");
             } else {
                 option = "hand cards";
@@ -32,7 +33,7 @@ public class ShunShouQianYang extends Strategy {
             } else if (option.equals("equipments")) {
                 c = getSource().chooseCard(new ArrayList<>(getTarget().getEquipments().values()));
             } else {
-                c = getSource().chooseCard(new ArrayList<>(getTarget().getJudgeCards()));
+                c = getSource().chooseCard(new ArrayList<>(getTarget().getRealJudgeCards()));
             }
             getTarget().loseCard(c, false);
             getSource().addCard(c);

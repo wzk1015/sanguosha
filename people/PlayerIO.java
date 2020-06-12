@@ -90,7 +90,7 @@ public interface PlayerIO {
                 println("Wrong color");
                 return requestRedBlack(color);
             }
-            throwCard(c);
+            loseCard(c);
             return c;
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             println("Wrong input");
@@ -113,7 +113,7 @@ public interface PlayerIO {
             for (Card c : getCards()) {
                 if (c.toString().equals(type)) {
                     println("AI uses " + type);
-                    throwCard(c);
+                    loseCard(c);
                     return c;
                 }
             }
@@ -133,7 +133,7 @@ public interface PlayerIO {
                 println("Wrong type");
                 return requestCard(type);
             }
-            throwCard(c);
+            loseCard(c);
             return c;
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             println("Wrong input");
@@ -150,7 +150,7 @@ public interface PlayerIO {
         }
         if (!getJudgeCards().isEmpty()) {
             println("judge cards: ");
-            printCards(new ArrayList<>(getJudgeCards()));
+            printCards(new ArrayList<>(getRealJudgeCards()));
         }
     }
 
@@ -265,12 +265,12 @@ public interface PlayerIO {
         return false;
     }
 
-    default boolean requestColor(Color color) {
+    default Card requestColor(Color color) {
         println("choose a " + color + " card, 'q' to ignore");
         printCards(getCards());
         String order = input();
         if (order.equals("q")) {
-            return false;
+            return null;
         }
 
         try {
@@ -279,8 +279,8 @@ public interface PlayerIO {
                 println("Wrong color");
                 return requestColor(color);
             }
-            throwCard(c);
-            return true;
+            loseCard(c);
+            return c;
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             println("Wrong input");
             return requestColor(color);
@@ -293,6 +293,8 @@ public interface PlayerIO {
     HashMap<EquipType, Equipment> getEquipments();
 
     ArrayList<JudgeCard> getJudgeCards();
+
+    ArrayList<Card> getRealJudgeCards();
     
-    void throwCard(Card c);
+    void loseCard(Card c);
 }

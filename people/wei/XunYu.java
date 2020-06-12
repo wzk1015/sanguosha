@@ -14,11 +14,6 @@ public class XunYu extends Person {
         super(3, Nation.WEI);
     }
 
-    @Override
-    public void beginPhase() {
-        setHasUsedSkill1(false);
-    }
-
     @Skill("驱虎")
     @Override
     public boolean useSkillInUsePhase(String order) {

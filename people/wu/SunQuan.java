@@ -16,11 +16,6 @@ public class SunQuan extends Person {
         super(4, Nation.WU);
     }
 
-    @Override
-    public void beginPhase() {
-        setHasUsedSkill1(false);
-    }
-
     @Skill("制衡")
     @Override
     public boolean useSkillInUsePhase(String order) {

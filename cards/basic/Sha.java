@@ -128,8 +128,10 @@ public class Sha extends BasicCard {
 
     @Override
     public Object use() {
-        beforeSha();
+
         getSource().shaBegin();
+        getTarget().gotShaBegin(this);
+        beforeSha();
 
         if (!getTarget().canBeSha(this)) {
             IO.println("invalid sha");

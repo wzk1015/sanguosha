@@ -46,6 +46,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
             println(this + "turns over");
             return;
         }
+        setHasUsedSkill1(false);
         beginPhase();
         if (isDead()) {
             return;
@@ -67,6 +68,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
         }
         throwPhase();
         endPhase();
+        Utils.assertTrue(getHP() <= getMaxHP(), "currentHP exceeds maxHP");
         println("----------" + this + "'s round ends" + "----------");
     }
 
@@ -75,12 +77,14 @@ public abstract class Person extends Attributes implements SkillLauncher,
     }
 
     public ArrayList<String> judgePhase() {
+        Utils.assertTrue(getJudgeCards().size() <= 3,
+                "too many judgecards: " + getJudgeCards().size());
         ArrayList<String> states = new ArrayList<>();
         for (JudgeCard jc : getJudgeCards()) {
             println("judging " + jc);
             String state = jc.use();
             if (jc.isNotTaken()) {
-                CardsHeap.discard(jc);
+                CardsHeap.discard(jc.getThisCard());
             } else {
                 jc.setTaken(false);
             }
@@ -205,11 +209,13 @@ public abstract class Person extends Attributes implements SkillLauncher,
         }
 
         if (card instanceof JudgeCard) {
-            card.getTarget().getJudgeCards().add((JudgeCard) card);
-            getCards().remove(card);
-            showUsingCard(card);
-            card.setTaken(true);
-            return true;
+            if (card.getTarget().addJudgeCard((JudgeCard) card)) {
+                getCards().remove(card);
+                showUsingCard(card);
+                card.setTaken(true);
+                return true;
+            }
+            return false;
         }
         if (card instanceof Strategy) {
             useStrategy();
@@ -293,8 +299,8 @@ public abstract class Person extends Attributes implements SkillLauncher,
             print(this + " lost card: ");
             printCard(c);
         }
-        if (c instanceof JudgeCard && getJudgeCards().contains(c)) {
-            getJudgeCards().remove(c);
+        if (getRealJudgeCards().contains(c)) {
+            removeJudgeCard(c);
         } else if (c instanceof Equipment && getEquipments().containsValue(c)) {
             getEquipments().remove(((Equipment) c).getEquipType());
             if (c.toString().equals("白银狮子")) {
@@ -313,7 +319,6 @@ public abstract class Person extends Attributes implements SkillLauncher,
         }
         if (throwAway) {
             CardsHeap.discard(c);
-            lostCard();
         } else {
             c.setTaken(true);
         }

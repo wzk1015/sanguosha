@@ -20,7 +20,7 @@ public class HuoGong extends Strategy {
         if (!gotWuXie()) {
             Card c = getTarget().chooseCard(getTarget().getCards());
             IO.printCard(c);
-            if (getSource().requestColor(c.color())) {
+            if (getSource().requestColor(c.color()) != null) {
                 int realNum = getTarget().hurt(this, getSource(), 1, HurtType.fire);
                 ArrayList<Card> cs = new ArrayList<>();
                 cs.add(this);

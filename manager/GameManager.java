@@ -214,13 +214,15 @@ public class GameManager {
     public static void moveShanDian(ShanDian sd, Person p) {
         int index = players.indexOf(p);
         Utils.assertTrue(index != -1, "shandian target not found");
-        index = index + 1 == numPlayers ? 0 : index;
-        players.get(index + 1).getJudgeCards().add(sd);
+        index = (index + 1 == numPlayers) ? 0 : index;
+        while (!players.get(index + 1).getJudgeCards().add(sd)) {
+            index = (index + 1 == numPlayers) ? 0 : index;
+        }
     }
 
     public static void die(Person p) {
         p.throwCard(p.getCards());
-        p.throwCard(new ArrayList<>(p.getJudgeCards()));
+        p.throwCard(new ArrayList<>(p.getRealJudgeCards()));
         p.throwCard(new ArrayList<>(p.getEquipments().values()));
         it.remove();
         numPlayers--;

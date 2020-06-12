@@ -3,6 +3,8 @@ package people.shu;
 import cards.Card;
 import cards.basic.Sha;
 
+import cardsheap.CardsHeap;
+import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -32,7 +34,12 @@ public class GuanYu extends Person {
             if (c != null) {
                 Sha sha = new Sha(c.color(), c.number());
                 sha.setThisCard(c);
-                useCard(sha);
+                if (GameManager.askTarget(c, this)) {
+                    showUsingCard(c);
+                    useCard(sha);
+                } else {
+                    CardsHeap.retrive(c);
+                }
             }
             return true;
         }

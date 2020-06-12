@@ -122,7 +122,11 @@ public abstract class Attributes implements PlayerIO {
     }
 
     public boolean hasNotUsedSkill1() {
-        return !hasUsedSkill1;
+        if (hasUsedSkill1) {
+            println("you have used this skill in this phase");
+            return false;
+        }
+        return true;
     }
 
     public void setHasUsedSkill1(boolean hasUsedSkill1) {
@@ -147,6 +151,23 @@ public abstract class Attributes implements PlayerIO {
         return judgeCards;
     }
 
+    public ArrayList<Card> getRealJudgeCards() {
+        ArrayList<Card> ans = new ArrayList<>();
+        for (JudgeCard jc: judgeCards) {
+            ans.add(jc.getThisCard());
+        }
+        return ans;
+    }
+
+    public void removeJudgeCard(Card c) {
+        for (JudgeCard jc: judgeCards) {
+            if (jc.getThisCard() == c) {
+                judgeCards.remove(jc);
+                return;
+            }
+        }
+    }
+
     public ArrayList<Card> getCardsAndEquipments() {
         ArrayList<Card> ans = new ArrayList<>(cards);
         ans.addAll(equipments.values());
@@ -158,6 +179,16 @@ public abstract class Attributes implements PlayerIO {
             return ((Weapon) equipments.get(weapon)).getDistance();
         }
         return 1;
+    }
+
+    public boolean addJudgeCard(JudgeCard c) {
+        for (JudgeCard jc: judgeCards) {
+            if (jc.toString().equals(c.toString())) {
+                return false;
+            }
+        }
+        judgeCards.add(c);
+        return true;
     }
 
     public boolean hasEquipment(EquipType type, String name) {

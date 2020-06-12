@@ -1,6 +1,7 @@
 package people;
 
 import cards.Card;
+import cards.basic.Sha;
 
 import java.util.ArrayList;
 
@@ -30,6 +31,10 @@ public interface SkillLauncher {
     }
 
     default void gotHurt(ArrayList<Card> cards, Person p, int num) {
+
+    }
+
+    default void gotShaBegin(Sha sha) {
 
     }
 
@@ -86,6 +91,10 @@ public interface SkillLauncher {
     }
 
     default boolean hasKongCheng() {
+        return false;
+    }
+
+    default boolean hasQianXun() {
         return false;
     }
 }

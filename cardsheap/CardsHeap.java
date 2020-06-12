@@ -46,6 +46,7 @@ import cards.strategy.judgecards.LeBuSiShu;
 import cards.strategy.judgecards.ShanDian;
 import manager.GameManager;
 import manager.IO;
+import manager.Utils;
 import people.Person;
 
 import java.util.ArrayList;
@@ -251,6 +252,11 @@ public class CardsHeap {
         source.receiveJudge();
         discard(d);
         return d;
+    }
+
+    public static void retrive(Card c) {
+        Utils.assertTrue(usedCards.contains(c), "retrieving card not in usedCards");
+        usedCards.remove(c);
     }
 
     public static Card getJudgeCard() {
