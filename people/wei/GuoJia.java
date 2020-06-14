@@ -18,7 +18,8 @@ public class GuoJia extends Person {
     @Override
     public void receiveJudge() {
         if (launchSkill("天妒")) {
-            addCard(CardsHeap.getJudgeCard());
+            Card c = CardsHeap.getJudgeCard();
+            addCard(c);
         }
     }
 

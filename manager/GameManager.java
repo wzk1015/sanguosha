@@ -25,12 +25,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class GameManager {
-    private static ArrayList<Person> players = new ArrayList<>();
+    private static final ArrayList<Person> players = new ArrayList<>();
     private static int numPlayers = 2;
-    private static HashMap<Identity, ArrayList<Person>> idMap = new HashMap<>();
-    private static ArrayList<Person> winners = new ArrayList<>();
+    private static final HashMap<Identity, ArrayList<Person>> idMap = new HashMap<>();
+    private static final ArrayList<Person> winners = new ArrayList<>();
     private static Iterator<Person> it;
-    
+
     public static void startGame() {
         IO.println("wzk's sanguosha begins!");
 
@@ -52,16 +52,19 @@ public class GameManager {
             idMap.get(identity).add(selected);
         }
 
-        for (Person p: players) {
+        for (Person p : players) {
             p.addCard(CardsHeap.draw(4));
         }
 
     }
-    
+
     public static void runGame(int num) {
         GameManager.numPlayers = num;
         startGame();
 
+        for (Person p: players) {
+            p.initialize();
+        }
 
         while (!gameIsEnd()) {
             it = players.iterator();
@@ -119,7 +122,7 @@ public class GameManager {
     }
 
     public static Card askChangeJudge(Card d) {
-        for (Person p: players) {
+        for (Person p : players) {
             Card c = p.changeJudge(d);
             if (c != null) {
                 return c;
@@ -130,7 +133,7 @@ public class GameManager {
 
     public static boolean askTao(Person target) {
         IO.println("requesting tao for " + target);
-        for (Person p: players) {
+        for (Person p : players) {
             if (p.requestTao()) {
                 target.gotSavedBy(p);
                 return true;
@@ -144,7 +147,7 @@ public class GameManager {
     }
 
     public static void nanManRuQin(Card card, Person source) {
-        for (Person p: players) {
+        for (Person p : players) {
             if (p != source && !askWuXie(card) && p.requestSha() == null
                     && !p.hasEquipment(EquipType.shield, "藤甲")) {
                 p.hurt(card, source, 1);
@@ -153,7 +156,7 @@ public class GameManager {
     }
 
     public static void wanJianQiFa(ArrayList<Card> thiscard, Card card, Person source) {
-        for (Person p: players) {
+        for (Person p : players) {
             if (p != source && !askWuXie(card) && !p.requestShan()
                     && !p.hasEquipment(EquipType.shield, "藤甲")) {
                 p.hurt(thiscard, source, 1);
@@ -162,7 +165,7 @@ public class GameManager {
     }
 
     public static void taoYuanJieYi(TaoYuanJieYi c) {
-        for (Person p: players) {
+        for (Person p : players) {
             if (!askWuXie(c)) {
                 p.recover(1);
             }
@@ -171,7 +174,7 @@ public class GameManager {
 
     public static void wuGuFengDeng(WuGuFengDeng wgfd) {
         ArrayList<Card> cards = CardsHeap.draw(numPlayers);
-        for (Person p: players) {
+        for (Person p : players) {
             if (!askWuXie(wgfd)) {
                 Card c;
                 if (cards.size() == 1) {
@@ -221,6 +224,12 @@ public class GameManager {
         }
     }
 
+    public static void askOtherPeopleUsePhase(Person p) {
+        for (Person p2: players) {
+            p2.otherPersonUsePhase(p);
+        }
+    }
+
     public static void die(Person p) {
         p.throwCard(p.getCards());
         p.throwCard(new ArrayList<>(p.getRealJudgeCards()));
@@ -240,7 +249,7 @@ public class GameManager {
         if (isExtinct(Identity.KING) && numPlayers > 1) {
             winners.addAll(idMap.get(Identity.REBEL));
             IO.print("REBEL WIN: ");
-            for (Person p: winners) {
+            for (Person p : winners) {
                 IO.print(p.toString());
             }
             IO.println("");
@@ -254,7 +263,7 @@ public class GameManager {
             IO.print("KING AND MINISTER WIN: ");
             winners.addAll(idMap.get(Identity.MINISTER));
             winners.addAll(idMap.get(Identity.KING));
-            for (Person p: winners) {
+            for (Person p : winners) {
                 IO.print(p.toString());
             }
             IO.println("");
@@ -270,7 +279,7 @@ public class GameManager {
         int pos1 = players.indexOf(p1);
         int pos2 = players.indexOf(p2);
         int dis = Math.max(pos1 - pos2, pos2 - pos1);
-        dis =  Math.min(dis, numPlayers - dis);
+        dis = Math.min(dis, numPlayers - dis);
         if (p2.hasEquipment(EquipType.plusOneHorse, null)) {
             dis++;
         }
@@ -285,7 +294,7 @@ public class GameManager {
 
     public static ArrayList<Person> reachablePeople(Person p1, int distance) {
         ArrayList<Person> ans = new ArrayList<>();
-        for (Person p: players) {
+        for (Person p : players) {
             if (calDistance(p1, p) < distance) {
                 ans.add(p);
             }
@@ -296,7 +305,7 @@ public class GameManager {
 
     public static ArrayList<Person> peoplefromNation(Nation n) {
         ArrayList<Person> ans = new ArrayList<>();
-        for (Person p: players) {
+        for (Person p : players) {
             if (p.getNation() == n) {
                 ans.add(p);
             }
@@ -314,6 +323,29 @@ public class GameManager {
         System.exit(1);
     }
 
+    public static String askMultiTargets(Person currentPerson, Card card) {
+        Person p1 = selectPlayer(currentPerson, players, true);
+        Person p2 = selectPlayer(currentPerson, players, true);
+        if (p1 == null || p2 == null) {
+            return "false";
+        }
+        if (p1 == p2) {
+            IO.println("can't select two same people");
+            return "continue";
+        }
+        if (card instanceof JieDaoShaRen && (p1 == currentPerson || p2 == currentPerson)) {
+            IO.println("can't select yourself");
+            return "continue";
+        }
+        card.setTarget(p1);
+        if (card instanceof TieSuoLianHuan) {
+            ((TieSuoLianHuan) card).setTarget2(p2);
+        } else if (card instanceof JieDaoShaRen) {
+            ((JieDaoShaRen) card).setTarget2(p2);
+        }
+        return "true";
+    }
+
     public static boolean askTarget(Card card, Person currentPerson) {
         card.setSource(currentPerson);
 
@@ -324,25 +356,14 @@ public class GameManager {
 
         while (true) {
             if (card instanceof TieSuoLianHuan || card instanceof JieDaoShaRen) {
-                Person p1 = selectPlayer(currentPerson, players, true);
-                Person p2 = selectPlayer(currentPerson, players, true);
-                if (p1 == null || p2 == null) {
+                String ret = askMultiTargets(currentPerson, card);
+                if (ret.equals("true")) {
+                    return true;
+                } else if (ret.equals("false")) {
                     return false;
-                } if (p1 == p2) {
-                    IO.println("can't select two same people");
-                    continue;
-                }
-                if (card instanceof JieDaoShaRen && (p1 == currentPerson || p2 == currentPerson)) {
-                    IO.println("can't select yourself");
-                    continue;
-                }
-                card.setTarget(p1);
-                if (card instanceof TieSuoLianHuan) {
-                    ((TieSuoLianHuan) card).setTarget2(p2);
                 } else {
-                    ((JieDaoShaRen) card).setTarget2(p2);
+                    continue;
                 }
-                return true;
             }
 
             Person p;
@@ -370,12 +391,12 @@ public class GameManager {
                 }
             }
             if ((card instanceof ShunShouQianYang || card instanceof LeBuSiShu) &&
-                p.hasQianXun()) {
+                    p.hasQianXun()) {
                 IO.println("can't use that because of 谦逊");
                 continue;
             }
             if ((card instanceof GuoHeChaiQiao || card instanceof ShunShouQianYang) &&
-                p.getCardsAndEquipments().isEmpty()
+                    p.getCardsAndEquipments().isEmpty()
                     && p.getJudgeCards().isEmpty()) {
                 IO.println("you can't chooose a person with no cards");
             }
@@ -418,9 +439,13 @@ public class GameManager {
         return numPlayers;
     }
 
+    public static ArrayList<Person> getPlayers() {
+        return players;
+    }
+
     public static void checkCardsNum() {
         int ans = CardsHeap.getDrawCards(0).size() + CardsHeap.getUsedCards().size();
-        for (Person p: players) {
+        for (Person p : players) {
             ans += p.getCards().size();
             ans += p.getEquipments().size();
             ans += p.getJudgeCards().size();

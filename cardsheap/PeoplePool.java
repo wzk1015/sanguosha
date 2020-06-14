@@ -19,7 +19,7 @@ import people.wei.CaoCao;
 import people.wei.GuoJia;
 import people.wei.SiMaYi;
 import people.wei.XiaHouDun;
-import people.wei.XunYu;
+import people.fire.XunYu;
 import people.wei.ZhangLiao;
 import people.wei.ZhenJi;
 import people.wu.DaQiao;

@@ -5,6 +5,7 @@ import cards.Color;
 import cards.EquipType;
 import cards.Equipment;
 import cards.JudgeCard;
+import cards.basic.Sha;
 import cards.strategy.JieDaoShaRen;
 import cards.strategy.NanManRuQin;
 import cards.strategy.TaoYuanJieYi;
@@ -135,8 +136,7 @@ public interface PlayerIO {
         try {
             Card c = getCards().get(Integer.parseInt(order) - 1);
             if (type != null && !c.toString().equals(type) &&
-                    !(type.equals("杀") && (c.toString().equals("火杀")
-                            || c.toString().equals("雷杀")))) {
+                    !(type.equals("杀") && c instanceof Sha)) {
                 println("Wrong type");
                 return requestCard(type);
             }

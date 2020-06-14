@@ -98,6 +98,10 @@ public interface SkillLauncher {
         return false;
     }
 
+    default boolean hasHongYan() {
+        return false;
+    }
+
     default boolean usesWuShuang() {
         return false;
     }
@@ -119,6 +123,14 @@ public interface SkillLauncher {
     }
 
     default void hurtOther(Person p) {
+
+    }
+
+    default void otherPersonUsePhase(Person p) {
+
+    }
+
+    default void initialize() {
 
     }
 }

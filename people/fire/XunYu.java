@@ -1,4 +1,4 @@
-package people.wei;
+package people.fire;
 
 import cards.Card;
 import manager.GameManager;

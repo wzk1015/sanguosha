@@ -11,6 +11,7 @@ public abstract class Card implements Serializable {
     private Person target;
     private Person source;
     private boolean isTaken = false;
+    private Person owner = null;
 
     public Card(Color color, int number, Person target) {
         this.color = color;
@@ -23,6 +24,9 @@ public abstract class Card implements Serializable {
     }
 
     public Color color() {
+        if (owner != null && owner.hasHongYan() && color == Color.SPADE) {
+            return Color.HEART;
+        }
         return color;
     }
 
@@ -31,11 +35,11 @@ public abstract class Card implements Serializable {
     }
 
     public boolean isBlack() {
-        return color == Color.SPADE || color == Color.CLUB;
+        return color() == Color.SPADE || color() == Color.CLUB;
     }
 
     public boolean isRed() {
-        return color == Color.HEART || color == Color.DIAMOND;
+        return color() == Color.HEART || color() == Color.DIAMOND;
     }
 
     public void setSource(Person source) {
@@ -79,13 +83,13 @@ public abstract class Card implements Serializable {
             num = "K";
         }
         String col;
-        if (color == Color.DIAMOND) {
+        if (color() == Color.DIAMOND) {
             col = "方片";
-        } else if (color == Color.HEART) {
+        } else if (color() == Color.HEART) {
             col = "红桃";
-        } else if (color == Color.SPADE) {
+        } else if (color() == Color.SPADE) {
             col = "黑桃";
-        } else if (color == Color.CLUB) {
+        } else if (color() == Color.CLUB) {
             col = "梅花";
         } else {
             col = "无色";
@@ -99,5 +103,13 @@ public abstract class Card implements Serializable {
 
     public boolean isNotTaken() {
         return !isTaken;
+    }
+
+    public void setOwner(Person owner) {
+        this.owner = owner;
+    }
+
+    public Person getOwner() {
+        return owner;
     }
 }

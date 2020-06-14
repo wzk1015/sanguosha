@@ -2,6 +2,7 @@ package people.wei;
 
 import cards.Card;
 
+import cardsheap.CardsHeap;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -17,7 +18,12 @@ public class SiMaYi extends Person {
     @Override
     public Card changeJudge(Card d) {
         if (launchSkill("鬼才")) {
-            return requestCard(null);
+            Card c = requestCard(null);
+            if (c != null) {
+                CardsHeap.retrieve(c);
+                CardsHeap.discard(d);
+                return c;
+            }
         }
         return null;
     }

@@ -64,6 +64,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
         }
         setShaCount(getMaxShaCount());
         if (!states.contains("skip use") && !skipUse()) {
+            GameManager.askOtherPeopleUsePhase(this);
             usePhase();
         }
         setDrunk(false);
@@ -271,6 +272,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
     public void addCard(Card c) {
         getCards().add(c);
         print(this + " got card: ");
+        c.setOwner(this);
         printCard(c);
     }
 
@@ -327,6 +329,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
         } else {
             GameManager.endWithError("lose card not belong to " + this);
         }
+        c.setOwner(null);
         if (throwAway) {
             CardsHeap.discard(c);
         } else {
