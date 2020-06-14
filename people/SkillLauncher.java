@@ -74,7 +74,7 @@ public interface SkillLauncher {
         return true;
     }
 
-    default Card changeJudge() {
+    default Card changeJudge(Card d) {
         return null;
     }
 
@@ -100,5 +100,25 @@ public interface SkillLauncher {
 
     default boolean usesWuShuang() {
         return false;
+    }
+
+    default boolean skipJudge() {
+        return false;
+    }
+
+    default boolean skipDraw() {
+        return false;
+    }
+
+    default boolean skipUse() {
+        return false;
+    }
+
+    default boolean skipThrow() {
+        return false;
+    }
+
+    default void hurtOther(Person p) {
+
     }
 }

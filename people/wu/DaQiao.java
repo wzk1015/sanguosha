@@ -21,7 +21,6 @@ public class DaQiao extends Person {
     public boolean useSkillInUsePhase(String order) {
         if (order.equals("国色")) {
             println(this + " uses 国色");
-            Person p = GameManager.selectPlayer(this);
             Card c = requestColor(Color.DIAMOND);
             if (c == null) {
                 return true;
@@ -29,10 +28,9 @@ public class DaQiao extends Person {
             LeBuSiShu le  = new LeBuSiShu(c.color(), c.number());
             le.setThisCard(c);
             if (GameManager.askTarget(le, this) && le.getTarget().addJudgeCard((JudgeCard) le)) {
-                showUsingCard(le);
                 useCard(le);
             } else {
-                CardsHeap.retrive(c);
+                CardsHeap.retrieve(c);
             }
             return true;
         }

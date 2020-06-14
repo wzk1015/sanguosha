@@ -220,6 +220,7 @@ public class CardsHeap {
             shuffle();
         }
         Card c = drawCards.get(0);
+        c.setTaken(false);
         drawCards.remove(0);
         return c;
     }
@@ -234,6 +235,7 @@ public class CardsHeap {
 
     public static void discard(Card c) {
         usedCards.add(0, c);
+        c.setTaken(false);
     }
 
     public static void discard(ArrayList<Card> cs) {
@@ -244,7 +246,7 @@ public class CardsHeap {
         Card d = draw();
         System.out.print("Judge card: ");
         IO.printCard(d);
-        Card change = GameManager.askChangeJudge();
+        Card change = GameManager.askChangeJudge(d);
         if (change != null) {
             d = change;
         }
@@ -254,7 +256,7 @@ public class CardsHeap {
         return d;
     }
 
-    public static void retrive(Card c) {
+    public static void retrieve(Card c) {
         Utils.assertTrue(usedCards.contains(c), "retrieving card not in usedCards");
         usedCards.remove(c);
     }

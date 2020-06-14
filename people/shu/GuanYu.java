@@ -37,10 +37,9 @@ public class GuanYu extends Person {
             Sha sha = new Sha(c.color(), c.number());
             sha.setThisCard(c);
             if (GameManager.askTarget(sha, this)) {
-                showUsingCard(sha);
                 useCard(sha);
             } else {
-                CardsHeap.retrive(c);
+                CardsHeap.retrieve(c);
             }
             return true;
         }

@@ -52,22 +52,27 @@ public abstract class Person extends Attributes implements SkillLauncher,
         if (isDead()) {
             return;
         }
-        ArrayList<String> states = judgePhase();
+        ArrayList<String> states = new ArrayList<>();
+        if (!skipJudge()) {
+            states = judgePhase();
+        }
         if (isDead()) {
             return;
         }
-        if (!states.contains("skip draw")) {
+        if (!states.contains("skip draw") && !skipDraw()) {
             drawPhase();
         }
         setShaCount(getMaxShaCount());
-        if (!states.contains("skip use")) {
+        if (!states.contains("skip use") && !skipUse()) {
             usePhase();
         }
         setDrunk(false);
         if (isDead()) {
             return;
         }
-        throwPhase();
+        if (!skipThrow()) {
+            throwPhase();
+        }
         endPhase();
         setMyRound(false);
         Utils.assertTrue(getHP() <= getMaxHP(), "currentHP exceeds maxHP");
@@ -102,7 +107,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
     }
 
     public void drawPhase() {
-        println(this + " draw 2 cards from cards heap");
+        println(this + " draws 2 cards from cards heap");
         drawCards(2);
     }
 
@@ -221,6 +226,8 @@ public abstract class Person extends Attributes implements SkillLauncher,
         }
         if (card instanceof Strategy) {
             useStrategy();
+            throwCard(card);
+            card.setTaken(true);
         }
 
         showUsingCard(card);
@@ -229,6 +236,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
     }
 
     public void usePhase() {
+        printSkills();
         println("identity: " + getIdentity());
         println("current HP: " + getHP() + "/" + getMaxHP());
         printAllCards();
@@ -238,8 +246,8 @@ public abstract class Person extends Attributes implements SkillLauncher,
             if (hasEquipment(weapon, "丈八蛇矛")) {
                 println("【丈八蛇矛】");
             }
-            String order = input("Number for using card, " +
-                    "Name for using skill or weapon, 'q' for ending phase");
+            String order = input("Number:use card, " +
+                    "Name:skill or weapon, 'q':end phase");
             if (order.equals("q")) {
                 break;
             }
@@ -370,6 +378,7 @@ public abstract class Person extends Attributes implements SkillLauncher,
         if (type != HurtType.normal && isLinked()) {
             link();
         }
+        source.hurtOther(this);
         gotHurt(cs, source, realNum);
         return realNum;
     }

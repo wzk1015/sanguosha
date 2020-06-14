@@ -1,4 +1,4 @@
-package people.shu;
+package people.wind;
 
 import people.Nation;
 import people.Person;

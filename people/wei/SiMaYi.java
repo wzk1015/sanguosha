@@ -15,7 +15,7 @@ public class SiMaYi extends Person {
 
     @Skill("鬼才")
     @Override
-    public Card changeJudge() {
+    public Card changeJudge(Card d) {
         if (launchSkill("鬼才")) {
             return requestCard(null);
         }

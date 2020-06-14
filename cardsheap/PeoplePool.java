@@ -1,9 +1,15 @@
-package people;
+package cardsheap;
 
 import manager.Utils;
+import people.Identity;
+import people.Person;
+import people.qun.DiaoChan;
+import people.qun.HuaTuo;
+import people.qun.LvBu;
+import people.qun.YuanShu;
 import people.shu.GuanYu;
 import people.shu.HuangYueYing;
-import people.shu.HuangZhong;
+import people.wind.HuangZhong;
 import people.shu.LiuBei;
 import people.shu.MaChao;
 import people.shu.ZhangFei;
@@ -13,11 +19,17 @@ import people.wei.CaoCao;
 import people.wei.GuoJia;
 import people.wei.SiMaYi;
 import people.wei.XiaHouDun;
-import people.wei.XuChu;
 import people.wei.XunYu;
 import people.wei.ZhangLiao;
 import people.wei.ZhenJi;
+import people.wu.DaQiao;
+import people.wu.GanNing;
+import people.wu.HuangGai;
+import people.wu.LuXun;
+import people.wu.LvMeng;
 import people.wu.SunQuan;
+import people.wu.SunShangXiang;
+import people.wu.ZhouYu;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,9 +42,9 @@ public class PeoplePool {
     private static int identityIndex = 0;
 
     public static void init() {
-        people.add(new BlankPerson());
+        //people.add(new BlankPerson());
+        //people.add(new BlankPerson2());
         //people.add(new AI());
-        people.add(new BlankPerson2());
 
         people.add(new GuanYu());
         people.add(new HuangYueYing());
@@ -46,13 +58,23 @@ public class PeoplePool {
         people.add(new GuoJia());
         people.add(new SiMaYi());
         people.add(new XiaHouDun());
-        people.add(new XuChu());
         people.add(new XunYu());
         people.add(new ZhangLiao());
         people.add(new ZhenJi());
 
         people.add(new SunQuan());
-
+        people.add(new DaQiao());
+        people.add(new GanNing());
+        people.add(new HuangGai());
+        people.add(new LuXun());
+        people.add(new LvMeng());
+        people.add(new SunQuan());
+        people.add(new SunShangXiang());
+        people.add(new ZhouYu());
+        people.add(new HuaTuo());
+        people.add(new LvBu());
+        people.add(new DiaoChan());
+        people.add(new YuanShu());
 
         people.add(new HuangZhong());
 

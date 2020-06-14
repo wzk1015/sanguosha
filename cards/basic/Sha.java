@@ -126,6 +126,30 @@ public class Sha extends BasicCard {
         }
     }
 
+    public void shanSuccess() {
+        if (useWeapon("贯石斧")) {
+            String option = getSource().chooseFromProvided(
+                    "throw two cards and hurt", "pass");
+            if (option.equals("throw two cards and hurt")) {
+                getSource().throwCard(getSource().chooseCards(2,
+                        getTarget().getCardsAndEquipments()));
+                shaHit();
+            } else {
+                getSource().shaGotShan();
+            }
+        } else {
+            getSource().shaGotShan();
+            if (useWeapon("青龙偃月刀")) {
+                Sha s = getSource().requestSha();
+                if (s != null) {
+                    s.setTarget(getTarget());
+                    s.setSource(getSource());
+                    s.use();
+                }
+            }
+        }
+    }
+
     @Override
     public Object use() {
 
@@ -141,38 +165,37 @@ public class Sha extends BasicCard {
         if ((getSource().shaCanBeShan(getTarget()) && getTarget().requestShan()) ||
                 (getSource().usesWuShuang() && getTarget().requestShan()
                         && getTarget().requestShan())) {
-            if (useWeapon("贯石斧")) {
-                String option = getSource().chooseFromProvided(
-                        "throw two cards and hurt", "pass");
-                if (option.equals("throw two cards")) {
-                    getSource().throwCard(getSource().chooseCards(2,
-                            getTarget().getCardsAndEquipments()));
-                    shaHit();
-                } else {
-                    getSource().shaGotShan();
-                    return false;
-                }
-            } else {
-                getSource().shaGotShan();
-                if (useWeapon("青龙偃月刀")) {
-                    Sha s = getSource().requestSha();
-                    if (s != null) {
-                        s.setTarget(getTarget());
-                        s.setSource(getSource());
-                        s.use();
-                    }
-                }
-                return false;
-            }
-        } else {
+            shanSuccess();
+        }
+
+        else {
             if (useWeapon("寒冰剑")) {
-                String option = getSource().chooseFromProvided("throw two cards", "hurt");
-                if (option.equals("throw two cards")) {
-                    getTarget().throwCard(getSource().chooseCards(2,
-                            getTarget().getCardsAndEquipments()));
+                String option;
+                if (!getTarget().getEquipments().isEmpty()) {
+                    option = getSource().chooseFromProvided("hand cards", "equipments");
+                } else {
+                    option = "hand cards";
+                }
+                if (option != null) {
+                    Card c = (option.equals("hand cards")) ? getSource().chooseAnonymousCard(
+                            getTarget().getCards()) : getSource().chooseCard(
+                                    new ArrayList<>(getTarget().getEquipments().values()));
+                    if (c != null) {
+                        getTarget().loseCard(c);
+                    } else {
+                        shaHit();
+                    }
+                    c = (option.equals("hand cards")) ? getSource().chooseAnonymousCard(
+                            getTarget().getCards()) : getSource().chooseCard(
+                                    new ArrayList<>(getTarget().getEquipments().values()));
+                    if (c != null) {
+                        getTarget().loseCard(c);
+                    }
+
                 } else {
                     shaHit();
                 }
+
             } else {
                 shaHit();
             }

@@ -23,7 +23,7 @@ public class MaChao extends Person {
     @Override
     public boolean shaCanBeShan(Person p) {
         if (launchSkill("铁骑")) {
-            return CardsHeap.judge(this).isRed();
+            return CardsHeap.judge(this).isBlack();
         }
         return true;
     }

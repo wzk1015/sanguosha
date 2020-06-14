@@ -13,11 +13,18 @@ import cards.strategy.WanJianQiFa;
 import cards.strategy.WuGuFengDeng;
 import manager.IO;
 import manager.Utils;
+import skills.ForcesSkill;
+import skills.KingSkill;
+import skills.RestrictedSkill;
+import skills.Skill;
+import skills.WakeUpSkill;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public interface PlayerIO {
@@ -143,7 +150,7 @@ public interface PlayerIO {
     }
 
     default void printAllCards() {
-        println(toString() + " have " + getCards().size() + " hand card(s)");
+        println(toString() + " has " + getCards().size() + " hand card(s)");
         if (!getEquipments().isEmpty()) {
             println("equipments: ");
             printCards(new ArrayList<>(getEquipments().values()));
@@ -185,7 +192,7 @@ public interface PlayerIO {
             return chooseFromProvided(choices);
         }
     }
-
+    
     default <E> ArrayList<E> chooseManyFromProvided(int num, E... choices) {
         ArrayList<E> options = new ArrayList<>(Arrays.asList(choices));
         return chooseManyFromProvided(num, options);
@@ -297,4 +304,26 @@ public interface PlayerIO {
     ArrayList<Card> getRealJudgeCards();
     
     void loseCard(Card c);
+
+    default void printSkills() {
+        HashSet<String> skills = new HashSet<>();
+        for (Method method : getClass().getDeclaredMethods()) {
+            if (method.getAnnotation(Skill.class) != null) {
+                skills.add(method.getAnnotation(Skill.class).value());
+            } else if (method.getAnnotation(ForcesSkill.class) != null) {
+                skills.add(method.getAnnotation(ForcesSkill.class).value());
+            } else if (method.getAnnotation(RestrictedSkill.class) != null) {
+                skills.add(method.getAnnotation(RestrictedSkill.class).value());
+            } else if (method.getAnnotation(WakeUpSkill.class) != null) {
+                skills.add(method.getAnnotation(WakeUpSkill.class).value());
+            } else if (method.getAnnotation(KingSkill.class) != null) {
+                skills.add(method.getAnnotation(KingSkill.class).value());
+            }
+        }
+        print("skills: ");
+        for (String s: skills) {
+            print("【" + s + "】 ");
+        }
+        println("");
+    }
 }

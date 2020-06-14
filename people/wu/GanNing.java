@@ -24,10 +24,9 @@ public class GanNing extends Person {
             }
             GuoHeChaiQiao chai = new GuoHeChaiQiao(c.color(), c.number());
             if (GameManager.askTarget(chai, this)) {
-                showUsingCard(chai);
                 useCard(chai);
             } else {
-                CardsHeap.retrive(c);
+                CardsHeap.retrieve(c);
             }
 
             return true;
@@ -37,6 +36,6 @@ public class GanNing extends Person {
 
     @Override
     public String toString() {
-        return null;
+        return "甘宁";
     }
 }

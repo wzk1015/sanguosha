@@ -12,11 +12,12 @@ import cards.strategy.ShunShouQianYang;
 import cards.strategy.TaoYuanJieYi;
 import cards.strategy.TieSuoLianHuan;
 import cards.strategy.WuGuFengDeng;
+import cards.strategy.judgecards.LeBuSiShu;
 import cards.strategy.judgecards.ShanDian;
 import cardsheap.CardsHeap;
 import people.Identity;
 import people.Nation;
-import people.PeoplePool;
+import cardsheap.PeoplePool;
 import people.Person;
 
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class GameManager {
     }
 
     public static void endGame() {
-        IO.println(players.get(0) + " wins!");
+        //IO.println(players.get(0) + " wins!");
         System.exit(1);
     }
 
@@ -117,9 +118,9 @@ public class GameManager {
         }
     }
 
-    public static Card askChangeJudge() {
+    public static Card askChangeJudge(Card d) {
         for (Person p: players) {
-            Card c = p.changeJudge();
+            Card c = p.changeJudge(d);
             if (c != null) {
                 return c;
             }
@@ -246,7 +247,7 @@ public class GameManager {
             return true;
         } else if (isExtinct(Identity.KING)) {
             IO.print("TRAITOR WIN: ");
-            winners.add(players.get(0));
+            winners.add(idMap.get(Identity.TRAITOR).get(0));
             IO.println(winners.get(0).toString());
             return true;
         } else if (isExtinct(Identity.TRAITOR) && isExtinct(Identity.REBEL)) {
@@ -368,7 +369,11 @@ public class GameManager {
                     continue;
                 }
             }
-
+            if ((card instanceof ShunShouQianYang || card instanceof LeBuSiShu) &&
+                p.hasQianXun()) {
+                IO.println("can't use that because of 谦逊");
+                continue;
+            }
             if ((card instanceof GuoHeChaiQiao || card instanceof ShunShouQianYang) &&
                 p.getCardsAndEquipments().isEmpty()
                     && p.getJudgeCards().isEmpty()) {
