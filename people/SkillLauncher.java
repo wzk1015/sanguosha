@@ -6,7 +6,7 @@ import cards.basic.Sha;
 import java.util.ArrayList;
 
 public interface SkillLauncher {
-    default void shaGotShan() {
+    default void shaGotShan(Person p) {
 
     }
 
@@ -100,6 +100,14 @@ public interface SkillLauncher {
 
     default boolean hasHongYan() {
         return false;
+    }
+
+    default boolean hasBaZhen() {
+        return false;
+    }
+
+    default void setBaZhen(boolean bool) {
+
     }
 
     default boolean usesWuShuang() {

@@ -1,7 +1,6 @@
 package people.wu;
 
 import cards.Card;
-import cards.JudgeCard;
 import cards.strategy.GuoHeChaiQiao;
 import cardsheap.CardsHeap;
 import manager.GameManager;

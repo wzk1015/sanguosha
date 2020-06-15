@@ -73,6 +73,9 @@ public class Sha extends BasicCard {
             if (getTarget().hasEquipment(shield, null)) {
                 ((Shield) getTarget().getEquipments().get(shield)).setValid(false);
             }
+            else if (getTarget().hasBaZhen()) {
+                getTarget().setBaZhen(false);
+            }
         }
     }
 
@@ -135,10 +138,10 @@ public class Sha extends BasicCard {
                         getTarget().getCardsAndEquipments()));
                 shaHit();
             } else {
-                getSource().shaGotShan();
+                getSource().shaGotShan(getTarget());
             }
         } else {
-            getSource().shaGotShan();
+            getSource().shaGotShan(getTarget());
             if (useWeapon("青龙偃月刀")) {
                 Sha s = getSource().requestSha();
                 if (s != null) {
@@ -203,6 +206,9 @@ public class Sha extends BasicCard {
 
         if (getTarget().hasEquipment(shield, null)) {
             ((Shield) getTarget().getEquipments().get(shield)).setValid(true);
+        }
+        if (getTarget().hasBaZhen()) {
+            getTarget().setBaZhen(true);
         }
         return true;
     }

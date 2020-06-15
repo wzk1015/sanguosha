@@ -210,5 +210,4 @@ public abstract class Attributes implements PlayerIO {
         return equipments.get(type).toString().equals(name);
     }
 
-
 }

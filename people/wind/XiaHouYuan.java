@@ -12,6 +12,7 @@ import skills.Skill;
 public class XiaHouYuan extends Person {
     private boolean useShenSu1 = false;
     private boolean useShenSu2 = false;
+
     public XiaHouYuan() {
         super(4, Nation.WEI);
     }

@@ -1,9 +1,11 @@
 package cards.strategy;
 
+import cards.Card;
 import cards.Color;
 import cards.Strategy;
 
 public class JueDou extends Strategy {
+    private Card thisCard = this;
 
     public JueDou(Color color, int number) {
         super(color, number);
@@ -14,11 +16,11 @@ public class JueDou extends Strategy {
         if (!gotWuXie()) {
             while (true) {
                 if (getTarget().requestSha() == null) {
-                    getTarget().hurt(this, getSource(),1);
+                    getTarget().hurt(thisCard, getSource(),1);
                     break;
                 }
                 if (getSource().requestSha() == null) {
-                    getSource().hurt(this, getTarget(), 1);
+                    getSource().hurt(thisCard, getTarget(), 1);
                     break;
                 }
             }
@@ -35,5 +37,9 @@ public class JueDou extends Strategy {
     @Override
     public boolean needChooseTarget() {
         return true;
+    }
+
+    public void setThisCard(Card thisCard) {
+        this.thisCard = thisCard;
     }
 }

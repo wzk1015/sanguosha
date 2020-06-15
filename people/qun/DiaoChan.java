@@ -1,8 +1,6 @@
 package people.qun;
 
 import cards.Card;
-import cards.Color;
-import cards.strategy.JueDou;
 import manager.GameManager;
 import people.Nation;
 import people.Person;
