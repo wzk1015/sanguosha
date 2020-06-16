@@ -29,6 +29,24 @@ public abstract class Attributes implements PlayerIO {
     private int currentHP;
     private int shaCount = maxShaCount;
     private boolean myRound = false;
+    private boolean isKuangFeng = false;
+    private boolean isDaWu = false;
+
+    public boolean isDaWu() {
+        return isDaWu;
+    }
+
+    public void setDaWu(boolean daWu) {
+        isDaWu = daWu;
+    }
+
+    public boolean isKuangFeng() {
+        return isKuangFeng;
+    }
+
+    public void setKuangFeng(boolean kuangFeng) {
+        isKuangFeng = kuangFeng;
+    }
 
     public boolean isMyRound() {
         return myRound;

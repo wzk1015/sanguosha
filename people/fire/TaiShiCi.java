@@ -39,9 +39,9 @@ public class TaiShiCi extends Person {
         boolean ret = super.useCard(card);
         if (card instanceof Sha && isNB) {
             Sha sha = new Sha(card.color(), card.number());
-            card.setTaken(true);
-            ((Sha) card).setThisCard(card);
-            if (!GameManager.askTarget(card, this)) {
+            sha.setTaken(true);
+            sha.setThisCard(card);
+            if (!GameManager.askTarget(sha, this)) {
                 return ret;
             }
             useCard(sha);

@@ -6,7 +6,6 @@ import cards.basic.Sha;
 import cards.basic.Tao;
 import cards.strategy.TaoYuanJieYi;
 import cardsheap.CardsHeap;
-import people.Nation;
 import people.Person;
 import skills.ForcesSkill;
 
@@ -17,7 +16,7 @@ public class ShenGuanYu extends Person {
     private HashMap<Person, Integer> mengYan = new HashMap<>();
 
     public ShenGuanYu() {
-        super(5, Nation.WEI);
+        super(5, null);
     }
 
     @ForcesSkill("武魂")

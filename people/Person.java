@@ -364,12 +364,18 @@ public abstract class Person extends Attributes implements SkillLauncher,
     }
 
     public int hurt(ArrayList<Card> cs, Person source, int num, HurtType type) {
+        if (isDaWu() && type != HurtType.thunder) {
+            return 0;
+        }
         int realNum = num;
 
         if (hasEquipment(shield, "藤甲") && ((Shield) getEquipments().get(shield)).isValid()) {
             if (type == HurtType.fire) {
                 realNum++;
             }
+        }
+        if (isKuangFeng() && type == HurtType.fire) {
+            realNum++;
         }
         if (hasEquipment(shield, "白银狮子") && ((Shield) getEquipments().get(shield)).isValid()) {
             if (num > 1) {
