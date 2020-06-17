@@ -96,8 +96,9 @@ public class ShenLvBu extends God {
             wuQian();
             return true;
         }
-        if (baoNuMark >= 6 && order.equals("神愤")) {
+        if (baoNuMark >= 6 && order.equals("神愤") && hasNotUsedSkill1()) {
             shenFen();
+            setHasUsedSkill1(true);
             return true;
         }
         return false;

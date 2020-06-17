@@ -16,10 +16,6 @@ public class Utils {
         }
     }
 
-    public static void assertTrue(boolean bool) {
-        assertTrue(bool, "(unfilled assertion)");
-    }
-
     public static <T> ArrayList<T> deepCopy(List<T> src) {
         try {
             ByteArrayOutputStream byteOut = new ByteArrayOutputStream();

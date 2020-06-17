@@ -15,6 +15,7 @@ import cards.strategy.WuGuFengDeng;
 import manager.GameManager;
 import manager.IO;
 import manager.Utils;
+import skills.AfterWakeSkill;
 import skills.ForcesSkill;
 import skills.KingSkill;
 import skills.RestrictedSkill;
@@ -291,16 +292,6 @@ public interface PlayerIO {
         }
 
     }
-    
-    ArrayList<Card> getCards();
-
-    HashMap<EquipType, Equipment> getEquipments();
-
-    ArrayList<JudgeCard> getJudgeCards();
-
-    ArrayList<Card> getRealJudgeCards();
-    
-    void loseCard(Card c);
 
     default void printSkills() {
         HashSet<String> skills = new HashSet<>();
@@ -308,6 +299,11 @@ public interface PlayerIO {
             if (method.getAnnotation(Skill.class) != null) {
                 skills.add(method.getAnnotation(Skill.class).value());
             } else if (method.getAnnotation(ForcesSkill.class) != null) {
+                if (method.getAnnotation(ForcesSkill.class).value().equals("无双")) {
+                    if (!hasWuShuang()) {
+                        continue;
+                    }
+                }
                 skills.add(method.getAnnotation(ForcesSkill.class).value());
             } else if (method.getAnnotation(RestrictedSkill.class) != null) {
                 skills.add(method.getAnnotation(RestrictedSkill.class).value());
@@ -315,6 +311,10 @@ public interface PlayerIO {
                 skills.add(method.getAnnotation(WakeUpSkill.class).value());
             } else if (method.getAnnotation(KingSkill.class) != null) {
                 skills.add(method.getAnnotation(KingSkill.class).value());
+            } else if (method.getAnnotation(AfterWakeSkill.class) != null) {
+                if (hasWakenUp()) {
+                    skills.add(method.getAnnotation(AfterWakeSkill.class).value());
+                }
             }
         }
         print("skills: ");
@@ -337,13 +337,15 @@ public interface PlayerIO {
         } else {
             option = "hand cards";
         }
-        Card c;
-        if (option.equals("hand cards")) {
-            c = chooseAnonymousCard(target.getCards());
-        } else if (option.equals("equipments")) {
-            c = chooseCard(new ArrayList<>(target.getEquipments().values()));
-        } else {
-            c = chooseCard(new ArrayList<>(target.getRealJudgeCards()));
+        Card c = null;
+        while (c == null) {
+            if (option.equals("hand cards")) {
+                c = chooseAnonymousCard(target.getCards());
+            } else if (option.equals("equipments")) {
+                c = chooseCard(new ArrayList<>(target.getEquipments().values()));
+            } else {
+                c = chooseCard(new ArrayList<>(target.getRealJudgeCards()));
+            }
         }
         return c;
     }
@@ -356,11 +358,13 @@ public interface PlayerIO {
         } else {
             option = "hand cards";
         }
-        Card c;
-        if (option.equals("hand cards")) {
-            c = chooseAnonymousCard(target.getCards());
-        } else {
-            c = chooseCard(new ArrayList<>(target.getEquipments().values()));
+        Card c = null;
+        while (c == null) {
+            if (option.equals("hand cards")) {
+                c = chooseAnonymousCard(target.getCards());
+            } else {
+                c = chooseCard(new ArrayList<>(target.getEquipments().values()));
+            }
         }
         return c;
     }
@@ -394,4 +398,18 @@ public interface PlayerIO {
     default Person selectPlayer(boolean chooseSelf) {
         return selectPlayer(GameManager.getPlayers(), chooseSelf);
     }
+
+    ArrayList<Card> getCards();
+
+    HashMap<EquipType, Equipment> getEquipments();
+
+    ArrayList<JudgeCard> getJudgeCards();
+
+    ArrayList<Card> getRealJudgeCards();
+
+    void loseCard(Card c);
+
+    boolean hasWakenUp();
+
+    boolean hasWuShuang();
 }

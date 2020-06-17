@@ -86,28 +86,6 @@ public class GameManager {
         System.exit(0);
     }
 
-    public static boolean askTao(Person target) {
-        boolean wanSha = false;
-        for (Person p: players) {
-            if (p.hasWanSha()) {
-                wanSha = true;
-                break;
-            }
-        }
-        IO.println("requesting tao for " + target);
-        for (Person p : players) {
-            if ((!wanSha && p.requestTao()) || (p.hasWanSha() && p.requestTao())) {
-                target.gotSavedBy(p);
-                return true;
-            } else if (p == target) {
-                if (p.requestJiu()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public static void linkHurt(ArrayList<Card> cards, Person source, int num, HurtType type) {
         Utils.assertTrue(type == HurtType.fire ||
                 type == HurtType.thunder, "link hurt wrong type");
@@ -211,6 +189,7 @@ public class GameManager {
         if (p1.hasMaShu()) {
             dis = Math.max(dis - 1, 1);
         }
+        dis = Math.max(dis - p1.numOfTian(), 1);
         return dis;
     }
 

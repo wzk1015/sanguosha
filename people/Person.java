@@ -72,8 +72,8 @@ public abstract class Person extends Attributes implements Serializable {
         if (!skipThrow()) {
             throwPhase();
         }
-        endPhase();
         setMyRound(false);
+        endPhase();
         Utils.assertTrue(getHP() <= getMaxHP(), "currentHP exceeds maxHP");
         println("----------" + this + "'s round ends" + "----------");
     }
@@ -108,52 +108,6 @@ public abstract class Person extends Attributes implements Serializable {
     public void drawPhase() {
         println(this + " draws 2 cards from cards heap");
         drawCards(2);
-    }
-
-    public boolean parseOrder(String order) {
-        Card card;
-        if (useSkillInUsePhase(order)) {
-            return true;
-        } else if (order.equals("丈八蛇矛") && getCards().size() >= 2) {
-            ArrayList<Card> cs = this.chooseCards(2, getCards());
-            loseCard(cs);
-            if (cs.get(0).isRed() && cs.get(1).isRed()) {
-                card = new Sha(Color.DIAMOND, 0);
-            } else if (cs.get(1).isBlack() && cs.get(1).isBlack()) {
-                card = new Sha(Color.CLUB, 0);
-            } else {
-                card = new Sha(Color.NOCOLOR, 0);
-            }
-            card.setTaken(true);
-            ((Sha) card).setThisCard(cs);
-        } else {
-            try {
-                card = getCards().get(Integer.parseInt(order) - 1);
-            } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                println("Wrong input");
-                return false;
-            }
-        }
-
-        if (card instanceof TieSuoLianHuan) {
-            if (chooseFromProvided("throw", "use").equals("throw")) {
-                loseCard(card);
-                drawCard();
-                return true;
-            }
-        }
-
-        if (!GameManager.askTarget(card, this)) {
-            return false;
-        }
-
-        boolean used = useCard(card);
-        if (card.isNotTaken() && used) {
-            throwCard(card);
-        } else if (!card.isNotTaken()) {
-            card.setTaken(false);
-        }
-        return used;
     }
 
     public boolean useSha(Card card) {
@@ -234,6 +188,52 @@ public abstract class Person extends Attributes implements Serializable {
             card.use();
         }
         return true;
+    }
+
+    public boolean parseOrder(String order) {
+        Card card;
+        if (useSkillInUsePhase(order)) {
+            return true;
+        } else if (order.equals("丈八蛇矛") && getCards().size() >= 2) {
+            ArrayList<Card> cs = this.chooseCards(2, getCards());
+            loseCard(cs);
+            if (cs.get(0).isRed() && cs.get(1).isRed()) {
+                card = new Sha(Color.DIAMOND, 0);
+            } else if (cs.get(1).isBlack() && cs.get(1).isBlack()) {
+                card = new Sha(Color.CLUB, 0);
+            } else {
+                card = new Sha(Color.NOCOLOR, 0);
+            }
+            card.setTaken(true);
+            ((Sha) card).setThisCard(cs);
+        } else {
+            try {
+                card = getCards().get(Integer.parseInt(order) - 1);
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                println("Wrong input");
+                return false;
+            }
+        }
+
+        if (card instanceof TieSuoLianHuan) {
+            if (chooseFromProvided("throw", "use").equals("throw")) {
+                loseCard(card);
+                drawCard();
+                return true;
+            }
+        }
+
+        if (!GameManager.askTarget(card, this)) {
+            return false;
+        }
+
+        boolean used = useCard(card);
+        if (card.isNotTaken() && used) {
+            throwCard(card);
+        } else if (!card.isNotTaken()) {
+            card.setTaken(false);
+        }
+        return used;
     }
 
     public void usePhase() {

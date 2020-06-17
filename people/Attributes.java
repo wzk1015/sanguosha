@@ -38,114 +38,70 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
     private boolean myRound = false;
     private boolean isKuangFeng = false;
     private boolean isDaWu = false;
+    private boolean hasWakenUp = false;
 
-    public boolean isDaWu() {
-        return isDaWu;
-    }
+    @Override
+    public boolean hasWuShuang() { return false; }
 
-    public void setDaWu(boolean daWu) {
-        isDaWu = daWu;
-    }
+    public void wakeUp() { hasWakenUp = true; }
 
-    public boolean isKuangFeng() {
-        return isKuangFeng;
-    }
+    public boolean hasWakenUp() { return hasWakenUp; }
 
-    public void setKuangFeng(boolean kuangFeng) {
-        isKuangFeng = kuangFeng;
-    }
+    public boolean isDaWu() { return isDaWu; }
 
-    public boolean isMyRound() {
-        return myRound;
-    }
+    public void setDaWu(boolean daWu) { isDaWu = daWu; }
 
-    public void setMyRound(boolean myRound) {
-        this.myRound = myRound;
-    }
+    public boolean isKuangFeng() { return isKuangFeng; }
 
-    public void setMaxHP(int maxHP) {
-        this.maxHP = maxHP;
-    }
+    public void setKuangFeng(boolean kuangFeng) { isKuangFeng = kuangFeng; }
 
-    public int getMaxHP() {
-        return maxHP;
-    }
+    public boolean isMyRound() { return myRound; }
 
-    public void setShaCount(int shaCount) {
-        this.shaCount = shaCount;
-    }
+    public void setMyRound(boolean myRound) { this.myRound = myRound; }
 
-    public int getShaCount() {
-        return shaCount;
-    }
+    public void setMaxHP(int maxHP) { this.maxHP = maxHP; }
 
-    public void setCurrentHP(int currentHP) {
-        this.currentHP = currentHP;
-    }
+    public int getMaxHP() { return maxHP; }
 
-    public void subCurrentHP(int sub) {
-        currentHP -= sub;
-    }
+    public void setShaCount(int shaCount) { this.shaCount = shaCount; }
 
-    public int getHP() {
-        return currentHP;
-    }
+    public int getShaCount() { return shaCount; }
 
-    public int getMaxShaCount() {
-        return maxShaCount;
-    }
+    public void setCurrentHP(int currentHP) { this.currentHP = currentHP; }
 
-    public void setMaxShaCount(int maxShaCount) {
-        this.maxShaCount = maxShaCount;
-    }
+    public void subCurrentHP(int sub) { currentHP -= sub; }
 
-    public Nation getNation() {
-        return nation;
-    }
+    public int getHP() { return currentHP; }
 
-    public void setNation(Nation nation) {
-        this.nation = nation;
-    }
+    public int getMaxShaCount() { return maxShaCount; }
 
-    public Identity getIdentity() {
-        return identity;
-    }
+    public void setMaxShaCount(int maxShaCount) { this.maxShaCount = maxShaCount; }
+
+    public Nation getNation() { return nation; }
+
+    public void setNation(Nation nation) { this.nation = nation; }
+
+    public Identity getIdentity() { return identity; }
 
     public void setIdentity(Identity identity) {
         this.identity = identity;
     }
 
-    public String getSex() {
-        return sex;
-    }
+    public String getSex() { return sex; }
 
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
+    public void setSex(String sex) { this.sex = sex; }
 
-    public boolean isDead() {
-        return isDead;
-    }
+    public boolean isDead() { return isDead; }
 
-    public boolean isDrunk() {
-        return isDrunk;
-    }
+    public boolean isDrunk() { return isDrunk; }
 
-    public void setDrunk(boolean drunk) {
-        isDrunk = drunk;
-    }
+    public void setDrunk(boolean drunk) { isDrunk = drunk; }
 
-    public boolean isLinked() {
-        return isLinked;
-    }
+    public boolean isLinked() { return isLinked; }
 
-    public void turnover() {
-        isTurnedOver = !isTurnedOver;
-    }
+    public void turnover() { isTurnedOver = !isTurnedOver; }
 
-    public void link() {
-        isLinked = !isLinked;
-    }
+    public void link() { isLinked = !isLinked; }
 
     public void die() {
         isDead = true;
@@ -471,15 +427,15 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
 
     public boolean requestJiu() { return requestCard("酒") != null; }
 
-    public boolean canBeSha(Sha sha) {
+    public boolean canNotBeSha(Sha sha, Person p) {
         if (hasEquipment(shield, "藤甲") && ((Shield) getEquipments().get(shield)).isValid()) {
             if (sha.getType() == HurtType.normal) {
-                return false;
+                return true;
             }
         }
         if (hasEquipment(shield, "仁王盾") && ((Shield) getEquipments().get(shield)).isValid()) {
-            return sha.isRed();
+            return sha.isBlack();
         }
-        return true;
+        return false;
     }
 }

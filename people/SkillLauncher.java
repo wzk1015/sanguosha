@@ -78,6 +78,10 @@ public interface SkillLauncher {
         return null;
     }
 
+    default int numOfTian() {
+        return 0;
+    }
+
     default boolean useSkillInUsePhase(String order) {
         return false;
     }

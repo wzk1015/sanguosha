@@ -65,7 +65,7 @@ public class LiuBei extends Person {
 
     @Override
     public boolean skillSha() {
-        if (launchSkill("激将")) {
+        if (getIdentity() == Identity.KING && launchSkill("激将")) {
             return jiJiang() != null;
         }
         return false;

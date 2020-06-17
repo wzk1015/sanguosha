@@ -81,29 +81,6 @@ public class Sha extends BasicCard {
 
     public void shaHit() {
         getTarget().beforeHurt();
-        qiLinGong();
-        int numHurt = 1;
-        if (getSource().isDrunk()) {
-            numHurt++;
-        }
-        if (getSource().hasEquipment(weapon, "古锭刀") && getTarget().getCards().isEmpty()) {
-            numHurt++;
-        }
-        if (getSource().isNaked()) {
-            numHurt++;
-        }
-        sha(numHurt);
-        getSource().shaSuccess(getTarget());
-        if (useWeapon("三尖两刃刀")) {
-            ArrayList<Person> nearbyPerson = GameManager.reachablePeople(getSource(), 1);
-            if (!nearbyPerson.isEmpty()) {
-                Person p = getSource().selectPlayer(nearbyPerson);
-                p.hurt((Card) null, getSource(), 1);
-            }
-        }
-    }
-
-    public void qiLinGong() {
         if (useWeapon("麒麟弓")) {
             if (getTarget().hasEquipment(plusOneHorse, null) &&
                     getTarget().hasEquipment(minusOneHorse, null)) {
@@ -124,6 +101,26 @@ public class Sha extends BasicCard {
                         getTarget().getEquipments().put(minusOneHorse, null);
                     }
                 }
+            }
+        }
+
+        int numHurt = 1;
+        if (getSource().isDrunk()) {
+            numHurt++;
+        }
+        if (getSource().hasEquipment(weapon, "古锭刀") && getTarget().getCards().isEmpty()) {
+            numHurt++;
+        }
+        if (getSource().isNaked()) {
+            numHurt++;
+        }
+        sha(numHurt);
+        getSource().shaSuccess(getTarget());
+        if (useWeapon("三尖两刃刀")) {
+            ArrayList<Person> nearbyPerson = GameManager.reachablePeople(getSource(), 1);
+            if (!nearbyPerson.isEmpty()) {
+                Person p = getSource().selectPlayer(nearbyPerson);
+                p.hurt((Card) null, getSource(), 1);
             }
         }
     }
@@ -159,7 +156,7 @@ public class Sha extends BasicCard {
         getTarget().gotShaBegin(this);
         beforeSha();
 
-        if (!getTarget().canBeSha(this)) {
+        if (getTarget().canNotBeSha(this, getSource())) {
             IO.println("invalid sha");
             return false;
         }
@@ -174,33 +171,13 @@ public class Sha extends BasicCard {
         }
 
         else {
-            if (useWeapon("寒冰剑")) {
-                String option;
-                if (!getTarget().getEquipments().isEmpty()) {
-                    option = getSource().chooseFromProvided("hand cards", "equipments");
-                } else {
-                    option = "hand cards";
+            if (!getTarget().getCardsAndEquipments().isEmpty() && useWeapon("寒冰剑")) {
+                Card c = getSource().chooseTargetCardsAndEquipments(getTarget());
+                getTarget().loseCard(c);
+                if (!getTarget().getCardsAndEquipments().isEmpty()) {
+                    c = getSource().chooseTargetCardsAndEquipments(getTarget());
+                    getTarget().loseCard(c);
                 }
-                if (option != null) {
-                    Card c = (option.equals("hand cards")) ? getSource().chooseAnonymousCard(
-                            getTarget().getCards()) : getSource().chooseCard(
-                                    new ArrayList<>(getTarget().getEquipments().values()));
-                    if (c != null) {
-                        getTarget().loseCard(c);
-                    } else {
-                        shaHit();
-                    }
-                    c = (option.equals("hand cards")) ? getSource().chooseAnonymousCard(
-                            getTarget().getCards()) : getSource().chooseCard(
-                                    new ArrayList<>(getTarget().getEquipments().values()));
-                    if (c != null) {
-                        getTarget().loseCard(c);
-                    }
-
-                } else {
-                    shaHit();
-                }
-
             } else {
                 shaHit();
             }

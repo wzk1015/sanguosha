@@ -6,8 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@ForcesSkill("觉醒技")
-@RestrictedSkill("觉醒技")
-public @interface WakeUpSkill {
+@Skill("醒后技")
+public @interface AfterWakeSkill {
     String value();
 }

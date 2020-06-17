@@ -100,6 +100,12 @@ public class PeoplePool {
         return new ArrayList<>(people.subList(peopleIndex - optionsPerPerson, peopleIndex));
     }
 
+    public static Person allocOnePerson() {
+        peopleIndex += 1;
+        Utils.assertTrue(peopleIndex <= people.size(), "No people available");
+        return people.get(peopleIndex - 1);
+    }
+
     public static Identity allocIdentity() {
         return identities.get(identityIndex++);
     }

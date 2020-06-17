@@ -48,15 +48,18 @@ public class LuSu extends Person {
     @Skill("缔盟")
     @Override
     public boolean useSkillInUsePhase(String order) {
-        if (order.equals("缔盟")) {
+        if (order.equals("缔盟") && hasNotUsedSkill1()) {
             Person p1;
             Person p2;
             do {
                 println("choose 2 players");
                 p1 = selectPlayer();
                 p2 = selectPlayer();
-            } while (p1 == p2 || getCards().size() <
-                    Math.abs(p1.getCards().size() - p2.getCards().size()));
+            } while (p1 != null && p2 != null && (p1 == p2 || getCards().size() <
+                    Math.abs(p1.getCards().size() - p2.getCards().size())));
+            if (p1 == null || p2 == null) {
+                return true;
+            }
             loseCard(chooseCards(Math.abs(p1.getCards().size()
                     - p2.getCards().size()), getCards()));
             final ArrayList<Card> c2 = new ArrayList<>(p2.getCards());
@@ -65,6 +68,7 @@ public class LuSu extends Person {
             p2.getCards().clear();
             p1.addCard(c2);
             p2.addCard(c1);
+            setHasUsedSkill1(true);
             return true;
         }
         return false;
