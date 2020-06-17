@@ -3,14 +3,13 @@ package people.god;
 import cards.Card;
 import cards.Color;
 import cardsheap.CardsHeap;
-import manager.GameManager;
 import people.Person;
 import skills.Skill;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class ShenLvMeng extends Person {
+public class ShenLvMeng extends God {
     public ShenLvMeng() {
         super(3, null);
     }
@@ -49,7 +48,7 @@ public class ShenLvMeng extends Person {
     @Override
     public boolean useSkillInUsePhase(String order) {
         if (order.equals("攻心")) {
-            Person p = GameManager.selectPlayer(this);
+            Person p = selectPlayer();
             if (p != null) {
                 printCards(p.getCards());
                 println("choose a HEART card, or q to pass");

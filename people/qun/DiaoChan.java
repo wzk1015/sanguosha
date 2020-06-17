@@ -1,7 +1,6 @@
 package people.qun;
 
 import cards.Card;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -26,8 +25,8 @@ public class DiaoChan extends Person {
             Person p1;
             Person p2;
             while (true) {
-                p1 = GameManager.selectPlayer(this);
-                p2 = GameManager.selectPlayer(this);
+                p1 = selectPlayer();
+                p2 = selectPlayer();
                 if (p1 == null || p2 == null) {
                     return true;
                 }
@@ -39,12 +38,16 @@ public class DiaoChan extends Person {
             }
             //决斗
             while (true) {
-                if (p1.requestSha() == null) {
-                    p1.hurt((Card) null, p2, 1);
+                if ((!p2.hasWuShuang() && p1.requestSha() == null) ||
+                    p2.hasWuShuang() && (p1.requestSha() == null || 
+                            p1.requestSha() == null)) {
+                    p1.hurt((Card) null, p2,1);
                     break;
                 }
-                if (p2.requestSha() == null) {
-                    p2.hurt((Card) null, p1, 1);
+                if ((!p1.hasWuShuang() && p2.requestSha() == null) ||
+                    p1.hasWuShuang() && (p2.requestSha() == null || 
+                            p2.requestSha() == null)) {
+                    p2.hurt((Card) null, p1,1);
                     break;
                 }
             }

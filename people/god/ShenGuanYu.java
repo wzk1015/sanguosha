@@ -12,7 +12,7 @@ import skills.ForcesSkill;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ShenGuanYu extends Person {
+public class ShenGuanYu extends God {
     private HashMap<Person, Integer> mengYan = new HashMap<>();
 
     public ShenGuanYu() {

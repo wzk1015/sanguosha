@@ -22,7 +22,7 @@ public class ZhangJiao extends Person {
     public boolean requestShan() {
         if (super.requestShan()) {
             if (launchSkill("雷击")) {
-                Person p = GameManager.selectPlayer(this);
+                Person p = selectPlayer();
                 if (p != null) {
                     Card c = CardsHeap.judge(this);
                     if (c.color() == Color.SPADE) {

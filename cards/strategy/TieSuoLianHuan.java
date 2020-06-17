@@ -13,10 +13,10 @@ public class TieSuoLianHuan extends Strategy {
 
     @Override
     public Object use() {
-        if (!gotWuXie()) {
+        if (!gotWuXie(getTarget())) {
             getTarget().link();
         }
-        if (!gotWuXie()) {
+        if (!gotWuXie(getTarget2())) {
             getTarget2().link();
         }
         return true;

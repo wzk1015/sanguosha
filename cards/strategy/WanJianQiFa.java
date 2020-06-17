@@ -2,10 +2,13 @@ package cards.strategy;
 
 import cards.Card;
 import cards.Color;
+import cards.EquipType;
 import cards.Strategy;
 import manager.GameManager;
+import people.Person;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class WanJianQiFa extends Strategy {
     private ArrayList<Card> thisCard = new ArrayList<>();
@@ -27,7 +30,17 @@ public class WanJianQiFa extends Strategy {
 
     @Override
     public Object use() {
-        GameManager.wanJianQiFa(thisCard, this, getSource());
+        Iterator<Person> it = GameManager.getPlayers().iterator();
+        while (it.hasNext()) {
+            Person p = it.next();
+            if (p != getSource() && !gotWuXie(p) && !p.requestShan()
+                    && !p.hasEquipment(EquipType.shield, "藤甲")) {
+                p.hurt(thisCard, getSource(), 1);
+            }
+            if (p.isDead()) {
+                it.remove();
+            }
+        }
         return true;
     }
 

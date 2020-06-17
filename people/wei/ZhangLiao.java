@@ -1,7 +1,6 @@
 package people.wei;
 
 import cards.Card;
-import manager.GameManager;
 
 import people.Nation;
 import people.Person;
@@ -17,8 +16,8 @@ public class ZhangLiao extends Person {
     public void drawPhase() {
         if (launchSkill("突袭")) {
             while (true) {
-                Person p1 = GameManager.selectPlayer(this);
-                Person p2 = GameManager.selectPlayer(this);
+                Person p1 = selectPlayer();
+                Person p2 = selectPlayer();
                 if (p1 == null || p2 == null) {
                     break;
                 }

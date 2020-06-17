@@ -2,7 +2,6 @@ package people.wu;
 
 import cards.Card;
 import cards.Color;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -29,7 +28,7 @@ public class ZhouYu extends Person {
         if (getCards().size() > 0 && order.equals("反间") && hasNotUsedSkill1()) {
             println(this + " uses 反间");
             Card c = chooseCard(getCards());
-            Person p = GameManager.selectPlayer(this);
+            Person p = selectPlayer();
             if (p == null) {
                 return true;
             }

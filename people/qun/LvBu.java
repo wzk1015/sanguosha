@@ -2,17 +2,17 @@ package people.qun;
 
 import people.Nation;
 import people.Person;
-import skills.Skill;
+import skills.ForcesSkill;
 
 public class LvBu extends Person {
     public LvBu() {
         super(4, Nation.QUN);
     }
 
-    @Skill("无双")
+    @ForcesSkill("无双")
     @Override
-    public boolean usesWuShuang() {
-        return launchSkill("无双");
+    public boolean hasWuShuang() {
+        return true;
     }
 
     @Override

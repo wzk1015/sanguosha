@@ -18,7 +18,7 @@ public class HuoGong extends Strategy {
 
     @Override
     public Object use() {
-        if (!gotWuXie()) {
+        if (!gotWuXie(getTarget())) {
             Card c = getTarget().chooseCard(getTarget().getCards());
             IO.printCard(c);
             if (getSource().requestColor(c.color()) != null) {

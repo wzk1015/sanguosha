@@ -1,7 +1,6 @@
 package people.wu;
 
 import cards.Card;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -26,7 +25,7 @@ public class SunShangXiang extends Person {
     public boolean useSkillInUsePhase(String order) {
         if (getCards().size() >= 2 && order.equals("结姻") && hasNotUsedSkill1()) {
             println(this + " uses 结姻");
-            Person p = GameManager.selectPlayer(this);
+            Person p = selectPlayer();
             if (p == null) {
                 return true;
             }

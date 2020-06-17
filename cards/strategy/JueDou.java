@@ -13,14 +13,18 @@ public class JueDou extends Strategy {
 
     @Override
     public Object use() {
-        if (!gotWuXie()) {
+        if (!gotWuXie(getTarget())) {
             while (true) {
-                if (getTarget().requestSha() == null) {
+                if ((!getSource().hasWuShuang() && getTarget().requestSha() == null) ||
+                    getSource().hasWuShuang() && (getTarget().requestSha() == null ||
+                            getTarget().requestSha() == null)) {
                     getTarget().hurt(thisCard, getSource(),1);
                     break;
                 }
-                if (getSource().requestSha() == null) {
-                    getSource().hurt(thisCard, getTarget(), 1);
+                if ((!getTarget().hasWuShuang() && getSource().requestSha() == null) ||
+                    getTarget().hasWuShuang() && (getSource().requestSha() == null ||
+                            getSource().requestSha() == null)) {
+                    getSource().hurt(thisCard, getTarget(),1);
                     break;
                 }
             }

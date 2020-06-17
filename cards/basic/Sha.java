@@ -81,6 +81,7 @@ public class Sha extends BasicCard {
 
     public void shaHit() {
         getTarget().beforeHurt();
+        qiLinGong();
         int numHurt = 1;
         if (getSource().isDrunk()) {
             numHurt++;
@@ -92,11 +93,17 @@ public class Sha extends BasicCard {
             numHurt++;
         }
         sha(numHurt);
-        getSource().shaSuccess();
-        afterShaHit();
+        getSource().shaSuccess(getTarget());
+        if (useWeapon("三尖两刃刀")) {
+            ArrayList<Person> nearbyPerson = GameManager.reachablePeople(getSource(), 1);
+            if (!nearbyPerson.isEmpty()) {
+                Person p = getSource().selectPlayer(nearbyPerson);
+                p.hurt((Card) null, getSource(), 1);
+            }
+        }
     }
 
-    public void afterShaHit() {
+    public void qiLinGong() {
         if (useWeapon("麒麟弓")) {
             if (getTarget().hasEquipment(plusOneHorse, null) &&
                     getTarget().hasEquipment(minusOneHorse, null)) {
@@ -117,14 +124,6 @@ public class Sha extends BasicCard {
                         getTarget().getEquipments().put(minusOneHorse, null);
                     }
                 }
-            }
-        }
-
-        if (useWeapon("三尖两刃刀")) {
-            ArrayList<Person> nearbyPerson = GameManager.reachablePeople(getSource(), 1);
-            if (!nearbyPerson.isEmpty()) {
-                Person p = GameManager.selectPlayer(getSource(), nearbyPerson);
-                p.hurt((Card) null, getSource(), 1);
             }
         }
     }
@@ -165,9 +164,12 @@ public class Sha extends BasicCard {
             return false;
         }
 
-        if ((getSource().shaCanBeShan(getTarget()) && getTarget().requestShan()) ||
-                (getSource().usesWuShuang() && getTarget().requestShan()
-                        && getTarget().requestShan())) {
+        boolean needDouble = (getSource().hasRouLin() && getTarget().getSex().equals("female"))
+                || (getTarget().hasRouLin() && getSource().getSex().equals("female"))
+                || getSource().hasWuShuang();
+
+        if (getSource().shaCanBeShan(getTarget()) && ((needDouble && getTarget().requestShan()
+                && getTarget().requestShan()) || (!needDouble && getTarget().requestShan()))) {
             shanSuccess();
         }
 

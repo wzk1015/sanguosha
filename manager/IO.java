@@ -1,6 +1,7 @@
 package manager;
 
 import cards.Card;
+import people.Person;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -43,24 +44,35 @@ public class IO {
     }
 
     public static <E> E chooseFromProvided(ArrayList<E> choices) {
-        if (choices.isEmpty()) {
-            return null;
-        }
-
+        Utils.assertTrue(!choices.isEmpty(), "choices are empty");
         int i = 1;
         for (E choice : choices) {
             print("【" + i++ + "】" + choice.toString() + "  ");
         }
         try {
             String in = input("make a choice");
-            //if (in.equals("q")) {
-            //    return null;
-            //}
             int option = Integer.parseInt(in) - 1;
             return choices.get(option);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             println("wrong choice");
             return chooseFromProvided(choices);
         }
+    }
+
+    public static Person initialChoosePerson(ArrayList<Person> people) {
+        Utils.assertTrue(!people.isEmpty(), "initial people are empty");
+        ArrayList<String> options = new ArrayList<>();
+        for (Person p1 : people) {
+            options.add(p1.toString());
+        }
+        IO.println("choose a player:");
+        String option = chooseFromProvided(options);
+        for (Person p1 : people) {
+            if (p1.toString().equals(option)) {
+                return p1;
+            }
+        }
+        GameManager.endWithError("end of initialChoosePlayer reached");
+        return people.get(0);
     }
 }

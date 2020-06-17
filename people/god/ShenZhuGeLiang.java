@@ -8,7 +8,7 @@ import skills.Skill;
 
 import java.util.ArrayList;
 
-public class ShenZhuGeLiang extends Person {
+public class ShenZhuGeLiang extends God {
     private final ArrayList<Card> stars = new ArrayList<>();
 
     public ShenZhuGeLiang() {
@@ -35,7 +35,7 @@ public class ShenZhuGeLiang extends Person {
 
     @Skill("狂风")
     public void kuangFeng() {
-        Person p = GameManager.selectPlayer(this, true);
+        Person p = selectPlayer(true);
         if (p == null) {
             return;
         }

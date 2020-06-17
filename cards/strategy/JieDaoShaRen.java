@@ -16,7 +16,7 @@ public class JieDaoShaRen extends Strategy {
 
     @Override
     public Object use() {
-        if (!gotWuXie()) {
+        if (!gotWuXie(getTarget())) {
             Utils.assertTrue(getTarget().hasEquipment(EquipType.weapon, null),
                     "target has no weapon");
             Sha sha = getTarget().requestSha();

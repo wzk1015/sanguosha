@@ -246,13 +246,24 @@ public class CardsHeap {
         judgeCard = draw();
         System.out.print("Judge card: ");
         IO.printCard(judgeCard);
-        Card change = GameManager.askChangeJudge(judgeCard);
+
+        Card change = null;
+        for (Person p : GameManager.getPlayers()) {
+            Card c = p.changeJudge(judgeCard);
+            if (c != null) {
+                change = c;
+            }
+        }
         if (change != null) {
             judgeCard = change;
         }
+
         source.receiveJudge();
         discard(judgeCard);
         judgeCard.setOwner(source);
+        for (Person p: GameManager.getPlayers()) {
+            p.otherPersonGetJudge(source);
+        }
         return judgeCard;
     }
 

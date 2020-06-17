@@ -43,7 +43,7 @@ public class DaQiao extends Person {
         if (launchSkill("流离")) {
             Person p;
             while (true) {
-                p = GameManager.selectPlayer(this);
+                p = selectPlayer();
                 if (p == null) {
                     return;
                 }

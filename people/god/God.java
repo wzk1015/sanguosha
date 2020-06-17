@@ -17,4 +17,10 @@ public abstract class God extends Person {
         }
         setNation(nation);
     }
+
+    @Override
+    public void run() {
+        println("========GOD IS COMING!========");
+        super.run();
+    }
 }

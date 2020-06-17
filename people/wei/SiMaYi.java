@@ -31,21 +31,9 @@ public class SiMaYi extends Person {
     @Skill("反馈")
     @Override
     public void gotHurt(ArrayList<Card> cards, Person p, int num) {
-        if (p != null && p.getCardsAndEquipments().size() > 0
+        if (p != null && !p.getCardsAndEquipments().isEmpty()
                 && launchSkill("反馈")) {
-            p.printAllCards();
-            String option;
-            if (!p.getEquipments().isEmpty()) {
-                option = chooseFromProvided("hand cards", "equipments");
-            } else {
-                option = "hand cards";
-            }
-            Card c;
-            if (option.equals("hand cards")) {
-                c = chooseAnonymousCard(p.getCards());
-            } else {
-                c = chooseCard(new ArrayList<>(p.getEquipments().values()));
-            }
+            Card c  = chooseTargetCardsAndEquipments(p);
             p.loseCard(c, false);
             addCard(c);
         }

@@ -10,7 +10,7 @@ import skills.Skill;
 
 import java.util.ArrayList;
 
-public class ShenZhouYu extends Person {
+public class ShenZhouYu extends God {
     private boolean hasYeYan = false;
 
     public ShenZhouYu() {
@@ -65,7 +65,7 @@ public class ShenZhouYu extends Person {
             }
             if (option.equals("1") || option.equals("1+1") || option.equals("1+1+1")
                     || option.equals("1+2") || option.equals("2") || option.equals("3")) {
-                p1 = GameManager.selectPlayer(this);
+                p1 = selectPlayer();
                 if (option.equals("3")) {
                     p1.hurt((Card) null, this, 3, HurtType.fire);
                 } else if (option.equals("2")) {
@@ -77,7 +77,7 @@ public class ShenZhouYu extends Person {
             if (option.equals("1+1") || option.equals("1+1+1") || option.equals("1+2")) {
                 do {
                     println("choose another person");
-                    p2 = GameManager.selectPlayer(this);
+                    p2 = selectPlayer();
                 } while (p2 == p1);
                 if (option.equals("1+2")) {
                     p2.hurt((Card) null, this, 2, HurtType.fire);
@@ -88,7 +88,7 @@ public class ShenZhouYu extends Person {
             if (option.equals("1+1+1")) {
                 do {
                     println("choose another person");
-                    p3 = GameManager.selectPlayer(this);
+                    p3 = selectPlayer();
                 } while (p3 == p1 || p3 == p2);
                 p3.hurt((Card) null, this, 1, HurtType.fire);
             }

@@ -3,7 +3,6 @@ package people.wind;
 import cards.Card;
 import cards.Color;
 import cards.basic.HurtType;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -17,7 +16,7 @@ public class XiaoQiao extends Person {
     @Override
     public int hurt(Card card, Person source, int num, HurtType type) {
         if (launchSkill("天香")) {
-            Person p = GameManager.selectPlayer(this);
+            Person p = selectPlayer();
             Card c = requestColor(Color.SPADE);
             if (c != null) {
                 int value = p.hurt(card, source, num, type);

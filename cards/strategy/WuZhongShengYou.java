@@ -11,7 +11,7 @@ public class WuZhongShengYou extends Strategy {
 
     @Override
     public Object use() {
-        if (!gotWuXie()) {
+        if (!gotWuXie(getTarget())) {
             getTarget().drawCards(2);
             return true;
         }

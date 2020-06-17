@@ -12,6 +12,7 @@ import cards.strategy.TaoYuanJieYi;
 import cards.strategy.TieSuoLianHuan;
 import cards.strategy.WanJianQiFa;
 import cards.strategy.WuGuFengDeng;
+import manager.GameManager;
 import manager.IO;
 import manager.Utils;
 import skills.ForcesSkill;
@@ -167,9 +168,7 @@ public interface PlayerIO {
     }
 
     default <E> E chooseFromProvided(ArrayList<E> choices) {
-        if (choices.isEmpty()) {
-            return null;
-        }
+        Utils.assertTrue(!choices.isEmpty(), "choices are empty");
 
         int i = 1;
         for (E choice : choices) {
@@ -199,10 +198,8 @@ public interface PlayerIO {
     }
 
     default <E> ArrayList<E> chooseManyFromProvided(int num, ArrayList<E> choices) {
-        if (choices.isEmpty()) {
-            return null;
-        }
-
+        Utils.assertTrue(num == 0 || num >= choices.size(), "not enough choices");
+        Utils.assertTrue(!choices.isEmpty(), "choices are empty");
         int i = 1;
         for (E choice : choices) {
             print("【" + i++ + "】 " + choice.toString() + " ");
@@ -325,5 +322,76 @@ public interface PlayerIO {
             print("【" + s + "】 ");
         }
         println("");
+    }
+
+    default Card chooseTargetAllCards(Person target) {
+        target.printAllCards();
+        String option;
+        if (!target.getEquipments().isEmpty()
+                && !target.getRealJudgeCards().isEmpty()) {
+            option = chooseFromProvided("hand cards", "equipments", "judge cards");
+        } else if (!target.getEquipments().isEmpty()) {
+            option = chooseFromProvided("hand cards", "equipments");
+        } else if (!target.getRealJudgeCards().isEmpty()) {
+            option = chooseFromProvided("hand cards", "judge cards");
+        } else {
+            option = "hand cards";
+        }
+        Card c;
+        if (option.equals("hand cards")) {
+            c = chooseAnonymousCard(target.getCards());
+        } else if (option.equals("equipments")) {
+            c = chooseCard(new ArrayList<>(target.getEquipments().values()));
+        } else {
+            c = chooseCard(new ArrayList<>(target.getRealJudgeCards()));
+        }
+        return c;
+    }
+
+    default Card chooseTargetCardsAndEquipments(Person target) {
+        target.printAllCards();
+        String option;
+        if (!target.getEquipments().isEmpty()) {
+            option = chooseFromProvided("hand cards", "equipments");
+        } else {
+            option = "hand cards";
+        }
+        Card c;
+        if (option.equals("hand cards")) {
+            c = chooseAnonymousCard(target.getCards());
+        } else {
+            c = chooseCard(new ArrayList<>(target.getEquipments().values()));
+        }
+        return c;
+    }
+
+    default Person selectPlayer(ArrayList<Person> people, boolean chooseSelf) {
+        ArrayList<String> options = new ArrayList<>();
+        for (Person p1 : people) {
+            options.add(p1.toString());
+        }
+        if (!chooseSelf) {
+            options.remove(toString());
+        }
+        IO.println("choose a player:");
+        String option = chooseFromProvided(options);
+        for (Person p1 : people) {
+            if (p1.toString().equals(option)) {
+                return p1;
+            }
+        }
+        return null;
+    }
+
+    default Person selectPlayer(ArrayList<Person> people) {
+        return selectPlayer(people, false);
+    }
+
+    default Person selectPlayer() {
+        return selectPlayer(GameManager.getPlayers());
+    }
+
+    default Person selectPlayer(boolean chooseSelf) {
+        return selectPlayer(GameManager.getPlayers(), chooseSelf);
     }
 }

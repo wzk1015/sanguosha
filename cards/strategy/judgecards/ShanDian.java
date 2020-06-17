@@ -6,6 +6,7 @@ import cards.JudgeCard;
 import cards.basic.HurtType;
 import cardsheap.CardsHeap;
 import manager.GameManager;
+import manager.Utils;
 
 import java.util.ArrayList;
 
@@ -16,7 +17,7 @@ public class ShanDian extends JudgeCard {
 
     @Override
     public String use() {
-        if (!gotWuXie()) {
+        if (!gotWuXie(getTarget())) {
             Card judge = CardsHeap.judge(getTarget());
             if (judge.color() == Color.SPADE && judge.number() >= 2 && judge.number() <= 9) {
                 int realNum = getTarget().hurt((Card) null, null, 3, HurtType.thunder);
@@ -24,7 +25,15 @@ public class ShanDian extends JudgeCard {
                 cs.add(this);
                 GameManager.linkHurt(cs, null, realNum, HurtType.thunder);
             } else {
-                GameManager.moveShanDian(this, getTarget());
+                getTarget().removeJudgeCard(getThisCard());
+                int numPlayers = GameManager.getNumPlayers();
+                int index = GameManager.getPlayers().indexOf(getTarget());
+                Utils.assertTrue(index != -1, "shandian target not found");
+                index = (index + 1 == numPlayers) ? 0 : index;
+                while (!GameManager.getPlayers().get(index + 1).getJudgeCards().add(this)) {
+                    index = (index + 1 == numPlayers) ? 0 : index;
+                }
+                setTarget(GameManager.getPlayers().get(index + 1));
             }
         }
         return null;

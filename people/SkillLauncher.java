@@ -10,7 +10,7 @@ public interface SkillLauncher {
 
     }
 
-    default void shaSuccess() {
+    default void shaSuccess(Person p) {
 
     }
 
@@ -102,7 +102,23 @@ public interface SkillLauncher {
         return false;
     }
 
+    default boolean hasHuoShou() {
+        return false;
+    }
+
+    default boolean hasDuanLiang() {
+        return false;
+    }
+
+    default boolean hasJuXiang() {
+        return false;
+    }
+
     default boolean hasBaZhen() {
+        return false;
+    }
+
+    default boolean hasFeiYing() {
         return false;
     }
 
@@ -110,7 +126,23 @@ public interface SkillLauncher {
 
     }
 
-    default boolean usesWuShuang() {
+    default boolean hasWuShuang() {
+        return false;
+    }
+
+    default boolean hasRouLin() {
+        return false;
+    }
+
+    default boolean hasWeiMu() {
+        return false;
+    }
+
+    default boolean hasWanSha() {
+        return false;
+    }
+
+    default boolean usesXingShang() {
         return false;
     }
 
@@ -135,6 +167,14 @@ public interface SkillLauncher {
     }
 
     default void otherPersonUsePhase(Person p) {
+
+    }
+
+    default void otherPersonGetJudge(Person p) {
+
+    }
+
+    default void otherPersonMakeHurt(Person p) {
 
     }
 

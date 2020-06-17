@@ -1,7 +1,6 @@
 package people.qun;
 
 import cards.Card;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -19,8 +18,9 @@ public class HuaTuo extends Person {
     public boolean requestTao() {
         if (!isMyRound() && launchSkill("急救")) {
             if (chooseFromProvided("hand card", "equipment").equals("hand card")) {
-                return requestRedBlack("red") != null;
-            } else {
+                if (requestRedBlack("red") != null) {
+                    return true;
+                }
                 Card c = chooseCard(new ArrayList<>(getEquipments().values()));
                 while (c != null && c.isBlack()) {
                     println("you can't choose black card");
@@ -39,7 +39,7 @@ public class HuaTuo extends Person {
     @Override
     public boolean useSkillInUsePhase(String order) {
         if (order.equals("青囊") && hasNotUsedSkill1()) {
-            Person p = GameManager.selectPlayer(this);
+            Person p = selectPlayer();
             if (p.getHP() == p.getMaxHP()) {
                 println("you can't person with maxHP");
                 return true;

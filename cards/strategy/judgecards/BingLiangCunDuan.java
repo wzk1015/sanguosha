@@ -11,7 +11,7 @@ public class BingLiangCunDuan extends JudgeCard {
 
     @Override
     public String use() {
-        if (!gotWuXie()) {
+        if (!gotWuXie(getTarget())) {
             if (CardsHeap.judge(getTarget()).color() != Color.CLUB) {
                 return "skip draw";
             }
@@ -27,5 +27,13 @@ public class BingLiangCunDuan extends JudgeCard {
     @Override
     public boolean needChooseTarget() {
         return true;
+    }
+
+    @Override
+    public int getDistance() {
+        if (getSource().hasDuanLiang()) {
+            return 2;
+        }
+        return super.getDistance();
     }
 }

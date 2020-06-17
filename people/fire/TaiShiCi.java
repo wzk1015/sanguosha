@@ -21,7 +21,7 @@ public class TaiShiCi extends Person {
             Person p;
             do {
                 println("choose a person with hand cards to 拼点");
-                p = GameManager.selectPlayer(this);
+                p = selectPlayer();
             } while (p.getCards().isEmpty());
             if (GameManager.pinDian(this,p)) {
                 isNB = true;

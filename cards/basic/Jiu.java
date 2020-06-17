@@ -10,13 +10,7 @@ public class Jiu extends BasicCard {
 
     @Override
     public Object use() {
-        if (getTarget().getHP() <= 0) {
-            getTarget().recover(1);
-        }
-
-        else {
-            getTarget().setDrunk(true);
-        }
+        getTarget().setDrunk(true);
         return null;
     }
 

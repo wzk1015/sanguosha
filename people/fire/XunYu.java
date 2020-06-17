@@ -18,7 +18,7 @@ public class XunYu extends Person {
     @Override
     public boolean useSkillInUsePhase(String order) {
         if (order.equals("驱虎") && hasNotUsedSkill1()) {
-            Person p = GameManager.selectPlayer(this);
+            Person p = selectPlayer();
             if (p == null) {
                 return true;
             }
@@ -28,12 +28,12 @@ public class XunYu extends Person {
                 } else {
                     println("target's HP > your HP");
                 }
-                p = GameManager.selectPlayer(this);
+                p = selectPlayer();
                 if (p == null) {
                     return true;
                 }
             }
-            Person p2 = GameManager.selectPlayer(this);
+            Person p2 = selectPlayer();
             if (p2 == null) {
                 return true;
             }
@@ -44,7 +44,7 @@ public class XunYu extends Person {
                 } else {
                     println("can't reach this person");
                 }
-                p2 = GameManager.selectPlayer(this);
+                p2 = selectPlayer();
                 if (p2 == null) {
                     return true;
                 }
@@ -61,7 +61,7 @@ public class XunYu extends Person {
     @Override
     public void gotHurt(ArrayList<Card> cs, Person source, int num) {
         if (launchSkill("节命")) {
-            Person p = GameManager.selectPlayer(this, true);
+            Person p = selectPlayer(true);
             if (p.getMaxHP() > p.getHP()) {
                 p.drawCards(p.getMaxHP() - p.getHP());
             }

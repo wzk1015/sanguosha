@@ -2,7 +2,6 @@ package people.fire;
 
 import cards.Card;
 import cards.equipments.Weapon;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -17,7 +16,7 @@ public class DianWei extends Person {
     public boolean useSkillInUsePhase(String order) {
         if (order.equals("强袭") && hasNotUsedSkill1()) {
             println(this + " uses 强袭");
-            Person p = GameManager.selectPlayer(this);
+            Person p = selectPlayer();
             if (p == null) {
                 return true;
             }

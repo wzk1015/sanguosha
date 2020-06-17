@@ -3,6 +3,7 @@ package cards.strategy;
 import cards.Color;
 import cards.Strategy;
 import manager.GameManager;
+import people.Person;
 
 public class TaoYuanJieYi extends Strategy {
     public TaoYuanJieYi(Color color, int number) {
@@ -11,7 +12,11 @@ public class TaoYuanJieYi extends Strategy {
 
     @Override
     public Object use() {
-        GameManager.taoYuanJieYi(this);
+        for (Person p : GameManager.getPlayers()) {
+            if (!gotWuXie(p)) {
+                p.recover(1);
+            }
+        }
         return true;
     }
 

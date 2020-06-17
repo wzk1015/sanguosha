@@ -28,7 +28,7 @@ public class LiuBei extends Person {
 
     @Skill("仁德")
     public void renDe() {
-        Person p = GameManager.selectPlayer(this);
+        Person p = selectPlayer();
         if (p == null) {
             return;
         }
