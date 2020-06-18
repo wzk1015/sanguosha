@@ -272,6 +272,12 @@ public class CardsHeap {
         usedCards.remove(c);
     }
 
+    public static void retrieve(ArrayList<Card> cs) {
+        for (Card c: cs) {
+            retrieve(c);
+        }
+    }
+
     public static Card getJudgeCard() {
         usedCards.remove(judgeCard);
         return judgeCard;

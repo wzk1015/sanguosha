@@ -37,6 +37,8 @@ public class DiaoChan extends Person {
                 break;
             }
             //决斗
+            p1.jueDouBegin();
+            p2.jueDouBegin();
             while (true) {
                 if ((!p2.hasWuShuang() && p1.requestSha() == null) ||
                     p2.hasWuShuang() && (p1.requestSha() == null || 

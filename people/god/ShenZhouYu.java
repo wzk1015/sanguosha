@@ -25,6 +25,9 @@ public class ShenZhouYu extends God {
             println(String.format("You need to throw %d cards", num));
             ArrayList<Card> cs = chooseCards(num, getCards());
             loseCard(cs);
+            for (Person p: GameManager.getPlayers()) {
+                p.otherPersonThrowPhase(this, cs);
+            }
         }
         if (num >= 2) {
             if (launchSkill("琴音")) {

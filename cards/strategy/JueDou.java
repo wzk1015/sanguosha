@@ -14,6 +14,8 @@ public class JueDou extends Strategy {
     @Override
     public Object use() {
         if (!gotWuXie(getTarget())) {
+            getSource().jueDouBegin();
+            getTarget().jueDouBegin();
             while (true) {
                 if ((!getSource().hasWuShuang() && getTarget().requestSha() == null) ||
                     getSource().hasWuShuang() && (getTarget().requestSha() == null ||

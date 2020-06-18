@@ -54,6 +54,9 @@ public class YuanShao extends Person {
                 println(String.format("You need to throw %d cards", num));
                 ArrayList<Card> cs = chooseCards(num, getCards());
                 loseCard(cs);
+                for (Person p: GameManager.getPlayers()) {
+                    p.otherPersonThrowPhase(this, cs);
+                }
             }
         }
         else {

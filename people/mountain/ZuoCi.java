@@ -32,6 +32,8 @@ public class ZuoCi extends Person {
             Person choice = selectPlayer(huaShen);
             if (choice != null) {
                 selected = choice;
+                setSex(selected.getSex());
+                setNation(selected.getNation());
             }
         }
         println("you can't use 化身 because I don't want to implement it");

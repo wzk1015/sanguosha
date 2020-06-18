@@ -58,6 +58,10 @@ public interface SkillLauncher {
 
     }
 
+    default void jueDouBegin() {
+
+    }
+
     default void beforeHurt() {
 
     }
@@ -150,6 +154,10 @@ public interface SkillLauncher {
         return false;
     }
 
+    default String usesYingYang() {
+        return "";
+    }
+
     default boolean skipJudge() {
         return false;
     }
@@ -174,6 +182,10 @@ public interface SkillLauncher {
 
     }
 
+    default void otherPersonThrowPhase(Person p, ArrayList<Card> cards) {
+
+    }
+
     default void otherPersonGetJudge(Person p) {
 
     }
@@ -182,7 +194,15 @@ public interface SkillLauncher {
 
     }
 
+    default void otherPersonHurtBySha(Person source, Person target) {
+
+    }
+
     default void initialize() {
+
+    }
+
+    default void clearCards() {
 
     }
 }

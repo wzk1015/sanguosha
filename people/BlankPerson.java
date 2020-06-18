@@ -5,6 +5,10 @@ public class BlankPerson extends Person {
         super(4,  "male", Nation.QUN);
     }
 
+    public BlankPerson(int maxHP) {
+        super(maxHP,  "male", Nation.QUN);
+    }
+
     @Override
     public String toString() {
         return "白板";

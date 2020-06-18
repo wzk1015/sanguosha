@@ -19,7 +19,7 @@ public class ZhangLiao extends Person {
                 Person p1 = selectPlayer();
                 Person p2 = selectPlayer();
                 if (p1 == null || p2 == null) {
-                    break;
+                    return;
                 }
                 if (p1 == p2) {
                     println("can't select same person");

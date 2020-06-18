@@ -71,12 +71,18 @@ public class DengAi extends Person {
             ShunShouQianYang shun = new ShunShouQianYang(c.color(), c.number());
             if (shun.askTarget(this)) {
                 tian.remove(c);
+                CardsHeap.discard(c);
                 println(this + " now has " + tian.size() + " 田");
                 useCard(shun);
             }
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void clearCards() {
+        CardsHeap.discard(tian);
     }
 
     @Override

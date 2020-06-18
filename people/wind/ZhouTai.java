@@ -30,7 +30,8 @@ public class ZhouTai extends Person {
             if (launchSkill("不屈")) {
                 println(this + " now has " + num + " 不屈 cards");
                 for (int i = 0; i < num; i++) {
-                    Card c = CardsHeap.judge(this);
+                    Card c = CardsHeap.draw();
+                    printCard(c);
                     buQuNumbers.add(c.number());
                     buQuCards.add(c);
                 }
@@ -58,12 +59,22 @@ public class ZhouTai extends Person {
             println("choose 不屈 cards that you want to remove");
             ArrayList<Card> cs = chooseCards(num, buQuCards);
             buQuCards.removeAll(cs);
+            CardsHeap.discard(cs);
             for (Card c: cs) {
                 buQuNumbers.remove(c.number());
             }
             println(this + " now has " + num + " 不屈 cards");
         }
         super.recover(num);
+    }
+
+    public int numOfBuQu() {
+        return buQuCards.size();
+    }
+
+    @Override
+    public void clearCards() {
+        CardsHeap.discard(buQuCards);
     }
 
     @Override

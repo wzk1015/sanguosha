@@ -116,6 +116,11 @@ public class Sha extends BasicCard {
         }
         sha(numHurt);
         getSource().shaSuccess(getTarget());
+        if (!getTarget().isDead()) {
+            for (Person p : GameManager.getPlayers()) {
+                p.otherPersonHurtBySha(getSource(), getTarget());
+            }
+        }
         if (useWeapon("三尖两刃刀")) {
             ArrayList<Person> nearbyPerson = GameManager.reachablePeople(getSource(), 1);
             if (!nearbyPerson.isEmpty()) {

@@ -112,6 +112,15 @@ public class ShenZhuGeLiang extends God {
         }
     }
 
+    public int numOfStars() {
+        return stars.size();
+    }
+
+    @Override
+    public void clearCards() {
+        CardsHeap.discard(stars);
+    }
+
     @Override
     public String toString() {
         return "神诸葛亮";

@@ -8,6 +8,9 @@ import people.Identity;
 import people.Nation;
 import cardsheap.PeoplePool;
 import people.Person;
+import people.god.ShenZhuGeLiang;
+import people.mountain.DengAi;
+import people.wind.ZhouTai;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,7 +128,21 @@ public class GameManager {
             c1 = source.requestCard(null);
             c2 = target.requestCard(null);
         }
-        return c1.number() > c2.number();
+        int num1 = c1.number();
+        int num2 = c2.number();
+        String yy1 = source.usesYingYang();
+        String yy2 = target.usesYingYang();
+        if (yy1.equals("+3")) {
+            num1 = Math.max(num1 + 3, 13);
+        } else if (yy1.equals("-3")) {
+            num1 = Math.min(num1 - 3, 1);
+        }
+        if (yy2.equals("+3")) {
+            num2 = Math.max(num2 + 3, 13);
+        } else if (yy2.equals("-3")) {
+            num2 = Math.min(num2 - 3, 1);
+        }
+        return num1 > num2;
     }
 
     public static void die(Person p) {
@@ -228,6 +245,15 @@ public class GameManager {
             ans += p.getCards().size();
             ans += p.getEquipments().size();
             ans += p.getJudgeCards().size();
+            if (p instanceof DengAi) {
+                ans += p.numOfTian();
+            }
+            if (p instanceof ShenZhuGeLiang) {
+                ans += ((ShenZhuGeLiang) p).numOfStars();
+            }
+            if (p instanceof ZhouTai) {
+                ans += ((ZhouTai) p).numOfBuQu();
+            }
         }
         if (ans != CardsHeap.getNumCards()) {
             IO.println("card number not consistent");

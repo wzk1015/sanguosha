@@ -105,6 +105,7 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
 
     public void die() {
         isDead = true;
+        clearCards();
         GameManager.die((Person) this);
         if (GameManager.gameIsEnd()) {
             GameManager.endGame();
