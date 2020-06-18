@@ -2,15 +2,7 @@ package manager;
 
 import cards.Card;
 import cards.EquipType;
-import cards.Strategy;
 import cards.basic.HurtType;
-import cards.basic.Sha;
-import cards.strategy.GuoHeChaiQiao;
-import cards.strategy.HuoGong;
-import cards.strategy.JieDaoShaRen;
-import cards.strategy.ShunShouQianYang;
-import cards.strategy.TieSuoLianHuan;
-import cards.strategy.judgecards.LeBuSiShu;
 import cardsheap.CardsHeap;
 import people.Identity;
 import people.Nation;
@@ -20,8 +12,6 @@ import people.Person;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import static cards.EquipType.weapon;
 
 public class GameManager {
     private static final ArrayList<Person> players = new ArrayList<>();
@@ -80,6 +70,34 @@ public class GameManager {
             }
         }
         endGame();
+    }
+
+    public static boolean gameIsEnd() {
+        Utils.assertTrue(winners.isEmpty(), "winners are not empty");
+        if (isExtinct(Identity.KING) && numPlayers > 1) {
+            winners.addAll(idMap.get(Identity.REBEL));
+            IO.print("REBEL WIN: ");
+            for (Person p : winners) {
+                IO.print(p.toString());
+            }
+            IO.println("");
+            return true;
+        } else if (isExtinct(Identity.KING)) {
+            IO.print("TRAITOR WIN: ");
+            winners.add(idMap.get(Identity.TRAITOR).get(0));
+            IO.println(winners.get(0).toString());
+            return true;
+        } else if (isExtinct(Identity.TRAITOR) && isExtinct(Identity.REBEL)) {
+            IO.print("KING AND MINISTER WIN: ");
+            winners.addAll(idMap.get(Identity.MINISTER));
+            winners.addAll(idMap.get(Identity.KING));
+            for (Person p : winners) {
+                IO.print(p.toString());
+            }
+            IO.println("");
+            return true;
+        }
+        return false;
     }
 
     public static void endGame() {
@@ -141,34 +159,6 @@ public class GameManager {
         return idMap.get(id).isEmpty();
     }
 
-    public static boolean gameIsEnd() {
-        Utils.assertTrue(winners.isEmpty(), "winners are not empty");
-        if (isExtinct(Identity.KING) && numPlayers > 1) {
-            winners.addAll(idMap.get(Identity.REBEL));
-            IO.print("REBEL WIN: ");
-            for (Person p : winners) {
-                IO.print(p.toString());
-            }
-            IO.println("");
-            return true;
-        } else if (isExtinct(Identity.KING)) {
-            IO.print("TRAITOR WIN: ");
-            winners.add(idMap.get(Identity.TRAITOR).get(0));
-            IO.println(winners.get(0).toString());
-            return true;
-        } else if (isExtinct(Identity.TRAITOR) && isExtinct(Identity.REBEL)) {
-            IO.print("KING AND MINISTER WIN: ");
-            winners.addAll(idMap.get(Identity.MINISTER));
-            winners.addAll(idMap.get(Identity.KING));
-            for (Person p : winners) {
-                IO.print(p.toString());
-            }
-            IO.println("");
-            return true;
-        }
-        return false;
-    }
-
     public static int calDistance(Person p1, Person p2) {
         if (p1 == p2) {
             return 0;
@@ -222,96 +212,6 @@ public class GameManager {
     public static void endWithError(String s) {
         IO.println(s);
         System.exit(1);
-    }
-
-    public static String askMultiTargets(Person currentPerson, Card card) {
-        Person p1 = currentPerson.selectPlayer(players, true);
-        Person p2 = currentPerson.selectPlayer(players, true);
-        if (p1 == null || p2 == null) {
-            return "false";
-        }
-        if (p1 == p2) {
-            IO.println("can't select two same people");
-            return "continue";
-        }
-        if (card instanceof JieDaoShaRen && (p1 == currentPerson || p2 == currentPerson)) {
-            IO.println("can't select yourself");
-            return "continue";
-        }
-        if (!p1.hasEquipment(weapon, null)) {
-            IO.println("target has no weapon");
-            return "continue";
-        }
-        card.setTarget(p1);
-        if (card instanceof TieSuoLianHuan) {
-            ((TieSuoLianHuan) card).setTarget2(p2);
-        } else if (card instanceof JieDaoShaRen) {
-            ((JieDaoShaRen) card).setTarget2(p2);
-        }
-        return "true";
-    }
-
-    public static boolean askTarget(Card card, Person currentPerson) {
-        card.setSource(currentPerson);
-
-        if (!card.needChooseTarget()) {
-            card.setTarget(currentPerson);
-            return true;
-        }
-
-        while (true) {
-            if (card instanceof TieSuoLianHuan || card instanceof JieDaoShaRen) {
-                String ret = askMultiTargets(currentPerson, card);
-                if (ret.equals("true")) {
-                    return true;
-                } else if (ret.equals("false")) {
-                    return false;
-                } else {
-                    continue;
-                }
-            }
-
-            Person p;
-            if (card instanceof HuoGong) {
-                p = currentPerson.selectPlayer(players, true);
-            } else {
-                p = currentPerson.selectPlayer(players);
-            }
-
-            if (p == null) {
-                return false;
-            }
-            if (card instanceof Strategy &&
-                    calDistance(currentPerson, p) > ((Strategy) card).getDistance()) {
-                IO.println("distance unreachable");
-                continue;
-            }
-            if (card instanceof Strategy && card.isBlack() && p.hasWeiMu()) {
-                IO.println("can't use that because of 帷幕");
-                continue;
-            }
-            if (card instanceof Sha) {
-                if (calDistance(currentPerson, p) > currentPerson.getShaDistance()) {
-                    IO.println("distance unreachable");
-                    continue;
-                } else if (p.hasKongCheng() && p.getCards().isEmpty()) {
-                    IO.println("can't sha because of 空城");
-                    continue;
-                }
-            }
-            if ((card instanceof ShunShouQianYang || card instanceof LeBuSiShu) &&
-                    p.hasQianXun()) {
-                IO.println("can't use that because of 谦逊");
-                continue;
-            }
-            if ((card instanceof GuoHeChaiQiao || card instanceof ShunShouQianYang) &&
-                    p.getCardsAndEquipments().isEmpty()
-                    && p.getJudgeCards().isEmpty()) {
-                IO.println("you can't chooose a person with no cards");
-            }
-            card.setTarget(p);
-            return true;
-        }
     }
 
     public static int getNumPlayers() {

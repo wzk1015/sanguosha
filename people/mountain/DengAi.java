@@ -4,7 +4,6 @@ import cards.Card;
 import cards.Color;
 import cards.strategy.ShunShouQianYang;
 import cardsheap.CardsHeap;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.AfterWakeSkill;
@@ -27,6 +26,7 @@ public class DengAi extends Person {
             if (c.color() != Color.HEART) {
                 CardsHeap.getJudgeCard();
                 tian.add(c);
+                println(this + " now has " + tian.size() + " 田");
             }
         }
     }
@@ -69,8 +69,9 @@ public class DengAi extends Person {
                 return true;
             }
             ShunShouQianYang shun = new ShunShouQianYang(c.color(), c.number());
-            if (GameManager.askTarget(shun, this)) {
+            if (shun.askTarget(this)) {
                 tian.remove(c);
+                println(this + " now has " + tian.size() + " 田");
                 useCard(shun);
             }
             return true;

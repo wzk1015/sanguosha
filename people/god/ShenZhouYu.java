@@ -52,7 +52,8 @@ public class ShenZhouYu extends God {
             String option = chooseFromProvided("1","1+1","2","1+1+1","1+2","3");
             Person p1 = null;
             Person p2 = null;
-            Person p3 = null;
+            Person p3;
+            int realNum;
             if (option.equals("2") || option.equals("1+2") || option.equals("3")) {
                 println("throw 4 cards:");
                 Color[] colors = {Color.SPADE, Color.CLUB, Color.HEART, Color.DIAMOND};
@@ -67,12 +68,13 @@ public class ShenZhouYu extends God {
                     || option.equals("1+2") || option.equals("2") || option.equals("3")) {
                 p1 = selectPlayer();
                 if (option.equals("3")) {
-                    p1.hurt((Card) null, this, 3, HurtType.fire);
+                    realNum = p1.hurt((Card) null, this, 3, HurtType.fire);
                 } else if (option.equals("2")) {
-                    p1.hurt((Card) null, this, 2, HurtType.fire);
+                    realNum = p1.hurt((Card) null, this, 2, HurtType.fire);
                 } else {
-                    p1.hurt((Card) null, this, 1, HurtType.fire);
+                    realNum = p1.hurt((Card) null, this, 1, HurtType.fire);
                 }
+                GameManager.linkHurt(null, this, realNum, HurtType.fire);
             }
             if (option.equals("1+1") || option.equals("1+1+1") || option.equals("1+2")) {
                 do {
@@ -80,17 +82,19 @@ public class ShenZhouYu extends God {
                     p2 = selectPlayer();
                 } while (p2 == p1);
                 if (option.equals("1+2")) {
-                    p2.hurt((Card) null, this, 2, HurtType.fire);
+                    realNum = p2.hurt((Card) null, this, 2, HurtType.fire);
                 } else {
-                    p2.hurt((Card) null, this, 1, HurtType.fire);
+                    realNum = p2.hurt((Card) null, this, 1, HurtType.fire);
                 }
+                GameManager.linkHurt(null, this, realNum, HurtType.fire);
             }
             if (option.equals("1+1+1")) {
                 do {
                     println("choose another person");
                     p3 = selectPlayer();
                 } while (p3 == p1 || p3 == p2);
-                p3.hurt((Card) null, this, 1, HurtType.fire);
+                realNum = p3.hurt((Card) null, this, 1, HurtType.fire);
+                GameManager.linkHurt(null, this, realNum, HurtType.fire);
             }
 
             hasYeYan = true;

@@ -3,7 +3,6 @@ package people.fire;
 import cards.Card;
 import cards.strategy.JueDou;
 import cardsheap.CardsHeap;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -34,7 +33,7 @@ public class YanLiangWenChou extends Person {
             Card c = requestRedBlack(judgeCard.isRed() ? "red" : "black");
             JueDou jd = new JueDou(c.color(), c.number());
             jd.setThisCard(c);
-            if (GameManager.askTarget(jd, this)) {
+            if (jd.askTarget(this)) {
                 useCard(jd);
             } else {
                 CardsHeap.retrieve(c);

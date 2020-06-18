@@ -4,7 +4,6 @@ import cards.Card;
 import cards.Color;
 import cards.strategy.TieSuoLianHuan;
 import cardsheap.CardsHeap;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.RestrictedSkill;
@@ -30,7 +29,7 @@ public class PangTong extends Person {
                 return true;
             } else {
                 TieSuoLianHuan ts = new TieSuoLianHuan(c.color(), c.number());
-                if (GameManager.askTarget(ts, this)) {
+                if (ts.askTarget(this)) {
                     useCard(ts);
                 } else {
                     CardsHeap.retrieve(c);

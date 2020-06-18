@@ -3,7 +3,6 @@ package people.fire;
 import cards.Card;
 import cards.strategy.HuoGong;
 import cardsheap.CardsHeap;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.ForcesSkill;
@@ -44,7 +43,7 @@ public class WoLong extends Person {
             Card c = requestRedBlack("red");
             HuoGong hg = new HuoGong(c.color(), c.number());
             hg.setThisCard(c);
-            if (GameManager.askTarget(hg, this)) {
+            if (hg.askTarget(this)) {
                 useCard(hg);
             } else {
                 CardsHeap.retrieve(c);

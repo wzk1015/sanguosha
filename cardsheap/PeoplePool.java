@@ -3,12 +3,38 @@ package cardsheap;
 import manager.Utils;
 import people.Identity;
 import people.Person;
+import people.fire.DianWei;
+import people.fire.PangDe;
+import people.fire.PangTong;
+import people.fire.TaiShiCi;
+import people.fire.WoLong;
+import people.fire.YanLiangWenChou;
+import people.fire.YuanShao;
+import people.forest.CaoPi;
+import people.forest.DongZhuo;
+import people.forest.JiaXu;
+import people.forest.LuSu;
+import people.forest.MengHuo;
+import people.forest.SunJian;
+import people.forest.XuHuang;
+import people.forest.ZhuRong;
+import people.god.ShenCaoCao;
+import people.god.ShenGuanYu;
+import people.god.ShenLvBu;
+import people.god.ShenLvMeng;
+import people.god.ShenZhouYu;
+import people.god.ShenZhuGeLiang;
+import people.mountain.DengAi;
+import people.mountain.JiangWei;
+import people.mountain.LiuChan;
+import people.mountain.ZuoCi;
 import people.qun.DiaoChan;
 import people.qun.HuaTuo;
 import people.qun.LvBu;
 import people.qun.YuanShu;
 import people.shu.GuanYu;
 import people.shu.HuangYueYing;
+import people.wind.CaoRen;
 import people.wind.HuangZhong;
 import people.shu.LiuBei;
 import people.shu.MaChao;
@@ -22,6 +48,12 @@ import people.wei.XiaHouDun;
 import people.fire.XunYu;
 import people.wei.ZhangLiao;
 import people.wei.ZhenJi;
+import people.wind.WeiYan;
+import people.wind.XiaHouYuan;
+import people.wind.XiaoQiao;
+import people.wind.YuJi;
+import people.wind.ZhangJiao;
+import people.wind.ZhouTai;
 import people.wu.DaQiao;
 import people.wu.GanNing;
 import people.wu.HuangGai;
@@ -41,11 +73,8 @@ public class PeoplePool {
     private static int peopleIndex = 0;
     private static int identityIndex = 0;
 
-    public static void init() {
-        //people.add(new BlankPerson());
-        //people.add(new BlankPerson2());
-        //people.add(new AI());
-
+    public static void addStandard() {
+        //蜀国
         people.add(new GuanYu());
         people.add(new HuangYueYing());
         people.add(new LiuBei());
@@ -54,6 +83,7 @@ public class PeoplePool {
         people.add(new ZhaoYun());
         people.add(new ZhuGeLiang());
 
+        //魏国
         people.add(new CaoCao());
         people.add(new GuoJia());
         people.add(new SiMaYi());
@@ -62,7 +92,7 @@ public class PeoplePool {
         people.add(new ZhangLiao());
         people.add(new ZhenJi());
 
-        people.add(new SunQuan());
+        //吴国
         people.add(new DaQiao());
         people.add(new GanNing());
         people.add(new HuangGai());
@@ -71,27 +101,84 @@ public class PeoplePool {
         people.add(new SunQuan());
         people.add(new SunShangXiang());
         people.add(new ZhouYu());
+
+        //群雄
         people.add(new HuaTuo());
         people.add(new LvBu());
         people.add(new DiaoChan());
         people.add(new YuanShu());
+    }
 
+    public static void addFeng() {
+        //风包
+        people.add(new CaoRen());
         people.add(new HuangZhong());
+        people.add(new WeiYan());
+        people.add(new XiaHouYuan());
+        people.add(new XiaoQiao());
+        people.add(new YuJi());
+        people.add(new ZhangJiao());
+        people.add(new ZhouTai());
+    }
 
+    public static void addHuo() {
+        //火包
+        people.add(new DianWei());
+        people.add(new PangDe());
+        people.add(new PangTong());
+        people.add(new TaiShiCi());
+        people.add(new WoLong());
         people.add(new XunYu());
+        people.add(new YanLiangWenChou());
+        people.add(new YuanShao());
+    }
+
+    public static void addLin() {
+        //林包
+        people.add(new CaoPi());
+        people.add(new DongZhuo());
+        people.add(new JiaXu());
+        people.add(new LuSu());
+        people.add(new MengHuo());
+        people.add(new SunJian());
+        people.add(new XuHuang());
+        people.add(new ZhuRong());
+    }
+
+    public static void addShan() {
+        //山包
+        people.add(new DengAi());
+        people.add(new JiangWei());
+        people.add(new LiuChan());
+        people.add(new ZuoCi());
+    }
+
+    public static void addGod() {
+        //神将
+        people.add(new ShenCaoCao());
+        people.add(new ShenGuanYu());
+        people.add(new ShenLvBu());
+        people.add(new ShenLvMeng());
+        people.add(new ShenZhouYu());
+        people.add(new ShenZhuGeLiang());
+    }
+
+    public static void init() {
+        //people.add(new BlankPerson());
+        //people.add(new BlankPerson2());
+        //people.add(new AI());
+        addStandard();
+        addFeng();
+        addHuo();
+        addLin();
+        addShan();
+        addGod();
 
         Collections.shuffle(people);
 
         identities.add(Identity.KING);
-        //identities.add(Identity.MINISTER);
-        //identities.add(Identity.MINISTER);
         identities.add(Identity.TRAITOR);
-        //identities.add(Identity.REBEL);
-        //identities.add(Identity.REBEL);
-        //identities.add(Identity.REBEL);
-        //identities.add(Identity.REBEL);
         Collections.shuffle(identities);
-        Collections.shuffle(people);
     }
 
     public static ArrayList<Person> allocPeople() {

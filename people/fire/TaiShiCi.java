@@ -41,7 +41,7 @@ public class TaiShiCi extends Person {
             Sha sha = new Sha(card.color(), card.number());
             sha.setTaken(true);
             sha.setThisCard(card);
-            if (!GameManager.askTarget(sha, this)) {
+            if (!sha.askTarget(this)) {
                 return ret;
             }
             useCard(sha);

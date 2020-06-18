@@ -4,7 +4,6 @@ import cards.Card;
 import cards.Color;
 import cards.Equipment;
 import cards.basic.Sha;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -21,7 +20,7 @@ public class XiaHouYuan extends Person {
     public void shenSu() {
         Sha sha = new Sha(Color.NOCOLOR, 0);
         sha.setThisCard((Card) null);
-        if (GameManager.askTarget(sha, this)) {
+        if (sha.askTarget(this)) {
             useCard(sha);
         }
     }

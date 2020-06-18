@@ -124,7 +124,7 @@ public abstract class Person extends Attributes implements Serializable {
             Person target3 = null;
             if (option.equals("3targets")) {
                 Sha s3 = new Sha(card.color(), card.number(), ((Sha) card).getType());
-                if (GameManager.askTarget(s3, this) && s3.getTarget() != card.getTarget()) {
+                if (s3.askTarget(this) && s3.getTarget() != card.getTarget()) {
                     target3 = s3.getTarget();
                     Utils.assertTrue(target3 != null, "sha3 target is null");
                     s3.use();
@@ -132,7 +132,7 @@ public abstract class Person extends Attributes implements Serializable {
             }
             if (option.equals("3targets") || option.equals("2targets")) {
                 Sha s2 = new Sha(card.color(), card.number(), ((Sha) card).getType());
-                if (GameManager.askTarget(s2, this) && s2.getTarget() != card.getTarget()
+                if (s2.askTarget(this) && s2.getTarget() != card.getTarget()
                         && s2.getTarget() != target3) {
                     Utils.assertTrue(s2.getTarget() != null, "sha2 target is null");
                     s2.use();
@@ -223,7 +223,7 @@ public abstract class Person extends Attributes implements Serializable {
             }
         }
 
-        if (!GameManager.askTarget(card, this)) {
+        if (!card.askTarget(this)) {
             return false;
         }
 

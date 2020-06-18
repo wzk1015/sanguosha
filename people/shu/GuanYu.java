@@ -4,7 +4,6 @@ import cards.Card;
 import cards.basic.Sha;
 
 import cardsheap.CardsHeap;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -36,7 +35,7 @@ public class GuanYu extends Person {
             }
             Sha sha = new Sha(c.color(), c.number());
             sha.setThisCard(c);
-            if (GameManager.askTarget(sha, this)) {
+            if (sha.askTarget(this)) {
                 useCard(sha);
             } else {
                 CardsHeap.retrieve(c);

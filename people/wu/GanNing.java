@@ -3,7 +3,6 @@ package people.wu;
 import cards.Card;
 import cards.strategy.GuoHeChaiQiao;
 import cardsheap.CardsHeap;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -22,7 +21,7 @@ public class GanNing extends Person {
                 return true;
             }
             GuoHeChaiQiao chai = new GuoHeChaiQiao(c.color(), c.number());
-            if (GameManager.askTarget(chai, this)) {
+            if (chai.askTarget(this)) {
                 useCard(chai);
             } else {
                 CardsHeap.retrieve(c);

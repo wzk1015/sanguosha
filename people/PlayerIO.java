@@ -169,7 +169,10 @@ public interface PlayerIO {
     }
 
     default <E> E chooseFromProvided(ArrayList<E> choices) {
-        Utils.assertTrue(!choices.isEmpty(), "choices are empty");
+        if (choices.isEmpty()) {
+            println(this + " has nothing to choose");
+            return null;
+        }
 
         int i = 1;
         for (E choice : choices) {
@@ -199,8 +202,11 @@ public interface PlayerIO {
     }
 
     default <E> ArrayList<E> chooseManyFromProvided(int num, ArrayList<E> choices) {
-        Utils.assertTrue(num == 0 || num >= choices.size(), "not enough choices");
-        Utils.assertTrue(!choices.isEmpty(), "choices are empty");
+        if (choices.isEmpty() || (num != 0 && num < choices.size())) {
+            println(this + " has not enougn options to choose");
+            return new ArrayList<>();
+        }
+
         int i = 1;
         for (E choice : choices) {
             print("【" + i++ + "】 " + choice.toString() + " ");
@@ -301,7 +307,7 @@ public interface PlayerIO {
             } else if (method.getAnnotation(ForcesSkill.class) != null) {
                 if (method.getAnnotation(ForcesSkill.class).value().equals("无双")) {
                     if (!hasWuShuang()) {
-                        continue;
+                        continue;   // for 神吕布
                     }
                 }
                 skills.add(method.getAnnotation(ForcesSkill.class).value());

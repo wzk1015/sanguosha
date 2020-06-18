@@ -5,7 +5,6 @@ import cards.JudgeCard;
 import cards.Strategy;
 import cards.strategy.judgecards.BingLiangCunDuan;
 import cardsheap.CardsHeap;
-import manager.GameManager;
 import people.Nation;
 import people.Person;
 import skills.Skill;
@@ -31,7 +30,7 @@ public class XuHuang extends Person {
             BingLiangCunDuan bing  = new BingLiangCunDuan(c.color(), c.number());
             bing.setOwner(this);
             bing.setThisCard(c);
-            if (GameManager.askTarget(bing, this)
+            if (bing.askTarget(this)
                     && bing.getTarget().addJudgeCard((JudgeCard) bing)) {
                 useCard(bing);
             } else {
