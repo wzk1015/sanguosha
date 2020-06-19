@@ -52,9 +52,6 @@ public class DengAi extends Person {
         if (!hasWakenUp() && tian.size() >= 3) {
             println(this + " uses 凿险");
             setMaxHP(getMaxHP() - 1);
-            if (getHP() > getMaxHP()) {
-                setCurrentHP(getMaxHP());
-            }
             wakeUp();
         }
     }

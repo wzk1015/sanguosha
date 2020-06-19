@@ -10,7 +10,6 @@ import skills.ForcesSkill;
 import skills.Skill;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class ShenLvBu extends God {
     private int baoNuMark = 2;
@@ -23,14 +22,16 @@ public class ShenLvBu extends God {
     @ForcesSkill("暴怒")
     @Override
     public void gotHurt(ArrayList<Card> cards, Person p, int num) {
-        println(this + " got 1 暴怒mark");
-        baoNuMark++;
+        println(this + " got " + num + " 暴怒mark");
+        baoNuMark += num;
+        println(this + " now has " + baoNuMark + " 暴怒 marks");
     }
 
     @Override
-    public void hurtOther(Person p) {
-        println(this + " got 1 暴怒mark");
-        baoNuMark++;
+    public void hurtOther(Person p, int num) {
+        println(this + " got " + num + " 暴怒mark");
+        baoNuMark += num;
+        println(this + " now has " + baoNuMark + " 暴怒 marks");
     }
 
     @ForcesSkill("无谋")
@@ -40,7 +41,8 @@ public class ShenLvBu extends God {
             loseHP(1);
         }
         else {
-            println(this + " lost 1 暴怒mark");
+            println(this + " lost 1 暴怒 mark");
+            println(this + " now has " + baoNuMark + " 暴怒 marks");
             baoNuMark--;
         }
     }
@@ -53,7 +55,6 @@ public class ShenLvBu extends God {
 
     @Skill("无前")
     public void wuQian() {
-        println(this + " uses 无前");
         Person p = selectPlayer();
         if (p == null) {
             return;
@@ -62,22 +63,24 @@ public class ShenLvBu extends God {
             ((Shield) p.getEquipments().get(EquipType.shield)).setValid(false);
         }
         isWuQian = true;
-        println(this + "lost 2 暴怒mark");
+        println(this + " lost 2 暴怒 mark");
         baoNuMark -= 2;
-
+        println(this + " now has " + baoNuMark + " 暴怒 marks");
+        println(this + " uses 无前 towards " + p);
     }
 
     @Skill("神愤")
     public void shenFen() {
         println(this + " uses 神愤");
-        println(this + "lost 6 暴怒mark");
+        println(this + " lost 6 暴怒 mark");
+        println(this + " now has " + baoNuMark + " 暴怒 marks");
         baoNuMark -= 6;
-        Iterator<Person> it = GameManager.getPlayers().iterator();
-        while (it.hasNext()) {
-            Person p = it.next();
+        for (Person p: GameManager.getPlayers()) {
+            if (p == this) {
+                continue;
+            }
             p.hurt((Card) null, this, 1);
             if (p.isDead()) {
-                it.remove();
                 continue;
             }
             p.loseCard(new ArrayList<>(p.getEquipments().values()));
@@ -113,6 +116,11 @@ public class ShenLvBu extends God {
                 ((Shield) p.getEquipments().get(EquipType.shield)).setValid(true);
             }
         }
+    }
+
+    @Override
+    public void showExtraInfo() {
+        println(this + " now has " + baoNuMark + " 暴怒 marks");
     }
 
     @Override

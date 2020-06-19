@@ -14,6 +14,7 @@ import java.util.HashMap;
 
 public class ShenGuanYu extends God {
     private HashMap<Person, Integer> mengYan = new HashMap<>();
+    private boolean useHeartSha = false;
 
     public ShenGuanYu() {
         super(5, null);
@@ -33,11 +34,28 @@ public class ShenGuanYu extends God {
     }
 
     @Override
+    public boolean useSha(Card card) {
+        if (super.useSha(card)) {
+            useHeartSha = true;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int getShaDistance() {
+        if (useHeartSha) {
+            return 10000;
+        }
+        return super.getShaDistance();
+    }
+
+    @Override
     public void gotHurt(ArrayList<Card> cards, Person p, int num) {
         println(p + " gets " + num + " 梦魇 marks");
         mengYan.putIfAbsent(p, 0);
         mengYan.put(p, mengYan.get(p) + num);
-        println("now " + p + " has " + mengYan.get(p) + "梦魇 marks");
+        println("now " + p + " has " + mengYan.get(p) + " 梦魇 marks");
     }
 
     @ForcesSkill("梦魇")

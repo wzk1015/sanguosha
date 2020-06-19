@@ -46,7 +46,7 @@ public class WoLong extends Person {
             if (hg.askTarget(this)) {
                 useCard(hg);
             } else {
-                CardsHeap.retrieve(c);
+                addCard(CardsHeap.retrieve(c));
             }
         }
         return false;

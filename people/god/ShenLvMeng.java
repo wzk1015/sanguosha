@@ -19,7 +19,9 @@ public class ShenLvMeng extends God {
     public void drawPhase() {
         if (launchSkill("涉猎")) {
             ArrayList<Card> cards = new ArrayList<>(CardsHeap.getDrawCards(5).subList(0, 5));
+            CardsHeap.getDrawCards(0).removeAll(cards);
             ArrayList<Card> selected = new ArrayList<>();
+            printCards(cards);
             while (selected.isEmpty()) {
                 println("choose cards of different colors");
                 selected = chooseCards(0, cards);

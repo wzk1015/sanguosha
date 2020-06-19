@@ -12,10 +12,10 @@ public class WeiYan extends Person {
 
     @ForcesSkill("狂骨")
     @Override
-    public void hurtOther(Person p) {
+    public void hurtOther(Person p, int num) {
         if (GameManager.calDistance(this, p) <= 1) {
             println(this + " uses 狂骨");
-            recover(1);
+            recover(num);
         }
     }
 

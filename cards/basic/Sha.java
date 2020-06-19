@@ -17,26 +17,14 @@ import static cards.EquipType.weapon;
 
 public class Sha extends BasicCard {
     private HurtType type;
-    private ArrayList<Card> thisCard = new ArrayList<>();
 
     public Sha(Color color, int number, HurtType type) {
         super(color, number);
         this.type = type;
-        thisCard.add(this);
     }
 
     public Sha(Color color, int number) {
         this(color, number, HurtType.normal);
-    }
-
-    public void setThisCard(ArrayList<Card> thisCard) {
-        this.thisCard = thisCard;
-    }
-
-    public void setThisCard(Card thisCard) {
-        ArrayList<Card> cs = new ArrayList<>();
-        cs.add(thisCard);
-        this.thisCard = cs;
     }
 
     public boolean useWeapon(String s) {
@@ -48,9 +36,9 @@ public class Sha extends BasicCard {
 
     public void sha(int num) {
         getTarget().hurtBySha();
-        int realNum = getTarget().hurt(thisCard, getSource(), num, type);
+        int realNum = getTarget().hurt(getThisCard(), getSource(), num, type);
         if (type != HurtType.normal) {
-            GameManager.linkHurt(thisCard, getSource(), realNum, type);
+            GameManager.linkHurt(getThisCard(), getSource(), realNum, type);
         }
     }
 

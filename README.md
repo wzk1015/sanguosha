@@ -41,6 +41,8 @@ by wzk
 * 6.18  增加姜维刘禅邓艾左慈；提取拆顺行为移动至PlayerIO；增加醒后技注解类
 * 6.18  移动GameManager的askTarget至Card；PeoplePool中增加风火林山包武将；修改README
 * 6.18  完成山包；**8000行！**
+* 6.19  增加神司马神赵云；**神话再临完成！**
+* 6.19  修复了神将的若干bug；武将和卡牌增加了help接口
 
 
 
@@ -48,11 +50,11 @@ by wzk
 bug list:
 
 TODO list:
-添加山包、一将成名（1、2）扩展包
 
 waitlist:
-增加GUI（maybe）
-增加国战（maybe not）
+一将成名（1、2）扩展包 (maybe)
+增加GUI (maybe)
+增加国战 (maybe not)
 ```
 
 
@@ -350,6 +352,6 @@ waitlist:
 | 神诸葛亮 | √      |
 | 神曹操   | √      |
 | 神吕布   | √      |
-| 神赵云   |        |
-| 神司马懿 |        |
+| 神赵云   | √      |
+| 神司马懿 | √      |
 

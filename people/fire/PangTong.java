@@ -32,7 +32,7 @@ public class PangTong extends Person {
                 if (ts.askTarget(this)) {
                     useCard(ts);
                 } else {
-                    CardsHeap.retrieve(c);
+                    addCard(CardsHeap.retrieve(c));
                 }
             }
         }

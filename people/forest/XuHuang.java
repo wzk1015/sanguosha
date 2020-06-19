@@ -34,7 +34,7 @@ public class XuHuang extends Person {
                     && bing.getTarget().addJudgeCard((JudgeCard) bing)) {
                 useCard(bing);
             } else {
-                CardsHeap.retrieve(c);
+                addCard(CardsHeap.retrieve(c));
             }
             return true;
         }

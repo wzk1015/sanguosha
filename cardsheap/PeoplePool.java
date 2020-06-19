@@ -22,11 +22,17 @@ import people.god.ShenCaoCao;
 import people.god.ShenGuanYu;
 import people.god.ShenLvBu;
 import people.god.ShenLvMeng;
+import people.god.ShenSiMaYi;
+import people.god.ShenZhaoYun;
 import people.god.ShenZhouYu;
 import people.god.ShenZhuGeLiang;
+import people.mountain.CaiWenJi;
 import people.mountain.DengAi;
 import people.mountain.JiangWei;
 import people.mountain.LiuChan;
+import people.mountain.SunCe;
+import people.mountain.ZhangHe;
+import people.mountain.ZhangZhaoZhangHong;
 import people.mountain.ZuoCi;
 import people.qun.DiaoChan;
 import people.qun.HuaTuo;
@@ -69,7 +75,7 @@ import java.util.Collections;
 public class PeoplePool {
     private static final ArrayList<Person> people = new ArrayList<>();
     private static final ArrayList<Identity> identities = new ArrayList<>();
-    private static final int optionsPerPerson = 5;
+    private static final int optionsPerPerson = 2;
     private static int peopleIndex = 0;
     private static int identityIndex = 0;
 
@@ -147,9 +153,13 @@ public class PeoplePool {
 
     public static void addShan() {
         //山包
+        people.add(new CaiWenJi());
         people.add(new DengAi());
         people.add(new JiangWei());
         people.add(new LiuChan());
+        people.add(new SunCe());
+        people.add(new ZhangHe());
+        people.add(new ZhangZhaoZhangHong());
         people.add(new ZuoCi());
     }
 
@@ -159,6 +169,8 @@ public class PeoplePool {
         people.add(new ShenGuanYu());
         people.add(new ShenLvBu());
         people.add(new ShenLvMeng());
+        people.add(new ShenSiMaYi());
+        people.add(new ShenZhaoYun());
         people.add(new ShenZhouYu());
         people.add(new ShenZhuGeLiang());
     }
@@ -167,17 +179,18 @@ public class PeoplePool {
         //people.add(new BlankPerson());
         //people.add(new BlankPerson2());
         //people.add(new AI());
-        addStandard();
-        addFeng();
-        addHuo();
-        addLin();
-        addShan();
+        //addStandard();
+        //addFeng();
+        //addHuo();
+        //addLin();
+        //addShan();
         addGod();
 
         Collections.shuffle(people);
 
         identities.add(Identity.KING);
         identities.add(Identity.TRAITOR);
+        identities.add(Identity.REBEL);
         Collections.shuffle(identities);
     }
 
@@ -194,6 +207,11 @@ public class PeoplePool {
     }
 
     public static Identity allocIdentity() {
+        Utils.assertTrue(identityIndex < identities.size(), "No identity available");
         return identities.get(identityIndex++);
+    }
+
+    public static ArrayList<Person> getPeople() {
+        return people;
     }
 }

@@ -65,14 +65,15 @@ public class ShenZhouYu extends God {
                         return false;
                     }
                 }
-                loseHP(3);
             }
             if (option.equals("1") || option.equals("1+1") || option.equals("1+1+1")
                     || option.equals("1+2") || option.equals("2") || option.equals("3")) {
                 p1 = selectPlayer();
                 if (option.equals("3")) {
+                    loseHP(3);
                     realNum = p1.hurt((Card) null, this, 3, HurtType.fire);
                 } else if (option.equals("2")) {
+                    loseHP(3);
                     realNum = p1.hurt((Card) null, this, 2, HurtType.fire);
                 } else {
                     realNum = p1.hurt((Card) null, this, 1, HurtType.fire);
@@ -85,6 +86,7 @@ public class ShenZhouYu extends God {
                     p2 = selectPlayer();
                 } while (p2 == p1);
                 if (option.equals("1+2")) {
+                    loseHP(3);
                     realNum = p2.hurt((Card) null, this, 2, HurtType.fire);
                 } else {
                     realNum = p2.hurt((Card) null, this, 1, HurtType.fire);

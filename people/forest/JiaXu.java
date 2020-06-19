@@ -22,7 +22,7 @@ public class JiaXu extends Person {
     @Override
     public boolean hasWanSha() {
         println(this + " uses 完杀");
-        return false;
+        return true;
     }
 
     public ArrayList<Person> nearestPerson(Person p) {

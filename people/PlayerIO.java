@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
 
 public interface PlayerIO {
@@ -201,9 +202,9 @@ public interface PlayerIO {
         return chooseManyFromProvided(num, options);
     }
 
-    default <E> ArrayList<E> chooseManyFromProvided(int num, ArrayList<E> choices) {
-        if (choices.isEmpty() || (num != 0 && num < choices.size())) {
-            println(this + " has not enougn options to choose");
+    default <E> ArrayList<E> chooseManyFromProvided(int num, List<E> choices) {
+        if (choices.isEmpty() || (num != 0 && num > choices.size())) {
+            println(this + " has not enough options to choose");
             return new ArrayList<>();
         }
 
@@ -299,7 +300,7 @@ public interface PlayerIO {
 
     }
 
-    default void printSkills() {
+    default HashSet<String> getSkills() {
         HashSet<String> skills = new HashSet<>();
         for (Method method : getClass().getDeclaredMethods()) {
             if (method.getAnnotation(Skill.class) != null) {
@@ -323,8 +324,12 @@ public interface PlayerIO {
                 }
             }
         }
+        return skills;
+    }
+
+    default void printSkills() {
         print("skills: ");
-        for (String s: skills) {
+        for (String s: getSkills()) {
             print("【" + s + "】 ");
         }
         println("");
@@ -372,10 +377,10 @@ public interface PlayerIO {
                 c = chooseCard(new ArrayList<>(target.getEquipments().values()));
             }
         }
-        return c;
+        return c.getThisCard().get(0);
     }
 
-    default Person selectPlayer(ArrayList<Person> people, boolean chooseSelf) {
+    default Person selectPlayer(List<Person> people, boolean chooseSelf) {
         ArrayList<String> options = new ArrayList<>();
         for (Person p1 : people) {
             options.add(p1.toString());
@@ -393,7 +398,7 @@ public interface PlayerIO {
         return null;
     }
 
-    default Person selectPlayer(ArrayList<Person> people) {
+    default Person selectPlayer(List<Person> people) {
         return selectPlayer(people, false);
     }
 

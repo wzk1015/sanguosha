@@ -11,8 +11,7 @@ import java.util.Random;
 public class Utils {
     public static void assertTrue(boolean bool, String s) {
         if (!bool) {
-            IO.println("assertion failed: " + s);
-            GameManager.endWithError("assertion failed");
+            GameManager.endWithError("assertion failed: " + s);
         }
     }
 

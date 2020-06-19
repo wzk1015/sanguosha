@@ -30,7 +30,7 @@ public class DaQiao extends Person {
             if (le.askTarget(this) && le.getTarget().addJudgeCard((JudgeCard) le)) {
                 useCard(le);
             } else {
-                CardsHeap.retrieve(c);
+                addCard(CardsHeap.retrieve(c));
             }
             return true;
         }

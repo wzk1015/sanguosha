@@ -36,7 +36,7 @@ public class YanLiangWenChou extends Person {
             if (jd.askTarget(this)) {
                 useCard(jd);
             } else {
-                CardsHeap.retrieve(c);
+                addCard(CardsHeap.retrieve(c));
             }
             return true;
         }

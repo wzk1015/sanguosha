@@ -65,7 +65,6 @@ public class DongZhuo extends Person {
                 loseHP(1);
             } else {
                 setMaxHP(getMaxHP() - 1);
-                setCurrentHP(Math.max(getHP(), getMaxHP()));
             }
         }
     }

@@ -18,6 +18,8 @@ public class ShenZhuGeLiang extends God {
     @Skill("七星")
     public void qiXing() {
         ArrayList<Card> handCards;
+        println("current stars: ");
+        printCards(stars);
         do {
             println("choose cards to exchange with stars");
             handCards = chooseCards(0, getCards());
@@ -94,10 +96,10 @@ public class ShenZhuGeLiang extends God {
 
     @Override
     public void endPhase() {
-        if (launchSkill("狂风")) {
+        if (launchSkill("狂风") && stars.size() > 0) {
             kuangFeng();
         }
-        if (launchSkill("大雾")) {
+        if (launchSkill("大雾") && stars.size() > 0) {
             daWu();
         }
         super.endPhase();

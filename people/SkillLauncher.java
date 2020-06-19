@@ -174,7 +174,7 @@ public interface SkillLauncher {
         return false;
     }
 
-    default void hurtOther(Person p) {
+    default void hurtOther(Person p, int num) {
 
     }
 
@@ -202,7 +202,15 @@ public interface SkillLauncher {
 
     }
 
+    default void showExtraInfo() {
+
+    }
+
     default void clearCards() {
+
+    }
+
+    default void killOther() {
 
     }
 }

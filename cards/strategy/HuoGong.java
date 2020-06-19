@@ -10,7 +10,6 @@ import manager.IO;
 import java.util.ArrayList;
 
 public class HuoGong extends Strategy {
-    private Card thisCard = this;
 
     public HuoGong(Color color, int number) {
         super(color, number);
@@ -22,7 +21,7 @@ public class HuoGong extends Strategy {
             Card c = getTarget().chooseCard(getTarget().getCards());
             IO.printCard(c);
             if (getSource().requestColor(c.color()) != null) {
-                int realNum = getTarget().hurt(thisCard, getSource(), 1, HurtType.fire);
+                int realNum = getTarget().hurt(getThisCard(), getSource(), 1, HurtType.fire);
                 ArrayList<Card> cs = new ArrayList<>();
                 cs.add(this);
                 GameManager.linkHurt(cs, getSource(), realNum, HurtType.fire);
@@ -40,9 +39,5 @@ public class HuoGong extends Strategy {
     @Override
     public boolean needChooseTarget() {
         return true;
-    }
-
-    public void setThisCard(Card thisCard) {
-        this.thisCard = thisCard;
     }
 }

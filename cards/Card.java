@@ -13,25 +13,37 @@ import manager.Utils;
 import people.Person;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import static cards.EquipType.weapon;
 
 public abstract class Card implements Serializable {
-    private Color color;
-    private int number;
+    private final Color color;
+    private final int number;
     private Person target;
     private Person source;
     private boolean isTaken = false;
     private Person owner = null;
+    private ArrayList<Card> thisCard = new ArrayList<>();
 
-    public Card(Color color, int number, Person target) {
-        this.color = color;
-        this.number = number;
-        this.target = target;
+    public void setThisCard(ArrayList<Card> thisCard) {
+        this.thisCard = thisCard;
+    }
+
+    public void setThisCard(Card thisCard) {
+        ArrayList<Card> cs = new ArrayList<>();
+        cs.add(thisCard);
+        this.thisCard = cs;
+    }
+
+    public ArrayList<Card> getThisCard() {
+        return thisCard;
     }
 
     public Card(Color color, int number) {
-        this(color, number, null);
+        this.color = color;
+        this.number = number;
+        this.thisCard.add(this);
     }
 
     public Color color() {
@@ -208,9 +220,14 @@ public abstract class Card implements Serializable {
                     p.getCardsAndEquipments().isEmpty()
                     && p.getJudgeCards().isEmpty()) {
                 IO.println("you can't chooose a person with no cards");
+                continue;
             }
             target = p;
             return true;
         }
+    }
+
+    public String help() {
+        return "not implemented";
     }
 }

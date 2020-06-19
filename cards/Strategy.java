@@ -20,6 +20,10 @@ public abstract class Strategy extends Card {
     public static boolean noWuXie() {
         boolean hasWuXie = false;
         for (Person p : GameManager.getPlayers()) {
+            if (p.getSkills().contains("看破") || p.getSkills().contains("龙魂")) {
+                hasWuXie = true;
+                break;
+            }
             for (Card c : p.getCards()) {
                 if (c.toString().equals("无懈可击")) {
                     hasWuXie = true;

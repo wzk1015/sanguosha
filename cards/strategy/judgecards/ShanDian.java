@@ -25,7 +25,7 @@ public class ShanDian extends JudgeCard {
                 cs.add(this);
                 GameManager.linkHurt(cs, null, realNum, HurtType.thunder);
             } else {
-                getTarget().removeJudgeCard(getThisCard());
+                //getTarget().removeJudgeCard(getThisCard().get(0));
                 int numPlayers = GameManager.getNumPlayers();
                 int index = GameManager.getPlayers().indexOf(getTarget());
                 Utils.assertTrue(index != -1, "shandian target not found");

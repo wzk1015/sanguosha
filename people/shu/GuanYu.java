@@ -38,7 +38,7 @@ public class GuanYu extends Person {
             if (sha.askTarget(this)) {
                 useCard(sha);
             } else {
-                CardsHeap.retrieve(c);
+                addCard(CardsHeap.retrieve(c));
             }
             return true;
         }

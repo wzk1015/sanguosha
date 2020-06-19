@@ -14,14 +14,15 @@ import people.wind.ZhouTai;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameManager {
-    private static final ArrayList<Person> players = new ArrayList<>();
+    private static final CopyOnWriteArrayList<Person> players = new CopyOnWriteArrayList<>();
     private static int numPlayers = 2;
     private static final HashMap<Identity, ArrayList<Person>> idMap = new HashMap<>();
+    private static final HashMap<Identity, ArrayList<Person>> idMapAll = new HashMap<>();
     private static final ArrayList<Person> winners = new ArrayList<>();
-    private static Iterator<Person> it;
 
     public static void startGame() {
         IO.println("wzk's sanguosha begins!");
@@ -32,6 +33,11 @@ public class GameManager {
         idMap.put(Identity.MINISTER, new ArrayList<>());
         idMap.put(Identity.TRAITOR, new ArrayList<>());
         idMap.put(Identity.REBEL, new ArrayList<>());
+        idMapAll.put(Identity.KING, new ArrayList<>());
+        idMapAll.put(Identity.MINISTER, new ArrayList<>());
+        idMapAll.put(Identity.TRAITOR, new ArrayList<>());
+        idMapAll.put(Identity.REBEL, new ArrayList<>());
+
 
         for (int i = 0; i < numPlayers; i++) {
             Identity identity = PeoplePool.allocIdentity();
@@ -42,6 +48,7 @@ public class GameManager {
             selected.setIdentity(identity);
             players.add(selected);
             idMap.get(identity).add(selected);
+            idMapAll.get(identity).add(selected);
         }
 
         for (Person p : players) {
@@ -64,10 +71,10 @@ public class GameManager {
             p.initialize();
         }
 
+        int roundCount = 1;
         while (!gameIsEnd()) {
-            it = players.iterator();
-            while (it.hasNext()) {
-                Person p = it.next();
+            IO.println("round " + roundCount++);
+            for (Person p : players) {
                 p.run();
                 checkCardsNum();
             }
@@ -77,8 +84,9 @@ public class GameManager {
 
     public static boolean gameIsEnd() {
         Utils.assertTrue(winners.isEmpty(), "winners are not empty");
-        if (isExtinct(Identity.KING) && numPlayers > 1) {
-            winners.addAll(idMap.get(Identity.REBEL));
+        if (isExtinct(Identity.KING) && (!isExtinct(Identity.MINISTER) ||
+                !isExtinct(Identity.REBEL) || idMap.get(Identity.TRAITOR).size() > 1)) {
+            winners.addAll(idMapAll.get(Identity.REBEL));
             IO.print("REBEL WIN: ");
             for (Person p : winners) {
                 IO.print(p.toString());
@@ -92,8 +100,8 @@ public class GameManager {
             return true;
         } else if (isExtinct(Identity.TRAITOR) && isExtinct(Identity.REBEL)) {
             IO.print("KING AND MINISTER WIN: ");
-            winners.addAll(idMap.get(Identity.MINISTER));
-            winners.addAll(idMap.get(Identity.KING));
+            winners.addAll(idMapAll.get(Identity.MINISTER));
+            winners.addAll(idMapAll.get(Identity.KING));
             for (Person p : winners) {
                 IO.print(p.toString());
             }
@@ -166,7 +174,7 @@ public class GameManager {
             cp.addCard(new ArrayList<>(p.getRealJudgeCards()));
             cp.addCard(new ArrayList<>(p.getEquipments().values()));
         }
-        it.remove();
+        players.remove(p);
         numPlayers--;
         idMap.get(p.getIdentity()).remove(p);
         IO.println(p + " dead, identity: " + p.getIdentity());
@@ -235,7 +243,7 @@ public class GameManager {
         return numPlayers;
     }
 
-    public static ArrayList<Person> getPlayers() {
+    public static List<Person> getPlayers() {
         return players;
     }
 

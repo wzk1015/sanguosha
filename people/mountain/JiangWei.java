@@ -78,9 +78,6 @@ public class JiangWei extends Person {
             recover(1);
         }
         setMaxHP(getMaxHP() - 1);
-        if (getHP() > getMaxHP()) {
-            setMaxHP(getMaxHP());
-        }
         wakeUp();
     }
 

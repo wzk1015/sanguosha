@@ -7,6 +7,8 @@ import people.Nation;
 import people.Person;
 import skills.Skill;
 
+import java.util.ArrayList;
+
 public class XiaoQiao extends Person {
     public XiaoQiao() {
         super(3, "female", Nation.QUN);
@@ -14,7 +16,7 @@ public class XiaoQiao extends Person {
 
     @Skill("天香")
     @Override
-    public int hurt(Card card, Person source, int num, HurtType type) {
+    public int hurt(ArrayList<Card> card, Person source, int num, HurtType type) {
         if (launchSkill("天香")) {
             Person p = selectPlayer();
             Card c = requestColor(Color.SPADE);

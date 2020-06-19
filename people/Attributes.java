@@ -43,7 +43,10 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
     @Override
     public boolean hasWuShuang() { return false; }
 
-    public void wakeUp() { hasWakenUp = true; }
+    public void wakeUp() {
+        println(this + " wakes up!");
+        hasWakenUp = true;
+    }
 
     public boolean hasWakenUp() { return hasWakenUp; }
 
@@ -59,7 +62,10 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
 
     public void setMyRound(boolean myRound) { this.myRound = myRound; }
 
-    public void setMaxHP(int maxHP) { this.maxHP = maxHP; }
+    public void setMaxHP(int maxHP) {
+        this.maxHP = maxHP;
+        this.currentHP = Math.max(currentHP, maxHP);
+    }
 
     public int getMaxHP() { return maxHP; }
 
@@ -145,14 +151,14 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
     public ArrayList<Card> getRealJudgeCards() {
         ArrayList<Card> ans = new ArrayList<>();
         for (JudgeCard jc: judgeCards) {
-            ans.add(jc.getThisCard());
+            ans.add(jc.getThisCard().get(0));
         }
         return ans;
     }
 
     public void removeJudgeCard(Card c) {
         for (JudgeCard jc: judgeCards) {
-            if (jc.getThisCard() == c) {
+            if (jc.getThisCard().get(0) == c) {
                 judgeCards.remove(jc);
                 return;
             }
@@ -216,13 +222,12 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
     }
 
     public void loseCard(ArrayList<Card> cs) {
-        for (Card c: cs) {
-            loseCard(c);
-        }
+        loseCard(cs, true);
     }
 
     public void loseCard(ArrayList<Card> cs, boolean throwAway) {
-        for (Card c: cs) {
+        ArrayList<Card> newCs = new ArrayList<>(cs);
+        for (Card c: newCs) {
             loseCard(c, throwAway);
         }
     }
@@ -240,7 +245,8 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
             print(this + " lost card: ");
             printCard(c);
         }
-        if (getRealJudgeCards().contains(c)) {
+        if (getRealJudgeCards().contains(c)
+                || getRealJudgeCards().contains(c.getThisCard().get(0))) {
             removeJudgeCard(c);
         } else if (c instanceof Equipment && getEquipments().containsValue(c)) {
             getEquipments().remove(((Equipment) c).getEquipType());
@@ -250,14 +256,17 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
             if (!isDead()) {
                 lostEquipment();
             }
-        } else if (getCards().contains(c)) {
+        } else if (getCards().contains(c) || getCards().contains(c.getThisCard().get(0))) {
             getCards().remove(c);
             if (!isDead()) {
                 lostCard();
             }
-        } else {
-            GameManager.endWithError("lose card not belong to " + this);
         }
+        /*
+        else {
+            //GameManager.endWithError("lose card not belong to " + this);
+        }
+         */
 
         c.setOwner(null);
         if (throwAway) {
@@ -295,6 +304,7 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
 
     public int hurt(ArrayList<Card> cs, Person source, int num, HurtType type) {
         if (isDaWu() && type != HurtType.thunder) {
+            println(this + " uses 大雾， hurt dismissed");
             return 0;
         }
         int realNum = num;
@@ -317,19 +327,22 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
         if (type != HurtType.normal && isLinked()) {
             link();
         }
-        source.hurtOther((Person) this);
+        source.hurtOther((Person) this, realNum);
         for (Person p: GameManager.getPlayers()) {
             p.otherPersonMakeHurt((Person) this);
         }
         if (!isDead()) {
             gotHurt(cs, source, realNum);
         }
-        else if (getIdentity() == Identity.REBEL) {
-            source.drawCards(3);
-        }
-        else if (getIdentity() == Identity.MINISTER && source.getIdentity() == Identity.KING) {
-            source.loseCard(source.getCards());
-            source.loseCard(new ArrayList<>(source.getEquipments().values()));
+        else {
+            source.killOther();
+            if (getIdentity() == Identity.REBEL) {
+                source.drawCards(3);
+            }
+            else if (getIdentity() == Identity.MINISTER && source.getIdentity() == Identity.KING) {
+                source.loseCard(source.getCards());
+                source.loseCard(new ArrayList<>(source.getEquipments().values()));
+            }
         }
         return realNum;
     }
@@ -346,7 +359,7 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
         if (getHP() == getMaxHP()) {
             return;
         }
-        setCurrentHP(Math.max(getHP() + num, getMaxHP()));
+        setCurrentHP(Math.min(getHP() + num, getMaxHP()));
         println(this + " recover " + num + "HP, current HP: " + getHP() + "/" + getMaxHP());
     }
 
@@ -360,13 +373,14 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
         }
         IO.println("requesting tao for " + this);
         for (Person p : GameManager.getPlayers()) {
-            if ((!wanSha && p.requestTao()) || (p.hasWanSha() && p.requestTao())) {
-                gotSavedBy(p);
-                return true;
-            } else if (p == this) {
-                if (p.requestJiu()) {
+            if (p == this) {
+                if (p.requestTao() || p.requestJiu()) {
                     return true;
                 }
+            }
+            else if ((!wanSha && p.requestTao()) || (p.hasWanSha() && p.requestTao())) {
+                gotSavedBy(p);
+                return true;
             }
         }
         return false;

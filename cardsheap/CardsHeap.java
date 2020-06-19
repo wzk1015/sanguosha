@@ -63,12 +63,14 @@ public class CardsHeap {
     private static int remainingShuffleTimes = 5;
     private static int numCards;
     private static Card judgeCard = null;
+    private static final ArrayList<Card> allCards = new ArrayList<>();
 
     public static void addCard(Class<? extends Card> cls, Color color, int num) {
         try {
             Card c = cls.getConstructor(Color.class, int.class).newInstance(color, num);
             IO.debug(c.info() + c.toString());
             drawCards.add(c);
+            allCards.add(c);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,6 +82,7 @@ public class CardsHeap {
                     Color.class, int.class, HurtType.class).newInstance(color, num, type);
             IO.debug(c.info() + c.toString());
             drawCards.add(c);
+            allCards.add(c);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -267,9 +270,10 @@ public class CardsHeap {
         return judgeCard;
     }
 
-    public static void retrieve(Card c) {
+    public static Card retrieve(Card c) {
         Utils.assertTrue(usedCards.contains(c), "retrieving card not in usedCards");
         usedCards.remove(c);
+        return c;
     }
 
     public static void retrieve(ArrayList<Card> cs) {
@@ -300,5 +304,9 @@ public class CardsHeap {
 
     public static int getNumCards() {
         return numCards;
+    }
+
+    public static ArrayList<Card> getAllCards() {
+        return allCards;
     }
 }

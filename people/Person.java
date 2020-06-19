@@ -12,6 +12,7 @@ import cards.basic.Tao;
 import cards.strategy.TieSuoLianHuan;
 import cards.strategy.WuXieKeJi;
 import cardsheap.CardsHeap;
+import cardsheap.PeoplePool;
 import manager.GameManager;
 
 import manager.Utils;
@@ -183,6 +184,7 @@ public abstract class Person extends Attributes implements Serializable {
             throwCard(card);
             card.setTaken(true);
         }
+        getCards().remove(card);
         if (!isDead()) {
             showUsingCard(card);
             card.use();
@@ -192,6 +194,7 @@ public abstract class Person extends Attributes implements Serializable {
 
     public boolean parseOrder(String order) {
         Card card;
+
         if (useSkillInUsePhase(order)) {
             return true;
         } else if (order.equals("丈八蛇矛") && getCards().size() >= 2) {
@@ -205,7 +208,19 @@ public abstract class Person extends Attributes implements Serializable {
                 card = new Sha(Color.NOCOLOR, 0);
             }
             card.setTaken(true);
-            ((Sha) card).setThisCard(cs);
+            card.setThisCard(cs);
+        } else if (order.contains("help")) {
+            try {
+                if (order.equals("help")) {
+                    showHelp("");
+                } else {
+                    showHelp(order.split(" ")[1]);
+                }
+                return true;
+            } catch (IndexOutOfBoundsException e) {
+                println("Wrong input");
+                return false;
+            }
         } else {
             try {
                 card = getCards().get(Integer.parseInt(order) - 1);
@@ -228,6 +243,7 @@ public abstract class Person extends Attributes implements Serializable {
         }
 
         boolean used = useCard(card);
+
         if (card.isNotTaken() && used) {
             throwCard(card);
         } else if (!card.isNotTaken()) {
@@ -240,6 +256,7 @@ public abstract class Person extends Attributes implements Serializable {
         printSkills();
         println("identity: " + getIdentity());
         println("current HP: " + getHP() + "/" + getMaxHP());
+        showExtraInfo();
         printAllCards();
         while (!isDead()) {
             println(this + "'s current hand cards: ");
@@ -273,4 +290,27 @@ public abstract class Person extends Attributes implements Serializable {
 
     }
 
+    public void showHelp(String type) {
+        if (type.equals("")) {
+            println(this + "'s help: " + help());
+            return;
+        }
+        for (Card c: CardsHeap.getAllCards()) {
+            if (c.toString().equals(type)) {
+                println(c + "'s help: " + c.help());
+                return;
+            }
+        }
+        for (Person p: PeoplePool.getPeople()) {
+            if (p.toString().equals(type)) {
+                println(p + "'s help: " + p.help());
+                return;
+            }
+        }
+        println("unknown help type: " + type);
+    }
+
+    public String help() {
+        return "not implemented";
+    }
 }

@@ -24,7 +24,7 @@ public class GanNing extends Person {
             if (chai.askTarget(this)) {
                 useCard(chai);
             } else {
-                CardsHeap.retrieve(c);
+                addCard(CardsHeap.retrieve(c));
             }
 
             return true;

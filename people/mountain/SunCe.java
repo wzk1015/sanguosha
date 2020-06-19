@@ -56,9 +56,6 @@ public class SunCe extends Person {
     @WakeUpSkill("魂姿")
     public void hunZi() {
         setMaxHP(getMaxHP() - 1);
-        if (getHP() > getMaxHP()) {
-            setCurrentHP(getMaxHP());
-        }
         wakeUp();
     }
 
