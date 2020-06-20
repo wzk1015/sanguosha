@@ -30,7 +30,7 @@ public class ShanDian extends JudgeCard {
                 int index = GameManager.getPlayers().indexOf(getTarget());
                 Utils.assertTrue(index != -1, "shandian target not found");
                 index = (index + 1 == numPlayers) ? 0 : index;
-                while (!GameManager.getPlayers().get(index + 1).getJudgeCards().add(this)) {
+                while (!GameManager.getPlayers().get(index + 1).addJudgeCard(this)) {
                     index = (index + 1 == numPlayers) ? 0 : index;
                 }
                 setTarget(GameManager.getPlayers().get(index + 1));

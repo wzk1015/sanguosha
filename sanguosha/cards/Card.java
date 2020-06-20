@@ -146,7 +146,7 @@ public abstract class Card implements Serializable {
             IO.println("can't select two same sanguosha.people");
             return "continue";
         }
-        if (this instanceof JieDaoShaRen && (p1 == source || p2 == source)) {
+        if (this instanceof JieDaoShaRen && (p1 == source)) {
             IO.println("can't select yourself");
             return "continue";
         }

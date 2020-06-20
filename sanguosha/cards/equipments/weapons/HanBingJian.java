@@ -1,5 +1,6 @@
 package sanguosha.cards.equipments.weapons;
 
+import sanguosha.cards.Card;
 import sanguosha.cards.Color;
 import sanguosha.cards.equipments.Weapon;
 
@@ -10,7 +11,16 @@ public class HanBingJian extends Weapon {
 
     @Override
     public Object use() {
-        return null;
+        if (getTarget().getCardsAndEquipments().isEmpty()) {
+            return false;
+        }
+        Card c = getSource().chooseTargetCardsAndEquipments(getTarget());
+        getTarget().loseCard(c);
+        if (!getTarget().getCardsAndEquipments().isEmpty()) {
+            c = getSource().chooseTargetCardsAndEquipments(getTarget());
+            getTarget().loseCard(c);
+        }
+        return true;
     }
 
     @Override

@@ -28,19 +28,19 @@ public class ZhouTai extends Person {
         println(this + " lost " + num + "HP, current HP: " + getHP() + "/" + getMaxHP());
         if (getHP() <= 0) {
             if (launchSkill("不屈")) {
-                println(this + " now has " + num + " 不屈 sanguosha.cards");
+                println(this + " now has " + num + " 不屈 cards");
                 for (int i = 0; i < num; i++) {
                     Card c = CardsHeap.draw();
                     printCard(c);
                     buQuNumbers.add(c.number());
                     buQuCards.add(c);
                 }
-                println(this + " now has " + num + " 不屈 sanguosha.cards");
+                println(this + " now has " + num + " 不屈 cards");
                 while (buQuDuplicated()) {
                     dying();
                 }
                 if (!isDead()) {
-                    println(this + " now has " + num + " 不屈 sanguosha.cards");
+                    println(this + " now has " + num + " 不屈 cards");
                 }
             } else {
                 dying();
@@ -56,14 +56,14 @@ public class ZhouTai extends Person {
     @Override
     public void recover(int num) {
         if (getHP() == 0) {
-            println("choose 不屈 sanguosha.cards that you want to remove");
+            println("choose 不屈 cards that you want to remove");
             ArrayList<Card> cs = chooseCards(num, buQuCards);
             buQuCards.removeAll(cs);
             CardsHeap.discard(cs);
             for (Card c: cs) {
                 buQuNumbers.remove(c.number());
             }
-            println(this + " now has " + num + " 不屈 sanguosha.cards");
+            println(this + " now has " + num + " 不屈 cards");
         }
         super.recover(num);
     }

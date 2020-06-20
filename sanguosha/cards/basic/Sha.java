@@ -1,26 +1,23 @@
 package sanguosha.cards.basic;
 
 import sanguosha.cards.BasicCard;
-import sanguosha.cards.Card;
 import sanguosha.cards.Color;
 import sanguosha.cards.equipments.Shield;
 import sanguosha.manager.GameManager;
 import sanguosha.manager.IO;
 import sanguosha.people.Person;
 
-import java.util.ArrayList;
-
-import static sanguosha.cards.EquipType.minusOneHorse;
-import static sanguosha.cards.EquipType.plusOneHorse;
 import static sanguosha.cards.EquipType.shield;
 import static sanguosha.cards.EquipType.weapon;
 
 public class Sha extends BasicCard {
     private HurtType type;
+    private final HurtType originType;
 
     public Sha(Color color, int number, HurtType type) {
         super(color, number);
         this.type = type;
+        this.originType = type;
     }
 
     public Sha(Color color, int number) {
@@ -29,7 +26,12 @@ public class Sha extends BasicCard {
 
     public boolean useWeapon(String s) {
         if (getSource().hasEquipment(weapon, s)) {
-            return getSource().chooseFromProvided("use " + s, "pass").equals("use " + s);
+            if (s.equals("青釭剑") || getSource().chooseFromProvided("use " + s, "pass")
+                    .equals("use " + s)) {
+                getSource().getEquipments().get(weapon).setSource(getSource());
+                getSource().getEquipments().get(weapon).setTarget(getTarget());
+                getSource().getEquipments().get(weapon).use();
+            }
         }
         return false;
     }
@@ -42,56 +44,7 @@ public class Sha extends BasicCard {
         }
     }
 
-    public void beforeSha() {
-        if (useWeapon("朱雀羽扇")) {
-            this.type = HurtType.fire;
-        }
-        if (useWeapon("雌雄双股剑")) {
-            if (!getSource().getSex().equals(getTarget().getSex())) {
-                String choice = getTarget().chooseFromProvided(
-                        "you throw a card", "he draws a card");
-                if (choice.equals("you throw a card")) {
-                    getTarget().requestCard(null);
-                } else {
-                    getSource().drawCard();
-                }
-            }
-        }
-        if (getSource().hasEquipment(weapon, "青釭剑")) {
-            if (getTarget().hasEquipment(shield, null)) {
-                ((Shield) getTarget().getEquipments().get(shield)).setValid(false);
-            }
-            else if (getTarget().hasBaZhen()) {
-                getTarget().setBaZhen(false);
-            }
-        }
-    }
-
     public void shaHit() {
-        getTarget().beforeHurt();
-        if (useWeapon("麒麟弓")) {
-            if (getTarget().hasEquipment(plusOneHorse, null) &&
-                    getTarget().hasEquipment(minusOneHorse, null)) {
-                String choice = getSource().chooseFromProvided("shoot down plusonehorse",
-                        "shoot down minusonehorse", "pass");
-                if (choice.equals("shoot down minusonehorse")) {
-                    getTarget().getEquipments().put(minusOneHorse, null);
-                } else if (choice.equals("shoot down plusonehorse")) {
-                    getTarget().getEquipments().put(plusOneHorse, null);
-                }
-            } else if (getTarget().hasEquipment(plusOneHorse, null) ||
-                    getTarget().hasEquipment(minusOneHorse, null)) {
-                String choice = getSource().chooseFromProvided("shoot down horse", "pass");
-                if (choice.equals("shoot down horse")) {
-                    if (getTarget().hasEquipment(plusOneHorse, null)) {
-                        getTarget().getEquipments().put(plusOneHorse, null);
-                    } else {
-                        getTarget().getEquipments().put(minusOneHorse, null);
-                    }
-                }
-            }
-        }
-
         int numHurt = 1;
         if (getSource().isDrunk()) {
             numHurt++;
@@ -102,42 +55,15 @@ public class Sha extends BasicCard {
         if (getSource().isNaked()) {
             numHurt++;
         }
-        sha(numHurt);
+        getTarget().hurtBySha();
+        int realNum = getTarget().hurt(getThisCard(), getSource(), numHurt, type);
+        if (type != HurtType.normal) {
+            GameManager.linkHurt(getThisCard(), getSource(), realNum, type);
+        }
         getSource().shaSuccess(getTarget());
         if (!getTarget().isDead()) {
             for (Person p : GameManager.getPlayers()) {
                 p.otherPersonHurtBySha(getSource(), getTarget());
-            }
-        }
-        if (useWeapon("三尖两刃刀")) {
-            ArrayList<Person> nearbyPerson = GameManager.reachablePeople(getSource(), 1);
-            if (!nearbyPerson.isEmpty()) {
-                Person p = getSource().selectPlayer(nearbyPerson);
-                p.hurt((Card) null, getSource(), 1);
-            }
-        }
-    }
-
-    public void shanSuccess() {
-        if (useWeapon("贯石斧")) {
-            String option = getSource().chooseFromProvided(
-                    "throw two sanguosha.cards and hurt", "pass");
-            if (option.equals("throw two sanguosha.cards and hurt")) {
-                getSource().throwCard(getSource().chooseCards(2,
-                        getTarget().getCardsAndEquipments()));
-                shaHit();
-            } else {
-                getSource().shaGotShan(getTarget());
-            }
-        } else {
-            getSource().shaGotShan(getTarget());
-            if (useWeapon("青龙偃月刀")) {
-                Sha s = getSource().requestSha();
-                if (s != null) {
-                    s.setTarget(getTarget());
-                    s.setSource(getSource());
-                    s.use();
-                }
             }
         }
     }
@@ -147,7 +73,12 @@ public class Sha extends BasicCard {
 
         getSource().shaBegin();
         getTarget().gotShaBegin(this);
-        beforeSha();
+
+        if (useWeapon("朱雀羽扇")) {
+            this.type = HurtType.fire;
+        }
+        useWeapon("雌雄双股剑");
+        useWeapon("青釭剑");
 
         if (getTarget().canNotBeSha(this, getSource())) {
             IO.println("invalid sha");
@@ -160,20 +91,19 @@ public class Sha extends BasicCard {
 
         if (getSource().shaCanBeShan(getTarget()) && ((needDouble && getTarget().requestShan()
                 && getTarget().requestShan()) || (!needDouble && getTarget().requestShan()))) {
-            shanSuccess();
-        }
-
-        else {
-            if (!getTarget().getCardsAndEquipments().isEmpty() && useWeapon("寒冰剑")) {
-                Card c = getSource().chooseTargetCardsAndEquipments(getTarget());
-                getTarget().loseCard(c);
-                if (!getTarget().getCardsAndEquipments().isEmpty()) {
-                    c = getSource().chooseTargetCardsAndEquipments(getTarget());
-                    getTarget().loseCard(c);
-                }
-            } else {
+            if (useWeapon("贯石斧")) {
                 shaHit();
             }
+            else {
+                getSource().shaGotShan(getTarget());
+                useWeapon("青龙偃月刀");
+            }
+        }
+
+        else if (!useWeapon("寒冰剑")) {
+            useWeapon("麒麟弓");
+            shaHit();
+            useWeapon("三尖两刃刀");
         }
 
         if (getTarget().hasEquipment(shield, null)) {
@@ -182,6 +112,7 @@ public class Sha extends BasicCard {
         if (getTarget().hasBaZhen()) {
             getTarget().setBaZhen(true);
         }
+        this.type = originType;
         return true;
     }
 

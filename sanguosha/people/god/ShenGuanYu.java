@@ -35,7 +35,7 @@ public class ShenGuanYu extends God {
 
     @Override
     public boolean useSha(Card card) {
-        if (super.useSha(card)) {
+        if (super.useSha(card) && card.color() == Color.HEART) {
             useHeartSha = true;
             return true;
         }
@@ -45,6 +45,7 @@ public class ShenGuanYu extends God {
     @Override
     public int getShaDistance() {
         if (useHeartSha) {
+            useHeartSha = false;
             return 10000;
         }
         return super.getShaDistance();

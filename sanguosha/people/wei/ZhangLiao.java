@@ -26,7 +26,7 @@ public class ZhangLiao extends Person {
                     continue;
                 }
                 if (p1.getCards().isEmpty() || p2.getCards().isEmpty()) {
-                    println("target has no hand sanguosha.cards");
+                    println("target has no hand cards");
                     continue;
                 }
                 Card c1 = chooseAnonymousCard(p1.getCards());

@@ -1,7 +1,6 @@
 package sanguosha.people;
 
 import sanguosha.cards.Card;
-import sanguosha.cards.Color;
 import sanguosha.cards.Equipment;
 import sanguosha.cards.JudgeCard;
 import sanguosha.cards.Strategy;
@@ -9,6 +8,7 @@ import sanguosha.cards.basic.Jiu;
 import sanguosha.cards.basic.Sha;
 import sanguosha.cards.basic.Shan;
 import sanguosha.cards.basic.Tao;
+import sanguosha.cards.equipments.weapons.FangTianHuaJi;
 import sanguosha.cards.strategy.TieSuoLianHuan;
 import sanguosha.cards.strategy.WuXieKeJi;
 import sanguosha.cardsheap.CardsHeap;
@@ -121,24 +121,9 @@ public abstract class Person extends Attributes implements Serializable {
             }
         }
         if (getCards().isEmpty() && hasEquipment(weapon, "方天画戟")) {
-            String option = chooseFromProvided("1target", "2targets", "3targets");
-            Person target3 = null;
-            if (option.equals("3targets")) {
-                Sha s3 = new Sha(card.color(), card.number(), ((Sha) card).getType());
-                if (s3.askTarget(this) && s3.getTarget() != card.getTarget()) {
-                    target3 = s3.getTarget();
-                    Utils.assertTrue(target3 != null, "sha3 target is null");
-                    s3.use();
-                }
-            }
-            if (option.equals("3targets") || option.equals("2targets")) {
-                Sha s2 = new Sha(card.color(), card.number(), ((Sha) card).getType());
-                if (s2.askTarget(this) && s2.getTarget() != card.getTarget()
-                        && s2.getTarget() != target3) {
-                    Utils.assertTrue(s2.getTarget() != null, "sha2 target is null");
-                    s2.use();
-                }
-            }
+            ((FangTianHuaJi) getEquipments().get(weapon)).setsha(card);
+            getEquipments().get(weapon).setSource(this);
+            getEquipments().get(weapon).use();
         }
         return true;
     }
@@ -197,19 +182,12 @@ public abstract class Person extends Attributes implements Serializable {
 
         if (useSkillInUsePhase(order)) {
             return true;
-        } else if (order.equals("丈八蛇矛") && getCards().size() >= 2) {
-            ArrayList<Card> cs = this.chooseCards(2, getCards());
-            loseCard(cs);
-            if (cs.get(0).isRed() && cs.get(1).isRed()) {
-                card = new Sha(Color.DIAMOND, 0);
-            } else if (cs.get(1).isBlack() && cs.get(1).isBlack()) {
-                card = new Sha(Color.CLUB, 0);
-            } else {
-                card = new Sha(Color.NOCOLOR, 0);
-            }
-            card.setTaken(true);
-            card.setThisCard(cs);
-        } else if (order.contains("help")) {
+        }
+        else if (order.equals("丈八蛇矛") && hasEquipment(weapon, "丈八蛇矛") && getCards().size() >= 2) {
+            getEquipments().get(weapon).setSource(this);
+            card = (Card) getEquipments().get(weapon).use();
+        }
+        else if (order.contains("help")) {
             try {
                 if (order.equals("help")) {
                     showHelp("");

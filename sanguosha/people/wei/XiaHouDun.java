@@ -24,7 +24,7 @@ public class XiaHouDun extends Person {
                 if (p.getCards().size() < 2) {
                     option = "lost 1 HP";
                 } else {
-                    option = p.chooseFromProvided("throw 2 sanguosha.cards", "lost 1 HP");
+                    option = p.chooseFromProvided("throw 2 cards", "lost 1 HP");
                 }
 
                 if (option.equals("lost 1 HP")) {

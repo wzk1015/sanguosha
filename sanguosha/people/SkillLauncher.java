@@ -62,10 +62,6 @@ public interface SkillLauncher {
 
     }
 
-    default void beforeHurt() {
-
-    }
-
     default void receiveJudge() {
 
     }

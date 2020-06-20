@@ -1,6 +1,7 @@
 package sanguosha.cards.equipments.weapons;
 
 import sanguosha.cards.Color;
+import sanguosha.cards.basic.Sha;
 import sanguosha.cards.equipments.Weapon;
 
 public class QingLongYanYueDao extends Weapon {
@@ -10,6 +11,12 @@ public class QingLongYanYueDao extends Weapon {
 
     @Override
     public Object use() {
+        Sha s = getSource().requestSha();
+        if (s != null) {
+            s.setTarget(getTarget());
+            s.setSource(getSource());
+            s.use();
+        }
         return null;
     }
 

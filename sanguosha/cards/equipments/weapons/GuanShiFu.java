@@ -10,7 +10,17 @@ public class GuanShiFu extends Weapon {
 
     @Override
     public Object use() {
-        return null;
+        if (getSource().getCardsAndEquipments().size() < 3) {
+            getSource().println("you don't have enough cards");
+        }
+        String option = getSource().chooseFromProvided(
+                "throw two sanguosha.cards and hurt", "pass");
+        if (option.equals("throw two sanguosha.cards and hurt")) {
+            getSource().throwCard(getSource().chooseCards(2,
+                    getTarget().getCardsAndEquipments()));
+            return true;
+        }
+        return false;
     }
 
     @Override

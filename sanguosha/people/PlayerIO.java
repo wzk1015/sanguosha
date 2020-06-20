@@ -111,7 +111,7 @@ public interface PlayerIO {
 
     default Card requestCard(String type) {
         if (getCards().isEmpty()) {
-            println(toString() + "has no sanguosha.cards to choose");
+            println(toString() + "has no cards to choose");
             return null;
         }
         if (type != null) {
@@ -159,7 +159,7 @@ public interface PlayerIO {
             printCards(new ArrayList<>(getEquipments().values()));
         }
         if (!getJudgeCards().isEmpty()) {
-            println("judge sanguosha.cards: ");
+            println("judge cards: ");
             printCards(new ArrayList<>(getRealJudgeCards()));
         }
     }
@@ -253,7 +253,7 @@ public interface PlayerIO {
     }
 
     default Card chooseAnonymousCard(ArrayList<Card> cs) {
-        Utils.assertTrue(!cs.isEmpty(), "sanguosha.cards are empty");
+        Utils.assertTrue(!cs.isEmpty(), "cards are empty");
         if (cs.size() == 1) {
             return cs.get(0);
         }
@@ -329,7 +329,7 @@ public interface PlayerIO {
     }
 
     default void printSkills() {
-        print("sanguosha.skills: ");
+        print("skills: ");
         for (String s: getSkills()) {
             print("【" + s + "】 ");
         }
@@ -341,17 +341,17 @@ public interface PlayerIO {
         String option;
         if (!target.getEquipments().isEmpty()
                 && !target.getRealJudgeCards().isEmpty()) {
-            option = chooseFromProvided("hand sanguosha.cards", "equipments", "judge sanguosha.cards");
+            option = chooseFromProvided("hand cards", "equipments", "judge cards");
         } else if (!target.getEquipments().isEmpty()) {
-            option = chooseFromProvided("hand sanguosha.cards", "equipments");
+            option = chooseFromProvided("hand cards", "equipments");
         } else if (!target.getRealJudgeCards().isEmpty()) {
-            option = chooseFromProvided("hand sanguosha.cards", "judge sanguosha.cards");
+            option = chooseFromProvided("hand cards", "judge cards");
         } else {
-            option = "hand sanguosha.cards";
+            option = "hand cards";
         }
         Card c = null;
         while (c == null) {
-            if (option.equals("hand sanguosha.cards")) {
+            if (option.equals("hand cards")) {
                 c = chooseAnonymousCard(target.getCards());
             } else if (option.equals("equipments")) {
                 c = chooseCard(new ArrayList<>(target.getEquipments().values()));
@@ -366,13 +366,13 @@ public interface PlayerIO {
         target.printAllCards();
         String option;
         if (!target.getEquipments().isEmpty()) {
-            option = chooseFromProvided("hand sanguosha.cards", "equipments");
+            option = chooseFromProvided("hand cards", "equipments");
         } else {
-            option = "hand sanguosha.cards";
+            option = "hand cards";
         }
         Card c = null;
         while (c == null) {
-            if (option.equals("hand sanguosha.cards")) {
+            if (option.equals("hand cards")) {
                 c = chooseAnonymousCard(target.getCards());
             } else {
                 c = chooseCard(new ArrayList<>(target.getEquipments().values()));

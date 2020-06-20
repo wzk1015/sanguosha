@@ -2,6 +2,7 @@ package sanguosha.people.fire;
 
 import sanguosha.cards.Card;
 import sanguosha.cards.equipments.Weapon;
+import sanguosha.manager.GameManager;
 import sanguosha.people.Nation;
 import sanguosha.people.Person;
 import sanguosha.skills.Skill;
@@ -18,6 +19,10 @@ public class DianWei extends Person {
             println(this + " uses 强袭");
             Person p = selectPlayer();
             if (p == null) {
+                return true;
+            }
+            if (!GameManager.reachablePeople(this, getShaDistance()).contains(p)) {
+                println("you can't reach that person");
                 return true;
             }
             if (chooseFromProvided("throw a weapon", "lose 1 HP").equals("lost 1 HP")) {

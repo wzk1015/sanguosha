@@ -57,7 +57,7 @@ public class ShenLvMeng extends God {
                 Card c = chooseCard(p.getCards());
                 if (c != null) {
                     printCard(c);
-                    if (chooseFromProvided("throw", "put on top of sanguosha.cards heap").equals("throw")) {
+                    if (chooseFromProvided("throw", "put on top of cards heap").equals("throw")) {
                         p.loseCard(c);
                     } else {
                         p.loseCard(c, false);

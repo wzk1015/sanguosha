@@ -1,5 +1,6 @@
 package sanguosha.people.forest;
 
+import sanguosha.cards.JudgeCard;
 import sanguosha.cards.basic.Sha;
 import sanguosha.cardsheap.CardsHeap;
 import sanguosha.manager.GameManager;
@@ -96,6 +97,14 @@ public class JiaXu extends Person {
     public boolean hasWeiMu() {
         println(this + " uses 帷幕");
         return true;
+    }
+
+    @Override
+    public boolean addJudgeCard(JudgeCard c) {
+        if (c.isBlack()) {
+            return false;
+        }
+        return super.addJudgeCard(c);
     }
 
     @Override
