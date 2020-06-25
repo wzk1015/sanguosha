@@ -45,6 +45,7 @@ by wzk
 * 6.19  修复了神将的若干bug；武将和卡牌增加了help接口
 * 6.19  全部代码移动至`sanguosha`包下；修复了chooseManyFromProvided
 * 6.20  将大部分武器的逻辑移动至武器内部；修复了借刀、强袭、帷幕等若干bug
+* 6.26  增加发行版jar包；增加对ctrl+d中断的响应；修改showHelp
 
 
 

@@ -107,7 +107,7 @@ public abstract class Person extends Attributes implements Serializable {
     }
 
     public void drawPhase() {
-        println(this + " draws 2 sanguosha.cards from sanguosha.cards heap");
+        println(this + " draws 2 cards from cards heap");
         drawCards(2);
     }
 
@@ -188,17 +188,8 @@ public abstract class Person extends Attributes implements Serializable {
             card = (Card) getEquipments().get(weapon).use();
         }
         else if (order.contains("help")) {
-            try {
-                if (order.equals("help")) {
-                    showHelp("");
-                } else {
-                    showHelp(order.split(" ")[1]);
-                }
-                return true;
-            } catch (IndexOutOfBoundsException e) {
-                println("Wrong input");
-                return false;
-            }
+            showHelp();
+            return true;
         } else {
             try {
                 card = getCards().get(Integer.parseInt(order) - 1);
@@ -237,13 +228,12 @@ public abstract class Person extends Attributes implements Serializable {
         showExtraInfo();
         printAllCards();
         while (!isDead()) {
-            println(this + "'s current hand sanguosha.cards: ");
+            println(this + "'s current hand cards: ");
             printCards(getCards());
             if (hasEquipment(weapon, "丈八蛇矛")) {
                 println("【丈八蛇矛】");
             }
-            String order = input("Number:use card, " +
-                    "Name:skill or weapon, 'q':end phase");
+            String order = input("input an order, 'help' for help");
             if (order.equals("q")) {
                 break;
             }
@@ -254,7 +244,7 @@ public abstract class Person extends Attributes implements Serializable {
     public void throwPhase() {
         int num = getCards().size() - getHP();
         if (num > 0) {
-            println(String.format("You need to throw %d sanguosha.cards", num));
+            println(String.format("You need to throw %d cards", num));
             ArrayList<Card> cs = chooseCards(num, getCards());
             loseCard(cs);
             for (Person p: GameManager.getPlayers()) {
@@ -268,20 +258,25 @@ public abstract class Person extends Attributes implements Serializable {
 
     }
 
-    public void showHelp(String type) {
+    public void showHelp() {
+        println("Number: use card, Name: skill or weapon, 'q':end phase");
+        String type = input("input name of card or person to get information, 'q' to quit");
+        if (type.equals("q")) {
+            return;
+        }
         if (type.equals("")) {
-            println(this + "'s help: " + help());
+            println(this + "'s help:\n" + help());
             return;
         }
         for (Card c: CardsHeap.getAllCards()) {
             if (c.toString().equals(type)) {
-                println(c + "'s help: " + c.help());
+                println(c + "'s help:\n" + c.help());
                 return;
             }
         }
         for (Person p: PeoplePool.getPeople()) {
             if (p.toString().equals(type)) {
-                println(p + "'s help: " + p.help());
+                println(p + "'s help:\n" + p.help());
                 return;
             }
         }

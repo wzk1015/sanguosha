@@ -14,8 +14,8 @@ public class GuanShiFu extends Weapon {
             getSource().println("you don't have enough cards");
         }
         String option = getSource().chooseFromProvided(
-                "throw two sanguosha.cards and hurt", "pass");
-        if (option.equals("throw two sanguosha.cards and hurt")) {
+                "throw two cards and hurt", "pass");
+        if (option.equals("throw two cards and hurt")) {
             getSource().throwCard(getSource().chooseCards(2,
                     getTarget().getCardsAndEquipments()));
             return true;

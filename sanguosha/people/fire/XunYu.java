@@ -24,7 +24,7 @@ public class XunYu extends Person {
             }
             while (p.getCards().size() >= 1 || p.getHP() <= getHP()) {
                 if (p.getCards().size() >= 1) {
-                    println("target has no hand sanguosha.cards");
+                    println("target has no hand cards");
                 } else {
                     println("target's HP > your HP");
                 }

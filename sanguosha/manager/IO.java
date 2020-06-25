@@ -60,7 +60,7 @@ public class IO {
     }
 
     public static Person initialChoosePerson(ArrayList<Person> people) {
-        Utils.assertTrue(!people.isEmpty(), "initial sanguosha.people are empty");
+        Utils.assertTrue(!people.isEmpty(), "initial people are empty");
         ArrayList<String> options = new ArrayList<>();
         for (Person p1 : people) {
             options.add(p1.toString());

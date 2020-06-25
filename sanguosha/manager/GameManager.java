@@ -15,6 +15,7 @@ import sanguosha.people.wind.ZhouTai;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameManager {
@@ -58,28 +59,33 @@ public class GameManager {
     }
 
     public static void runGame(int num) {
-        GameManager.numPlayers = num;
-        startGame();
+        try {
+            GameManager.numPlayers = num;
+            startGame();
 
-        if (num > 4) {
-            Person king = idMap.get(Identity.KING).get(0);
-            king.setMaxHP(king.getMaxHP() + 1);
-            king.setCurrentHP(king.getMaxHP());
-        }
-
-        for (Person p: players) {
-            p.initialize();
-        }
-
-        int roundCount = 1;
-        while (!gameIsEnd()) {
-            IO.println("round " + roundCount++);
-            for (Person p : players) {
-                p.run();
-                checkCardsNum();
+            if (num > 4) {
+                Person king = idMap.get(Identity.KING).get(0);
+                king.setMaxHP(king.getMaxHP() + 1);
+                king.setCurrentHP(king.getMaxHP());
             }
+
+            for (Person p : players) {
+                p.initialize();
+            }
+
+            int roundCount = 1;
+            while (!gameIsEnd()) {
+                IO.println("round " + roundCount++);
+                for (Person p : players) {
+                    p.run();
+                    checkCardsNum();
+                }
+            }
+            endGame();
+
+        } catch (NoSuchElementException e) {
+            endWithError("\nno line found");
         }
-        endGame();
     }
 
     public static boolean gameIsEnd() {
@@ -236,6 +242,7 @@ public class GameManager {
 
     public static void endWithError(String s) {
         IO.println(s);
+        IO.println("game end with error\n");
         System.exit(1);
     }
 

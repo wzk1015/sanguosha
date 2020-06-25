@@ -26,7 +26,7 @@ public class YuanShao extends Person {
             Card c1;
             Card c2;
             do {
-                println("choose two sanguosha.cards of same color");
+                println("choose two cards of same color");
                 c1 = chooseCard(getCards());
                 c2 = chooseCard(getCards());
             } while (c1 != null && c2 != null && c1.color() != c2.color());

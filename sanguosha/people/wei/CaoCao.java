@@ -38,7 +38,7 @@ public class CaoCao extends Person {
             ArrayList<Person> weiPeople = GameManager.peoplefromNation(Nation.WEI);
             weiPeople.remove(this);
             if (weiPeople.isEmpty()) {
-                println("no 魏 sanguosha.people available");
+                println("no 魏 people available");
                 return false;
             }
             for (Person p : weiPeople) {

@@ -36,7 +36,7 @@ public class LiuBei extends Person {
         if (cards == null || cards.isEmpty()) {
             return;
         }
-        println(this + " gives " + cards.size() + " sanguosha.cards to " + p);
+        println(this + " gives " + cards.size() + " cards to " + p);
         p.addCard(cards);
         rendeCount += cards.size();
         if (!hasRecovered && rendeCount >= 2) {
@@ -50,7 +50,7 @@ public class LiuBei extends Person {
         ArrayList<Person> shuPeople = GameManager.peoplefromNation(Nation.SHU);
         shuPeople.remove(this);
         if (shuPeople.isEmpty()) {
-            println("no 蜀 sanguosha.people available");
+            println("no 蜀 people available");
             return null;
         }
         for (Person p : shuPeople) {

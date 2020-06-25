@@ -196,13 +196,13 @@ public class PeoplePool {
 
     public static ArrayList<Person> allocPeople() {
         peopleIndex += optionsPerPerson;
-        Utils.assertTrue(peopleIndex <= people.size(), "No sanguosha.people available");
+        Utils.assertTrue(peopleIndex <= people.size(), "No people available");
         return new ArrayList<>(people.subList(peopleIndex - optionsPerPerson, peopleIndex));
     }
 
     public static Person allocOnePerson() {
         peopleIndex += 1;
-        Utils.assertTrue(peopleIndex <= people.size(), "No sanguosha.people available");
+        Utils.assertTrue(peopleIndex <= people.size(), "No people available");
         return people.get(peopleIndex - 1);
     }
 

@@ -26,14 +26,14 @@ public class ZhuGeLiang extends Person {
             ArrayList<Card> view = new ArrayList<>(heap.subList(0, num));
             heap = new ArrayList<>(heap.subList(num, heap.size()));
 
-            println("choose sanguosha.cards that you want to put on top, in your expected order");
+            println("choose cards that you want to put on top, in your expected order");
             ArrayList<Card> top = chooseCards(0, view);
             if (top != null) {
                 view.removeAll(top);
                 heap.addAll(0, top);
             }
             if (!view.isEmpty()) {
-                println("now arrange sanguosha.cards to put at bottom, in your expected order");
+                println("now arrange cards to put at bottom, in your expected order");
                 ArrayList<Card> bottom = chooseCards(view.size(), view);
                 heap.addAll(bottom);
             }

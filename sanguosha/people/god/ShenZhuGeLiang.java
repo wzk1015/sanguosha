@@ -21,7 +21,7 @@ public class ShenZhuGeLiang extends God {
         println("current stars: ");
         printCards(stars);
         do {
-            println("choose sanguosha.cards to exchange with stars");
+            println("choose cards to exchange with stars");
             handCards = chooseCards(0, getCards());
         } while (handCards.size() > stars.size());
         int num = handCards.size();

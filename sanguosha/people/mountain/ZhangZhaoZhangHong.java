@@ -46,7 +46,7 @@ public class ZhangZhaoZhangHong extends Person {
     @Skill("固政")
     @Override
     public void otherPersonThrowPhase(Person p, ArrayList<Card> cards) {
-        Utils.assertTrue(!cards.isEmpty(), "throw sanguosha.cards are empty");
+        Utils.assertTrue(!cards.isEmpty(), "throw cards are empty");
         if (launchSkill("固政")) {
             Card c = chooseCard(cards);
             if (c == null) {

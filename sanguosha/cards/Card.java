@@ -143,7 +143,7 @@ public abstract class Card implements Serializable {
             return "false";
         }
         if (p1 == p2) {
-            IO.println("can't select two same sanguosha.people");
+            IO.println("can't select two same people");
             return "continue";
         }
         if (this instanceof JieDaoShaRen && (p1 == source)) {
@@ -219,7 +219,7 @@ public abstract class Card implements Serializable {
             if ((this instanceof GuoHeChaiQiao || this instanceof ShunShouQianYang) &&
                     p.getCardsAndEquipments().isEmpty()
                     && p.getJudgeCards().isEmpty()) {
-                IO.println("you can't chooose a person with no sanguosha.cards");
+                IO.println("you can't chooose a person with no cards");
                 continue;
             }
             target = p;

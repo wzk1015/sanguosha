@@ -22,8 +22,8 @@ public class ShenLvMeng extends God {
             CardsHeap.getDrawCards(0).removeAll(cards);
             ArrayList<Card> selected = new ArrayList<>();
             printCards(cards);
-            while (selected.isEmpty()) {
-                println("choose sanguosha.cards of different colors");
+            while (true) {
+                println("choose cards of different colors");
                 selected = chooseCards(0, cards);
                 HashSet<Color> existingColors = new HashSet<>();
                 boolean colorDuplicated = false;

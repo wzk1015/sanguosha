@@ -15,7 +15,7 @@ public class XuChu extends Person {
     @Override
     public void drawPhase() {
         if (launchSkill("裸衣")) {
-            println(this + " draw 1 card from sanguosha.cards heap");
+            println(this + " draw 1 card from cards heap");
             drawCard();
             isNaked = true;
             return;

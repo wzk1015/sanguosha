@@ -86,7 +86,7 @@ public class LiuChan extends Person {
         ArrayList<Person> shuPeople = GameManager.peoplefromNation(Nation.SHU);
         shuPeople.remove(this);
         if (shuPeople.isEmpty()) {
-            println("no 蜀 sanguosha.people available");
+            println("no 蜀 people available");
             return null;
         }
         for (Person p : shuPeople) {

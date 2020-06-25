@@ -365,9 +365,11 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
 
     public boolean askTao() {
         boolean wanSha = false;
+        Person wanShaPerson = null;
         for (Person p: GameManager.getPlayers()) {
             if (p.hasWanSha()) {
                 wanSha = true;
+                wanShaPerson = p;
                 break;
             }
         }
@@ -378,7 +380,7 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
                     return true;
                 }
             }
-            else if ((!wanSha && p.requestTao()) || (p.hasWanSha() && p.requestTao())) {
+            else if ((!wanSha && p.requestTao()) || (p == wanShaPerson && p.requestTao())) {
                 gotSavedBy(p);
                 return true;
             }
@@ -413,8 +415,8 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
 
     public Sha requestSha() {
         if (hasEquipment(weapon, "丈八蛇矛") && getCards().size() >= 2) {
-            if (chooseFromProvided("throw two sanguosha.cards to sha", "pass").equals(
-                    "throw two sanguosha.cards to sha")) {
+            if (chooseFromProvided("throw two cards to sha", "pass").equals(
+                    "throw two cards to sha")) {
                 ArrayList<Card> cs = chooseCards(2, getCards());
                 loseCard(cs);
                 if (cs.get(0).isRed() && cs.get(1).isRed()) {
