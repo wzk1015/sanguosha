@@ -14,9 +14,23 @@ by wzk
 
 ## 试玩！
 
-前提条件：系统内安装jdk（版本1.8以上）
+### 前提条件
 
-`git clone`或直接下载`sanguosha.jar`，使用命令行（windows下可按下win+R输入cmd，mac下打开终端）进入下载目录，运行`java -jar sanguosha.jar`，即可开始游戏！
+系统内安装jdk（版本1.8以上）
+
+### GUI运行
+
+`git clone`或直接下载`sanguosha.jar`，使用命令行（windows下可按下win+R输入cmd，mac下打开终端）进入下载目录，运行`java -jar sgsgui.jar`即可畅玩！
+
+### 命令行运行
+
+同上，运行`java -jar sanguosha.jar`，即可命令行运行
+
+### 自定义！
+
+默认配置下使用全套卡牌、8位神将、3人（主内反）模式。人数可以在`Main.java`中设置；卡牌可在`cardsheap/CardsHeap.java`中设置；武将和身份可在`cardsheap/Peoplepool.java`中设置。
+
+如果自定义了配置，请重新打包jar进行游戏。
 
 
 
@@ -52,6 +66,7 @@ by wzk
 * 6.19  全部代码移动至`sanguosha`包下；修复了`chooseManyFromProvided`
 * 6.20  将大部分武器的逻辑移动至武器内部；修复了借刀、强袭、帷幕等若干bug
 * 6.26  增加发行版jar包；增加对ctrl+d中断的响应；修改`showHelp`
+* 6.28  **增加GUI**！swing现学现用~
 
 
 

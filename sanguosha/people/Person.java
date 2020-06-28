@@ -1,5 +1,6 @@
 package sanguosha.people;
 
+import sanguosha.CLILauncher;
 import sanguosha.cards.Card;
 import sanguosha.cards.Equipment;
 import sanguosha.cards.JudgeCard;
@@ -116,7 +117,7 @@ public abstract class Person extends Attributes implements Serializable {
             if (getShaCount() != 0 || hasEquipment(weapon, "诸葛连弩")) {
                 setShaCount(getShaCount() - 1);
             } else {
-                println("You can't 杀 anymore");
+                printlnToIO("You can't 杀 anymore");
                 return false;
             }
         }
@@ -147,7 +148,7 @@ public abstract class Person extends Attributes implements Serializable {
         }
         if ((card instanceof Tao && getHP() == getMaxHP()) || card instanceof Shan ||
                 card instanceof WuXieKeJi || (card instanceof Jiu && isDrunk())) {
-            println("You can't use that");
+            printlnToIO("You can't use that");
             return false;
         }
         if (card instanceof Equipment) {
@@ -194,7 +195,7 @@ public abstract class Person extends Attributes implements Serializable {
             try {
                 card = getCards().get(Integer.parseInt(order) - 1);
             } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                println("Wrong input");
+                printlnToIO("Wrong input");
                 return false;
             }
         }
@@ -222,16 +223,17 @@ public abstract class Person extends Attributes implements Serializable {
     }
 
     public void usePhase() {
-        printSkills();
-        println("identity: " + getIdentity());
-        println("current HP: " + getHP() + "/" + getMaxHP());
         showExtraInfo();
-        printAllCards();
+        if (!CLILauncher.isGUI()) {
+            println(getPlayerStatus(true, false));
+        }
         while (!isDead()) {
-            println(this + "'s current hand cards: ");
-            printCards(getCards());
-            if (hasEquipment(weapon, "丈八蛇矛")) {
-                println("【丈八蛇矛】");
+            if (!CLILauncher.isGUI()) {
+                println(this + "'s current hand cards: ");
+                printCards(getCards());
+                if (hasEquipment(weapon, "丈八蛇矛")) {
+                    println("【丈八蛇矛】");
+                }
             }
             String order = input("input an order, 'help' for help");
             if (order.equals("q")) {
@@ -244,7 +246,7 @@ public abstract class Person extends Attributes implements Serializable {
     public void throwPhase() {
         int num = getCards().size() - getHP();
         if (num > 0) {
-            println(String.format("You need to throw %d cards", num));
+            printlnToIO(String.format("You need to throw %d cards", num));
             ArrayList<Card> cs = chooseCards(num, getCards());
             loseCard(cs);
             for (Person p: GameManager.getPlayers()) {
@@ -259,28 +261,28 @@ public abstract class Person extends Attributes implements Serializable {
     }
 
     public void showHelp() {
-        println("Number: use card, Name: skill or weapon, 'q':end phase");
+        printlnToIO("Number: use card, Name: skill or weapon, 'q':end phase");
         String type = input("input name of card or person to get information, 'q' to quit");
         if (type.equals("q")) {
             return;
         }
         if (type.equals("")) {
-            println(this + "'s help:\n" + help());
+            printlnToIO(this + "'s help:\n" + help());
             return;
         }
         for (Card c: CardsHeap.getAllCards()) {
             if (c.toString().equals(type)) {
-                println(c + "'s help:\n" + c.help());
+                printlnToIO(c + "'s help:\n" + c.help());
                 return;
             }
         }
         for (Person p: PeoplePool.getPeople()) {
             if (p.toString().equals(type)) {
-                println(p + "'s help:\n" + p.help());
+                printlnToIO(p + "'s help:\n" + p.help());
                 return;
             }
         }
-        println("unknown help type: " + type);
+        printlnToIO("unknown help type: " + type);
     }
 
     public String help() {

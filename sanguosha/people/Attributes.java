@@ -11,7 +11,6 @@ import sanguosha.cards.equipments.Shield;
 import sanguosha.cards.equipments.Weapon;
 import sanguosha.cardsheap.CardsHeap;
 import sanguosha.manager.GameManager;
-import sanguosha.manager.IO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,7 +119,7 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
 
     public boolean hasNotUsedSkill1() {
         if (hasUsedSkill1) {
-            println("you have used this skill in this phase");
+            printlnToIO("you have used this skill in this phase");
             return false;
         }
         return true;
@@ -200,9 +199,10 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
 
     public void addCard(Card c) {
         getCards().add(c);
-        print(this + " got card: ");
+        println(this + " got 1 card");
+        printToIO(this + " got card: ");
         c.setOwner((Person) this);
-        printCard(c);
+        printlnToIO(c.info() + c);
     }
 
     public void addCard(ArrayList<Card> cs) {
@@ -373,7 +373,7 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
                 break;
             }
         }
-        IO.println("requesting tao for " + this);
+        println("requesting tao for " + this);
         for (Person p : GameManager.getPlayers()) {
             if (p == this) {
                 if (p.requestTao() || p.requestJiu()) {

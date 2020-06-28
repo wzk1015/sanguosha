@@ -24,6 +24,8 @@ public class GameManager {
     private static final HashMap<Identity, ArrayList<Person>> idMap = new HashMap<>();
     private static final HashMap<Identity, ArrayList<Person>> idMapAll = new HashMap<>();
     private static final ArrayList<Person> winners = new ArrayList<>();
+    private static Person currentPerson = null;
+    private static String currentIOrequest = "";
 
     public static void startGame() {
         IO.println("wzk's sanguosha begins!");
@@ -43,7 +45,7 @@ public class GameManager {
         for (int i = 0; i < numPlayers; i++) {
             Identity identity = PeoplePool.allocIdentity();
             ArrayList<Person> options = PeoplePool.allocPeople();
-            IO.println("player " + (i + 1) + ", your identity is " + identity.toString() +
+            IO.printlnToIO("player " + (i + 1) + ", your identity is " + identity.toString() +
                     "\nchoose your person");
             Person selected = IO.initialChoosePerson(options);
             selected.setIdentity(identity);
@@ -59,6 +61,7 @@ public class GameManager {
     }
 
     public static void runGame(int num) {
+
         try {
             GameManager.numPlayers = num;
             startGame();
@@ -77,8 +80,10 @@ public class GameManager {
             while (!gameIsEnd()) {
                 IO.println("round " + roundCount++);
                 for (Person p : players) {
+                    currentPerson = p;
                     p.run();
                     checkCardsNum();
+                    currentIOrequest = "";
                 }
             }
             endGame();
@@ -254,6 +259,26 @@ public class GameManager {
         return players;
     }
 
+    public static String getCurrentPlayerStatus() {
+        return currentPerson == null ? "" : currentPerson.getPlayerStatus(true, false);
+    }
+
+    public static String getOverallStatus() {
+        String ans = "";
+        for (Person p: players) {
+            ans += p.getPlayerStatus(false, false) + "\n";
+        }
+        return ans;
+    }
+
+    public static String getCurrentIOrequest() {
+        return currentIOrequest == null ? "" : currentIOrequest;
+    }
+
+    public static void addCurrentIOrequest(String currentIOrequest) {
+        GameManager.currentIOrequest += currentIOrequest;
+    }
+
     public static void checkCardsNum() {
         int ans = CardsHeap.getDrawCards(0).size() + CardsHeap.getUsedCards().size();
         for (Person p : players) {
@@ -273,7 +298,7 @@ public class GameManager {
         if (ans != CardsHeap.getNumCards()) {
             IO.println("card number not consistent");
             for (Person p : players) {
-                p.printAllCards();
+                IO.println(p.showAllCards());
             }
             endWithError("current number of sanguosha.cards: " + ans +
                     ", expected: " + CardsHeap.getNumCards());

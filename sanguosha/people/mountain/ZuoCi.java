@@ -7,6 +7,7 @@ import sanguosha.people.Person;
 import sanguosha.skills.Skill;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class ZuoCi extends Person {
     private ArrayList<Person> huaShen = new ArrayList<>();
@@ -39,9 +40,8 @@ public class ZuoCi extends Person {
         println("you can't use 化身 because I don't want to implement it");
     }
 
-    @Override
-    public void printSkills() {
-        selected.printSkills();
+    public HashSet<String> getSkills() {
+        return selected.getSkills();
     }
 
     @Override

@@ -1,5 +1,7 @@
 package sanguosha.manager;
 
+import gui.GUI;
+import sanguosha.CLILauncher;
 import sanguosha.cards.Card;
 import sanguosha.people.Person;
 
@@ -7,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class IO {
+    private static final boolean gui = CLILauncher.isGUI();
     private static final Scanner sn = new Scanner(System.in);
 
     public static void debug(String s) {
@@ -18,17 +21,20 @@ public class IO {
     }
 
     public static String input(String s) {
+        if (gui) {
+            printToIO(">>>" + s + ": \n");
+            return GUI.getInput();
+        }
         String ans = "";
         while (ans.isEmpty()) {
-            print(">>>" + s + ": ");
+            printToIO(">>>" + s + ": ");
             ans = sn.nextLine();
         }
         return ans;
     }
 
     public static String input() {
-        print(">>> ");
-        return sn.nextLine();
+        return input("");
     }
 
     public static void println(String s) {
@@ -40,21 +46,22 @@ public class IO {
     }
 
     public static void printCard(Card card) {
-        println(card.info() + card);
+        printlnToIO(card.info() + card);
     }
 
     public static <E> E chooseFromProvided(ArrayList<E> choices) {
         Utils.assertTrue(!choices.isEmpty(), "choices are empty");
         int i = 1;
         for (E choice : choices) {
-            print("【" + i++ + "】" + choice.toString() + "  ");
+            printToIO("【" + i++ + "】" + choice.toString() + "  ");
         }
+        printlnToIO("");
         try {
             String in = input("make a choice");
             int option = Integer.parseInt(in) - 1;
             return choices.get(option);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            println("wrong choice");
+            printlnToIO("wrong choice");
             return chooseFromProvided(choices);
         }
     }
@@ -65,7 +72,7 @@ public class IO {
         for (Person p1 : people) {
             options.add(p1.toString());
         }
-        IO.println("choose a player:");
+        printlnToIO("choose a player:");
         String option = chooseFromProvided(options);
         for (Person p1 : people) {
             if (p1.toString().equals(option)) {
@@ -74,5 +81,21 @@ public class IO {
         }
         GameManager.endWithError("end of initialChoosePlayer reached");
         return people.get(0);
+    }
+    
+    public static void printToIO(String s) {
+        if (CLILauncher.isGUI()) {
+            GameManager.addCurrentIOrequest(s);
+        } else {
+            print(s);
+        }
+    }
+    
+    public static void printlnToIO(String s) {
+        if (CLILauncher.isGUI()) {
+            GameManager.addCurrentIOrequest(s + "\n");
+        } else {
+            println(s);
+        }
     }
 }

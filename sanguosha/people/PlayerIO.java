@@ -1,5 +1,7 @@
 package sanguosha.people;
 
+import gui.GUI;
+import sanguosha.CLILauncher;
 import sanguosha.cards.Card;
 import sanguosha.cards.Color;
 import sanguosha.cards.EquipType;
@@ -32,6 +34,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public interface PlayerIO {
+    boolean gui = CLILauncher.isGUI();
     Scanner sn = IO.getScanner();
 
     default void debug(String s) {
@@ -39,17 +42,20 @@ public interface PlayerIO {
     }
 
     default String input(String s) {
+        if (gui) {
+            printToIO(">>>" + s + ": \n");
+            return GUI.getInput();
+        }
         String ans = "";
         while (ans.isEmpty()) {
-            print(">>>" + s + ": ");
+            printToIO(">>>" + s + ": ");
             ans = sn.nextLine();
         }
         return ans;
     }
 
     default String input() {
-        print(">>> ");
-        return sn.nextLine();
+        return input("");
     }
 
     default void println(String s) {
@@ -61,24 +67,24 @@ public interface PlayerIO {
     }
 
     default void showUsingCard(Card c) {
-        print(c.getSource().toString() + " uses " + c + " towards ");
+        printToIO(c.getSource().toString() + " uses " + c + " towards ");
         if (c instanceof TieSuoLianHuan) {
-            println(c.getTarget().toString() + " and " +
+            printlnToIO(c.getTarget().toString() + " and " +
                     ((TieSuoLianHuan) c).getTarget2().toString());
         } else if (c instanceof JieDaoShaRen) {
-            println(c.getTarget().toString() + " and " +
+            printlnToIO(c.getTarget().toString() + " and " +
                     ((JieDaoShaRen) c).getTarget2().toString());
         } else if (c instanceof NanManRuQin || c instanceof WanJianQiFa
                 || c instanceof TaoYuanJieYi || c instanceof WuGuFengDeng) {
-            println("everyone");
+            printlnToIO("everyone");
         } else {
-            println(c.getTarget().toString());
+            printlnToIO(c.getTarget().toString());
         }
     }
 
     default void printCards(ArrayList<Card> cards) {
         for (int i = 1; i <= cards.size(); i++) {
-            println("【" + i + "】 " + cards.get(i - 1).info() + cards.get(i - 1) + " ");
+            printlnToIO("【" + i + "】 " + cards.get(i - 1).info() + cards.get(i - 1) + " ");
         }
     }
 
@@ -88,7 +94,7 @@ public interface PlayerIO {
 
     default Card requestRedBlack(String color) {
         Utils.assertTrue(color.equals("red") || color.equals("black"), "invalid color");
-        println("choose a " + color + " card, 'q' to ignore");
+        printlnToIO("choose a " + color + " card, 'q' to ignore");
         printCards(getCards());
         String order = input();
         if (order.equals("q")) {
@@ -98,26 +104,26 @@ public interface PlayerIO {
         try {
             Card c = getCards().get(Integer.parseInt(order) - 1);
             if ((color.equals("red") && c.isBlack()) || (color.equals("black") && c.isRed())) {
-                println("Wrong color");
+                printlnToIO("Wrong color");
                 return requestRedBlack(color);
             }
             loseCard(c);
             return c;
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            println("Wrong input");
+            printlnToIO("Wrong input");
             return requestRedBlack(color);
         }
     }
 
     default Card requestCard(String type) {
         if (getCards().isEmpty()) {
-            println(toString() + "has no cards to choose");
+            printlnToIO(toString() + "has no cards to choose");
             return null;
         }
         if (type != null) {
-            println(toString() + " choose a " + type + ", 'q' to ignore");
+            printlnToIO(toString() + " choose a " + type + ", 'q' to ignore");
         } else {
-            println(toString() + " choose a card");
+            printlnToIO(toString() + " choose a card");
         }
         printCards(getCards());
         if (this instanceof AI) {
@@ -140,28 +146,20 @@ public interface PlayerIO {
             Card c = getCards().get(Integer.parseInt(order) - 1);
             if (type != null && !c.toString().equals(type) &&
                     !(type.equals("杀") && c instanceof Sha)) {
-                println("Wrong type");
+                printlnToIO("Wrong type");
                 return requestCard(type);
             }
             loseCard(c);
             return c;
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            println("Wrong input");
+            printlnToIO("Wrong input");
             return requestCard(type);
         }
 
     }
 
-    default void printAllCards() {
-        println(toString() + " has " + getCards().size() + " hand card(s)");
-        if (!getEquipments().isEmpty()) {
-            println("equipments: ");
-            printCards(new ArrayList<>(getEquipments().values()));
-        }
-        if (!getJudgeCards().isEmpty()) {
-            println("judge cards: ");
-            printCards(new ArrayList<>(getRealJudgeCards()));
-        }
+    default String showAllCards() {
+        return getPlayerStatus(false, true);
     }
 
     default <E> E chooseFromProvided(E... choices) {
@@ -171,14 +169,15 @@ public interface PlayerIO {
 
     default <E> E chooseFromProvided(ArrayList<E> choices) {
         if (choices.isEmpty()) {
-            println(this + " has nothing to choose");
+            printlnToIO(this + " has nothing to choose");
             return null;
         }
 
         int i = 1;
         for (E choice : choices) {
-            print("【" + i++ + "】" + choice.toString() + "  ");
+            printToIO("【" + i++ + "】" + choice.toString() + "  ");
         }
+        printlnToIO("");
         if (this instanceof AI) {
             int option = Utils.randint(0, choices.size() - 1);
             println("AI chooses option " + option);
@@ -192,7 +191,7 @@ public interface PlayerIO {
             int option = Integer.parseInt(in) - 1;
             return choices.get(option);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            println("wrong choice");
+            printlnToIO("wrong choice");
             return chooseFromProvided(choices);
         }
     }
@@ -204,14 +203,15 @@ public interface PlayerIO {
 
     default <E> ArrayList<E> chooseManyFromProvided(int num, List<E> choices) {
         if (choices.isEmpty() || (num != 0 && num > choices.size())) {
-            println(this + " has not enough options to choose");
+            printlnToIO(this + " has not enough options to choose");
             return new ArrayList<>();
         }
 
         int i = 1;
         for (E choice : choices) {
-            print("【" + i++ + "】 " + choice.toString() + " ");
+            printToIO("【" + i++ + "】 " + choice.toString() + " ");
         }
+        printlnToIO("");
 
         if (this instanceof AI) {
             println("AI chooses options 0 - " + num);
@@ -222,7 +222,7 @@ public interface PlayerIO {
                     (num == 0 ? "several" : num)  + " options, or q");
             String[] split = input.split(" ");
             if (split.length != num && num != 0) {
-                println("wrong number of choices: " + split.length);
+                printlnToIO("wrong number of choices: " + split.length);
                 return chooseManyFromProvided(num, choices);
             }
             ArrayList<E> ans = new ArrayList<>();
@@ -232,14 +232,14 @@ public interface PlayerIO {
             for (String s: split) {
                 int option = Integer.parseInt(s) - 1;
                 if (ans.contains(choices.get(option))) {
-                    println("can't choose the same option: " + s);
+                    printlnToIO("can't choose the same option: " + s);
                     return chooseManyFromProvided(num, choices);
                 }
                 ans.add(choices.get(option));
             }
             return ans;
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            println("wrong choices");
+            printlnToIO("wrong choices");
             return chooseManyFromProvided(num, choices);
         }
     }
@@ -279,7 +279,7 @@ public interface PlayerIO {
     }
 
     default Card requestColor(Color color) {
-        println("choose a " + color + " card, 'q' to ignore");
+        printlnToIO("choose a " + color + " card, 'q' to ignore");
         printCards(getCards());
         String order = input();
         if (order.equals("q")) {
@@ -289,13 +289,13 @@ public interface PlayerIO {
         try {
             Card c = getCards().get(Integer.parseInt(order) - 1);
             if (c.color() != color) {
-                println("Wrong color");
+                printlnToIO("Wrong color");
                 return requestColor(color);
             }
             loseCard(c);
             return c;
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            println("Wrong input");
+            printlnToIO("Wrong input");
             return requestColor(color);
         }
 
@@ -328,16 +328,8 @@ public interface PlayerIO {
         return skills;
     }
 
-    default void printSkills() {
-        print("skills: ");
-        for (String s: getSkills()) {
-            print("【" + s + "】 ");
-        }
-        println("");
-    }
-
     default Card chooseTargetAllCards(Person target) {
-        target.printAllCards();
+        printlnToIO(target.showAllCards());
         String option;
         if (!target.getEquipments().isEmpty()
                 && !target.getRealJudgeCards().isEmpty()) {
@@ -363,7 +355,7 @@ public interface PlayerIO {
     }
 
     default Card chooseTargetCardsAndEquipments(Person target) {
-        target.printAllCards();
+        printlnToIO(target.showAllCards());
         String option;
         if (!target.getEquipments().isEmpty()) {
             option = chooseFromProvided("hand cards", "equipments");
@@ -389,7 +381,7 @@ public interface PlayerIO {
         if (!chooseSelf) {
             options.remove(toString());
         }
-        IO.println("choose a player:");
+        printlnToIO("choose a player:");
         String option = chooseFromProvided(options);
         for (Person p1 : people) {
             if (p1.toString().equals(option)) {
@@ -419,9 +411,63 @@ public interface PlayerIO {
 
     ArrayList<Card> getRealJudgeCards();
 
+    Identity getIdentity();
+
+    int getHP();
+
+    int getMaxHP();
+
     void loseCard(Card c);
 
     boolean hasWakenUp();
 
     boolean hasWuShuang();
+
+    default String getPlayerStatus(boolean privateAccess, boolean onlyCards) {
+        String ans = "";
+        if (!onlyCards) {
+            ans += this.toString() + "  ";
+            for (String s : getSkills()) {
+                ans += "【" + s + "】";
+            }
+        }
+        ans += "\ncurrent HP: " + getHP() + "/" + getMaxHP();
+        if (privateAccess) {
+            ans += "\nidentity: " + getIdentity();
+            ans += "\nhand cards: ";
+            for (int i = 1; i <= getCards().size(); i++) {
+                ans += "【" + i + "】" + getCards().get(i - 1).info() + getCards().get(i - 1) + "\n";
+            }
+        }
+        else {
+            ans += "\n" + getCards().size() + " hand cards";
+        }
+        ans += "\nequipments:";
+        ArrayList<Card> equips = new ArrayList<>(getEquipments().values());
+        for (int i = 1; i <= equips.size(); i++) {
+            ans += equips.get(i - 1) + " ";
+        }
+        ans += "\njudge cards:";
+        ArrayList<Card> judges = new ArrayList<>(getJudgeCards());
+        for (int i = 1; i <= judges.size(); i++) {
+            ans += judges.get(i - 1) + " ";
+        }
+        return ans;
+    }
+
+    default void printToIO(String s) {
+        if (CLILauncher.isGUI()) {
+            GameManager.addCurrentIOrequest(s);
+        } else {
+            print(s);
+        }
+    }
+
+    default void printlnToIO(String s) {
+        if (CLILauncher.isGUI()) {
+            GameManager.addCurrentIOrequest(s + "\n");
+        } else {
+            println(s);
+        }
+    }
 }
