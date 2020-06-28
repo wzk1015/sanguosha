@@ -3,6 +3,7 @@ package sanguosha.people.forest;
 import sanguosha.cards.Card;
 import sanguosha.cards.Color;
 import sanguosha.cardsheap.CardsHeap;
+import sanguosha.manager.IO;
 import sanguosha.people.Nation;
 import sanguosha.people.Person;
 import sanguosha.skills.ForcesSkill;
@@ -26,10 +27,11 @@ public class MengHuo extends Person {
     @Override
     public void drawPhase() {
         if (launchSkill("再起")) {
-            ArrayList<Card> cs = CardsHeap.getDrawCards(getMaxHP() - getHP());
+            ArrayList<Card> cs = new ArrayList<>(CardsHeap.getDrawCards(getMaxHP() - getHP())
+                    .subList(0, getMaxHP() - getHP()));
             CardsHeap.getDrawCards(0).removeAll(cs);
-            println("再起 sanguosha.cards:");
-            printCards(cs);
+            println("再起 cards:");
+            printCardsPublic(cs);
             for (Card c: cs) {
                 if (c.color() == Color.HEART) {
                     recover(1);

@@ -22,11 +22,11 @@ public class ZhangLiao extends Person {
                     return;
                 }
                 if (p1 == p2) {
-                    println("can't select same person");
+                    printlnToIO("can't select same person");
                     continue;
                 }
                 if (p1.getCards().isEmpty() || p2.getCards().isEmpty()) {
-                    println("target has no hand cards");
+                    printlnToIO("target has no hand cards");
                     continue;
                 }
                 Card c1 = chooseAnonymousCard(p1.getCards());

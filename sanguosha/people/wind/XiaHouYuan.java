@@ -52,7 +52,7 @@ public class XiaHouYuan extends Person {
         if (launchSkill("神速")) {
             Card c = chooseCard(getCardsAndEquipments());
             while (!(c instanceof Equipment) && c != null) {
-                println("you should choose an equipment");
+                printlnToIO("you should choose an equipment");
                 c = chooseCard(getCardsAndEquipments());
             }
             if (c != null) {

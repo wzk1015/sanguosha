@@ -1,5 +1,6 @@
 package sanguosha.manager;
 
+import sanguosha.GameLauncher;
 import sanguosha.cards.Card;
 import sanguosha.cards.EquipType;
 import sanguosha.cards.basic.HurtType;
@@ -123,7 +124,9 @@ public class GameManager {
     }
 
     public static void endGame() {
-        System.exit(0);
+        if (!GameLauncher.isGUI()) {
+            System.exit(0);
+        }
     }
 
     public static void linkHurt(ArrayList<Card> cards, Person source, int num, HurtType type) {
@@ -138,9 +141,10 @@ public class GameManager {
     }
 
     public static boolean pinDian(Person source, Person target) {
-        Utils.assertTrue(source.getCards().size() >= 1, "pindian source has no sanguosha.cards");
-        Utils.assertTrue(target.getCards().size() >= 1, "pindian target has no sanguosha.cards");
+        Utils.assertTrue(source.getCards().size() >= 1, "pindian source has no cards");
+        Utils.assertTrue(target.getCards().size() >= 1, "pindian target has no cards");
 
+        IO.println(source + " launches 拼点 towards " + target);
         Card c1 = null;
         Card c2 = null;
         while (c1 == null || c2 == null) {
@@ -161,6 +165,7 @@ public class GameManager {
         } else if (yy2.equals("-3")) {
             num2 = Math.min(num2 - 3, 1);
         }
+        IO.println((num1 > num2 ? source : target) + " wins");
         return num1 > num2;
     }
 
@@ -222,7 +227,7 @@ public class GameManager {
     public static ArrayList<Person> reachablePeople(Person p1, int distance) {
         ArrayList<Person> ans = new ArrayList<>();
         for (Person p : players) {
-            if (calDistance(p1, p) < distance) {
+            if (calDistance(p1, p) <= distance) {
                 ans.add(p);
             }
         }
@@ -241,14 +246,18 @@ public class GameManager {
     }
 
     public static void callItEven() {
-        IO.println("call it even");
+        if (!GameLauncher.isGUI()) {
+            IO.println("call it even");
+        }
         System.exit(0);
     }
 
     public static void endWithError(String s) {
         IO.println(s);
         IO.println("game end with error\n");
-        System.exit(1);
+        if (!GameLauncher.isGUI()) {
+            System.exit(1);
+        }
     }
 
     public static int getNumPlayers() {
@@ -300,7 +309,7 @@ public class GameManager {
             for (Person p : players) {
                 IO.println(p.showAllCards());
             }
-            endWithError("current number of sanguosha.cards: " + ans +
+            endWithError("current number of cards: " + ans +
                     ", expected: " + CardsHeap.getNumCards());
         }
     }

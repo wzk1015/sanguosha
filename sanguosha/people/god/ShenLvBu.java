@@ -37,7 +37,7 @@ public class ShenLvBu extends God {
     @ForcesSkill("无谋")
     @Override
     public void useStrategy() {
-        if (baoNuMark == 0 || chooseFromProvided("lose 1 暴怒mark", "lose 1HP").equals("lose 1HP")) {
+        if (baoNuMark == 0 || chooseNoNull("lose 1 暴怒mark", "lose 1HP").equals("lose 1HP")) {
             loseHP(1);
         }
         else {

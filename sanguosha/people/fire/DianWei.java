@@ -22,10 +22,10 @@ public class DianWei extends Person {
                 return true;
             }
             if (!GameManager.reachablePeople(this, getShaDistance()).contains(p)) {
-                println("you can't reach that person");
+                printlnToIO("you can't reach that person");
                 return true;
             }
-            if (chooseFromProvided("throw a weapon", "lose 1 HP").equals("lost 1 HP")) {
+            if (chooseNoNull("throw a weapon", "lose 1 HP").equals("lost 1 HP")) {
                 loseHP(1);
                 if (isDead()) {
                     p.hurt((Card) null, null, 1);
@@ -36,9 +36,12 @@ public class DianWei extends Person {
             else {
                 Card c;
                 do {
-                    println("choose a weapon");
+                    printlnToIO("choose a weapon");
                     c = chooseCard(getCardsAndEquipments());
-                } while (!(c instanceof Weapon));
+                } while (!(c instanceof Weapon) && c != null);
+                if (c == null) {
+                    return true;
+                }
                 loseCard(c);
                 p.hurt((Card) null, this, 1);
             }

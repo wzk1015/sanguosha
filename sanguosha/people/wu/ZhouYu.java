@@ -33,7 +33,7 @@ public class ZhouYu extends Person {
                 return true;
             }
             setHasUsedSkill1(true);
-            Color clr = p.chooseFromProvided(Color.SPADE, Color.CLUB, Color.HEART, Color.DIAMOND);
+            Color clr = p.chooseNoNull(Color.SPADE, Color.CLUB, Color.HEART, Color.DIAMOND);
             p.addCard(c);
             if (c.color() != clr) {
                 p.hurt((Card) null, this, 1);

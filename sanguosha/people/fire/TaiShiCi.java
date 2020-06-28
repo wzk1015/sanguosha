@@ -20,7 +20,7 @@ public class TaiShiCi extends Person {
         if (order.equals("天义") && hasNotUsedSkill1()) {
             Person p;
             do {
-                println("choose a person with hand cards to 拼点");
+                printlnToIO("choose a person with hand cards to 拼点");
                 p = selectPlayer();
             } while (p.getCards().isEmpty());
             if (GameManager.pinDian(this,p)) {

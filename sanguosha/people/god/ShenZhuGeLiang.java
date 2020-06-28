@@ -18,15 +18,15 @@ public class ShenZhuGeLiang extends God {
     @Skill("七星")
     public void qiXing() {
         ArrayList<Card> handCards;
-        println("current stars: ");
+        printlnToIO("current stars: ");
         printCards(stars);
         do {
-            println("choose cards to exchange with stars");
+            printlnToIO("choose cards to exchange with stars");
             handCards = chooseCards(0, getCards());
         } while (handCards.size() > stars.size());
         int num = handCards.size();
         if (num != 0) {
-            println("choose stars to exchange");
+            printlnToIO("choose stars to exchange");
             ArrayList<Card> starCards = chooseCards(num, stars);
             getCards().removeAll(handCards);
             stars.removeAll(starCards);
@@ -55,7 +55,7 @@ public class ShenZhuGeLiang extends God {
         ArrayList<Person> people;
         int num;
         do {
-            println("choose players");
+            printlnToIO("choose players");
             people = chooseManyFromProvided(0, GameManager.getPlayers());
             num = people.size();
         } while (num > stars.size());

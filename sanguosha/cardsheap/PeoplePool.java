@@ -75,7 +75,7 @@ import java.util.Collections;
 public class PeoplePool {
     private static final ArrayList<Person> people = new ArrayList<>();
     private static final ArrayList<Identity> identities = new ArrayList<>();
-    private static final int optionsPerPerson = 2;
+    private static final int optionsPerPerson = 5;
     private static int peopleIndex = 0;
     private static int identityIndex = 0;
 
@@ -176,15 +176,15 @@ public class PeoplePool {
     }
 
     public static void init() {
-        //sanguosha.people.add(new BlankPerson());
-        //sanguosha.people.add(new BlankPerson2());
-        //sanguosha.people.add(new AI());
-        //addStandard();
-        //addFeng();
+        //people.add(new BlankPerson());
+        //people.add(new BlankPerson2());
+        //people.add(new AI());
+        addStandard();
+        addFeng();
         //addHuo();
         //addLin();
         //addShan();
-        addGod();
+        //addGod();
 
         Collections.shuffle(people);
 

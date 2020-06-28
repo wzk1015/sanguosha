@@ -22,7 +22,7 @@ public class ZhangZhaoZhangHong extends Person {
             println(this + " uses 直谏");
             Card c = chooseCard(getCards());
             while (c != null && !(c instanceof Equipment)) {
-                println("you should choose a weapon");
+                printlnToIO("you should choose a weapon");
                 c = chooseCard(getCards());
             }
             if (c == null) {
@@ -30,7 +30,7 @@ public class ZhangZhaoZhangHong extends Person {
             }
             Person p = selectPlayer();
             while (p != null && p.hasEquipment(((Equipment) c).getEquipType(), null)) {
-                println("you should choose someone without weapon");
+                printlnToIO("you should choose someone without weapon");
                 p = selectPlayer();
             }
             if (p == null) {

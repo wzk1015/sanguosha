@@ -61,7 +61,7 @@ public class DongZhuo extends Person {
         }
         if (!isLowest) {
             println(this + " uses 崩坏");
-            if (chooseFromProvided("lose 1 HP", "lose 1 maxHP").equals("lose 1 HP")) {
+            if (chooseNoNull("lose 1 HP", "lose 1 maxHP").equals("lose 1 HP")) {
                 loseHP(1);
             } else {
                 setMaxHP(getMaxHP() - 1);

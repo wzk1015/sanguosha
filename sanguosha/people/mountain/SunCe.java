@@ -88,7 +88,7 @@ public class SunCe extends Person {
             String op2 = "draw 1, throw " + x;
             Person p = selectPlayer();
             if (p != null) {
-                if (chooseFromProvided(op1, op2).equals(op1)) {
+                if (chooseNoNull(op1, op2).equals(op1)) {
                     p.drawCards(x);
                     p.loseCard(p.chooseCards(1, p.getCardsAndEquipments()));
                 }

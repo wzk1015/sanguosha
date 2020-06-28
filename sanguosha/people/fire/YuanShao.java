@@ -26,7 +26,7 @@ public class YuanShao extends Person {
             Card c1;
             Card c2;
             do {
-                println("choose two cards of same color");
+                printlnToIO("choose two cards of same color");
                 c1 = chooseCard(getCards());
                 c2 = chooseCard(getCards());
             } while (c1 != null && c2 != null && c1.color() != c2.color());
@@ -38,6 +38,7 @@ public class YuanShao extends Person {
             thisCard.add(c2);
             WanJianQiFa wan = new WanJianQiFa(c1.color(), 0);
             wan.setThisCard(thisCard);
+            wan.setSource(this);
             wan.use();
         }
         return false;
@@ -51,7 +52,7 @@ public class YuanShao extends Person {
             int extra = 2 * GameManager.peoplefromNation(Nation.QUN).size();
             int num = getCards().size() - getHP() - extra;
             if (num > 0) {
-                println(String.format("You need to throw %d sanguosha.cards", num));
+                printlnToIO(String.format("You need to throw %d cards", num));
                 ArrayList<Card> cs = chooseCards(num, getCards());
                 loseCard(cs);
                 for (Person p: GameManager.getPlayers()) {

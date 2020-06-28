@@ -1,7 +1,7 @@
 package sanguosha.people;
 
-import gui.GUI;
-import sanguosha.CLILauncher;
+import gui.GraphicRunner;
+import sanguosha.GameLauncher;
 import sanguosha.cards.Card;
 import sanguosha.cards.Color;
 import sanguosha.cards.EquipType;
@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public interface PlayerIO {
-    boolean gui = CLILauncher.isGUI();
+    boolean gui = GameLauncher.isGUI();
     Scanner sn = IO.getScanner();
 
     default void debug(String s) {
@@ -43,12 +43,12 @@ public interface PlayerIO {
 
     default String input(String s) {
         if (gui) {
-            printToIO(">>>" + s + ": \n");
-            return GUI.getInput();
+            printToIO(">>>" + s + " \n");
+            return GraphicRunner.getInput();
         }
         String ans = "";
         while (ans.isEmpty()) {
-            printToIO(">>>" + s + ": ");
+            printToIO(">>>" + s + " ");
             ans = sn.nextLine();
         }
         return ans;
@@ -89,6 +89,16 @@ public interface PlayerIO {
     }
 
     default void printCard(Card card) {
+        printlnToIO(card.info() + card);
+    }
+
+    default void printCardsPublic(ArrayList<Card> cards) {
+        for (int i = 1; i <= cards.size(); i++) {
+            println("【" + i + "】 " + cards.get(i - 1).info() + cards.get(i - 1) + " ");
+        }
+    }
+
+    default void printCardPublic(Card card) {
         println(card.info() + card);
     }
 
@@ -195,6 +205,22 @@ public interface PlayerIO {
             return chooseFromProvided(choices);
         }
     }
+
+    default <E> E chooseNoNull(E... choices) {
+        E ans = null;
+        do {
+            ans = chooseFromProvided(choices);
+        } while (ans == null);
+        return ans;
+    }
+
+    default <E> E chooseNoNull(ArrayList<E> choices) {
+        E ans = null;
+        do {
+            ans = chooseFromProvided(choices);
+        } while (ans == null);
+        return ans;
+    }
     
     default <E> ArrayList<E> chooseManyFromProvided(int num, E... choices) {
         ArrayList<E> options = new ArrayList<>(Arrays.asList(choices));
@@ -261,10 +287,7 @@ public interface PlayerIO {
         for (int i = 0; i < cs.size(); i++) {
             options.add("card" + (i + 1));
         }
-        String opt = null;
-        while (opt == null) {
-            opt = chooseFromProvided(options);
-        }
+        String opt = chooseNoNull(options);
         Collections.shuffle(cs);
         return cs.get(Integer.parseInt(opt.replace("card","")) - 1);
     }
@@ -333,11 +356,11 @@ public interface PlayerIO {
         String option;
         if (!target.getEquipments().isEmpty()
                 && !target.getRealJudgeCards().isEmpty()) {
-            option = chooseFromProvided("hand cards", "equipments", "judge cards");
+            option = chooseNoNull("hand cards", "equipments", "judge cards");
         } else if (!target.getEquipments().isEmpty()) {
-            option = chooseFromProvided("hand cards", "equipments");
+            option = chooseNoNull("hand cards", "equipments");
         } else if (!target.getRealJudgeCards().isEmpty()) {
-            option = chooseFromProvided("hand cards", "judge cards");
+            option = chooseNoNull("hand cards", "judge cards");
         } else {
             option = "hand cards";
         }
@@ -358,7 +381,7 @@ public interface PlayerIO {
         printlnToIO(target.showAllCards());
         String option;
         if (!target.getEquipments().isEmpty()) {
-            option = chooseFromProvided("hand cards", "equipments");
+            option = chooseNoNull("hand cards", "equipments");
         } else {
             option = "hand cards";
         }
@@ -423,6 +446,16 @@ public interface PlayerIO {
 
     boolean hasWuShuang();
 
+    boolean isDrunk();
+
+    boolean isDaWu();
+
+    boolean isKuangFeng();
+
+    boolean isTurnedOver();
+
+    boolean isLinked();
+
     default String getPlayerStatus(boolean privateAccess, boolean onlyCards) {
         String ans = "";
         if (!onlyCards) {
@@ -430,17 +463,23 @@ public interface PlayerIO {
             for (String s : getSkills()) {
                 ans += "【" + s + "】";
             }
+            ans += "\ncurrent HP: " + getHP() + "/" + getMaxHP() + "\n";
+            ans += isDrunk() ? "[喝酒]" : "";
+            ans += isTurnedOver() ? "[翻面]" : "";
+            ans += isLinked() ? "[连环]" : "";
+            ans += isKuangFeng() ? "[狂风]" : "";
+            ans += isDaWu() ? "[大雾]" : "";
+            ans += hasWakenUp() ? "[觉醒]\n" : "\n";
         }
-        ans += "\ncurrent HP: " + getHP() + "/" + getMaxHP();
         if (privateAccess) {
-            ans += "\nidentity: " + getIdentity();
-            ans += "\nhand cards: ";
+            ans += "identity: " + getIdentity();
+            ans += "\nhand cards:\n";
             for (int i = 1; i <= getCards().size(); i++) {
                 ans += "【" + i + "】" + getCards().get(i - 1).info() + getCards().get(i - 1) + "\n";
             }
         }
         else {
-            ans += "\n" + getCards().size() + " hand cards";
+            ans += getCards().size() + " hand cards";
         }
         ans += "\nequipments:";
         ArrayList<Card> equips = new ArrayList<>(getEquipments().values());
@@ -456,7 +495,7 @@ public interface PlayerIO {
     }
 
     default void printToIO(String s) {
-        if (CLILauncher.isGUI()) {
+        if (GameLauncher.isGUI()) {
             GameManager.addCurrentIOrequest(s);
         } else {
             print(s);
@@ -464,7 +503,7 @@ public interface PlayerIO {
     }
 
     default void printlnToIO(String s) {
-        if (CLILauncher.isGUI()) {
+        if (GameLauncher.isGUI()) {
             GameManager.addCurrentIOrequest(s + "\n");
         } else {
             println(s);

@@ -16,7 +16,7 @@ public class FangTianHuaJi extends Weapon {
 
     @Override
     public Object use() {
-        String option = getSource().chooseFromProvided("1target", "2targets", "3targets");
+        String option = getSource().chooseNoNull("1target", "2targets", "3targets");
         Person target3 = null;
         if (option.equals("3targets")) {
             Sha s3 = new Sha(sha.color(), sha.number(), ((Sha) sha).getType());

@@ -31,7 +31,7 @@ public class DiaoChan extends Person {
                     return true;
                 }
                 if (p1.getSex().equals("female") || p2.getSex().equals("female")) {
-                    println("you should choose male player");
+                    printlnToIO("you should choose male player");
                     continue;
                 }
                 break;

@@ -29,7 +29,7 @@ public class ShenZhaoYun extends God {
         println(this + " uses 绝境");
         int num = getCards().size() - getHP() - 2;
         if (num > 0) {
-            println(String.format("You need to throw %d sanguosha.cards", num));
+            println(String.format("You need to throw %d cards", num));
             ArrayList<Card> cs = chooseCards(num, getCards());
             loseCard(cs);
             for (Person p: GameManager.getPlayers()) {

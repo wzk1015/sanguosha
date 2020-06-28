@@ -47,7 +47,7 @@ public class LiuChan extends Person {
     @Override
     public void endPhase() {
         if (fangQuan) {
-            println("choose person to 放权");
+            printlnToIO("choose person to 放权");
             Person p = selectPlayer();
             if (p == null) {
                 return;

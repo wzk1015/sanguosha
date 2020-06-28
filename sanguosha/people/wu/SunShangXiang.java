@@ -30,11 +30,11 @@ public class SunShangXiang extends Person {
                 return true;
             }
             if (p.getSex().equals("female")) {
-                println("you can't choose female player");
+                printlnToIO("you can't choose female player");
                 return true;
             }
             if (p.getHP() == p.getMaxHP()) {
-                println("you can't choose player with maxHP");
+                printlnToIO("you can't choose player with maxHP");
             }
             ArrayList<Card> cs = chooseCards(2, getCards());
             loseCard(cs);

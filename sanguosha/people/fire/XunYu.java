@@ -22,11 +22,11 @@ public class XunYu extends Person {
             if (p == null) {
                 return true;
             }
-            while (p.getCards().size() >= 1 || p.getHP() <= getHP()) {
-                if (p.getCards().size() >= 1) {
-                    println("target has no hand cards");
+            while (p.getCards().isEmpty() || p.getHP() <= getHP()) {
+                if (p.getCards().isEmpty()) {
+                    printlnToIO("target has no hand cards");
                 } else {
-                    println("target's HP > your HP");
+                    printlnToIO("target's HP > your HP");
                 }
                 p = selectPlayer();
                 if (p == null) {
@@ -40,9 +40,9 @@ public class XunYu extends Person {
             while (p2 == p || p2 == this ||
                     !GameManager.reachablePeople(p, p.getShaDistance()).contains(p2)) {
                 if (p2 == p || p2 == this) {
-                    println("you can't choose yourself or himself");
+                    printlnToIO("you can't choose yourself or himself");
                 } else {
-                    println("can't reach this person");
+                    printlnToIO("can't reach this person");
                 }
                 p2 = selectPlayer();
                 if (p2 == null) {

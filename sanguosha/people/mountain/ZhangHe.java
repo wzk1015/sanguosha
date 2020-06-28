@@ -17,7 +17,7 @@ public class ZhangHe extends Person {
 
     @Skill("巧变")
     public boolean qiaoBian(String s) {
-        println("skip " + s + "?");
+        printlnToIO("skip " + s + "?");
         return launchSkill("巧变") && requestCard(null) != null;
     }
 
@@ -36,11 +36,11 @@ public class ZhangHe extends Person {
                     return true;
                 }
                 if (p1 == p2) {
-                    println("can't select same person");
+                    printlnToIO("can't select same person");
                     continue;
                 }
                 if (p1.getCards().isEmpty() || p2.getCards().isEmpty()) {
-                    println("target has no hand sanguosha.cards");
+                    printlnToIO("target has no hand cards");
                     continue;
                 }
                 Card c1 = chooseAnonymousCard(p1.getCards());
@@ -60,7 +60,7 @@ public class ZhangHe extends Person {
     @Override
     public boolean skipUse() {
         if (qiaoBian("出牌阶段")) {
-            println("choose source and target");
+            printlnToIO("choose source and target");
             Person p = selectPlayer(true);
             Person target = selectPlayer(true);
             if (p == null || target == null) {
@@ -74,14 +74,14 @@ public class ZhangHe extends Person {
             }
             if (c instanceof Equipment) {
                 if (p.hasEquipment(((Equipment) c).getEquipType(), null)) {
-                    println("target already has that type of equipment");
+                    printlnToIO("target already has that type of equipment");
                     return true;
                 }
                 p.getEquipments().put(((Equipment) c).getEquipType(), (Equipment) c);
             }
             else if (c instanceof JudgeCard) {
                 if (!addJudgeCard((JudgeCard) c)) {
-                    println("target already has that type of judge card");
+                    printlnToIO("target already has that type of judge card");
                     return true;
                 }
             }

@@ -11,6 +11,7 @@ import sanguosha.cards.equipments.Shield;
 import sanguosha.cards.equipments.Weapon;
 import sanguosha.cardsheap.CardsHeap;
 import sanguosha.manager.GameManager;
+import sanguosha.manager.IO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -241,13 +242,13 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
     }
 
     public void loseCard(Card c, boolean throwAway, boolean print) {
-        if (print && throwAway) {
-            print(this + " lost card: ");
-            printCard(c);
-        }
         if (getRealJudgeCards().contains(c)
                 || getRealJudgeCards().contains(c.getThisCard().get(0))) {
             removeJudgeCard(c);
+            if (print && throwAway) {
+                print(this + " lost judge card: ");
+                printCardPublic(c);
+            }
         } else if (c instanceof Equipment && getEquipments().containsValue(c)) {
             getEquipments().remove(((Equipment) c).getEquipType());
             if (c.toString().equals("白银狮子")) {
@@ -256,17 +257,20 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
             if (!isDead()) {
                 lostEquipment();
             }
+            if (print && throwAway) {
+                print(this + " lost equipment: ");
+                printCardPublic(c);
+            }
         } else if (getCards().contains(c) || getCards().contains(c.getThisCard().get(0))) {
             getCards().remove(c);
             if (!isDead()) {
                 lostCard();
             }
+            if (print && throwAway) {
+                print(this + " lost hand card: ");
+                printCardPublic(c);
+            }
         }
-        /*
-        else {
-            //GameManager.endWithError("lose card not belong to " + this);
-        }
-         */
 
         c.setOwner(null);
         if (throwAway) {
@@ -323,11 +327,16 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
             }
         }
 
+        if (source != null) {
+            println(source + " hurt " + this);
+        }
         loseHP(realNum);
         if (type != HurtType.normal && isLinked()) {
             link();
         }
-        source.hurtOther((Person) this, realNum);
+        if (source != null) {
+            source.hurtOther((Person) this, realNum);
+        }
         for (Person p: GameManager.getPlayers()) {
             p.otherPersonMakeHurt((Person) this);
         }
@@ -396,8 +405,9 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
         for (int i = 0; i < needTao; i++) {
             if (!askTao()) {
                 die();
+            } else {
+                recover(1);
             }
-            recover(1);
         }
     }
 
@@ -415,7 +425,7 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
 
     public Sha requestSha() {
         if (hasEquipment(weapon, "丈八蛇矛") && getCards().size() >= 2) {
-            if (chooseFromProvided("throw two cards to sha", "pass").equals(
+            if (chooseNoNull("throw two cards to sha", "pass").equals(
                     "throw two cards to sha")) {
                 ArrayList<Card> cs = chooseCards(2, getCards());
                 loseCard(cs);

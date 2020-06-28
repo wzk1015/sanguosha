@@ -24,7 +24,7 @@ public class JiangWei extends Person {
             println(this + " uses 挑衅");
             Person p = selectPlayer();
             while (!GameManager.reachablePeople(p, p.getShaDistance()).contains(this)) {
-                println("he can't reach you");
+                printlnToIO("he can't reach you");
                 p = selectPlayer();
             }
             Sha sha = p.requestSha();
@@ -34,7 +34,8 @@ public class JiangWei extends Person {
             }
             CardsHeap.retrieve(sha);
             sha.setTarget(this);
-            useCard(sha);
+            sha.setSource(p);
+            p.useCard(sha);
             if (sha.isNotTaken()) {
                 throwCard(sha);
             } else {
@@ -53,14 +54,14 @@ public class JiangWei extends Person {
         ArrayList<Card> view = new ArrayList<>(heap.subList(0, num));
         heap = new ArrayList<>(heap.subList(num, heap.size()));
 
-        println("choose cards that you want to put on top, in your expected order");
+        printlnToIO("choose cards that you want to put on top, in your expected order");
         ArrayList<Card> top = chooseCards(0, view);
         if (top != null) {
             view.removeAll(top);
             heap.addAll(0, top);
         }
         if (!view.isEmpty()) {
-            println("now arrange cards to put at bottom, in your expected order");
+            printlnToIO("now arrange cards to put at bottom, in your expected order");
             ArrayList<Card> bottom = chooseCards(view.size(), view);
             heap.addAll(bottom);
         }
@@ -71,8 +72,8 @@ public class JiangWei extends Person {
     @WakeUpSkill("志继")
     public void zhiJi() {
         println(this + " uses 志继");
-        if (getHP() == getMaxHP() || chooseFromProvided("recover 1 HP", "draw 2 sanguosha.cards")
-                .equals("draw 2 sanguosha.cards")) {
+        if (getHP() == getMaxHP() || chooseNoNull("recover 1 HP", "draw 2 cards")
+                .equals("draw 2 cards")) {
             drawCards(2);
         } else {
             recover(1);

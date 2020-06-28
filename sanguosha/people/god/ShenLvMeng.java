@@ -3,6 +3,7 @@ package sanguosha.people.god;
 import sanguosha.cards.Card;
 import sanguosha.cards.Color;
 import sanguosha.cardsheap.CardsHeap;
+import sanguosha.manager.IO;
 import sanguosha.people.Person;
 import sanguosha.skills.Skill;
 
@@ -21,9 +22,9 @@ public class ShenLvMeng extends God {
             ArrayList<Card> cards = new ArrayList<>(CardsHeap.getDrawCards(5).subList(0, 5));
             CardsHeap.getDrawCards(0).removeAll(cards);
             ArrayList<Card> selected = new ArrayList<>();
-            printCards(cards);
+            printCardsPublic(cards);
             while (true) {
-                println("choose cards of different colors");
+                printlnToIO("choose cards of different colors");
                 selected = chooseCards(0, cards);
                 HashSet<Color> existingColors = new HashSet<>();
                 boolean colorDuplicated = false;
@@ -53,11 +54,11 @@ public class ShenLvMeng extends God {
             Person p = selectPlayer();
             if (p != null) {
                 printCards(p.getCards());
-                println("choose a HEART card, or q to pass");
+                printlnToIO("choose a HEART card, or q to pass");
                 Card c = chooseCard(p.getCards());
                 if (c != null) {
-                    printCard(c);
-                    if (chooseFromProvided("throw", "put on top of cards heap").equals("throw")) {
+                    printCardPublic(c);
+                    if (chooseNoNull("throw", "put on top of cards heap").equals("throw")) {
                         p.loseCard(c);
                     } else {
                         p.loseCard(c, false);

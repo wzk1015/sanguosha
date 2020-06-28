@@ -1,7 +1,7 @@
 package sanguosha.manager;
 
-import gui.GUI;
-import sanguosha.CLILauncher;
+import gui.GraphicRunner;
+import sanguosha.GameLauncher;
 import sanguosha.cards.Card;
 import sanguosha.people.Person;
 
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class IO {
-    private static final boolean gui = CLILauncher.isGUI();
+    private static final boolean gui = GameLauncher.isGUI();
     private static final Scanner sn = new Scanner(System.in);
 
     public static void debug(String s) {
@@ -22,12 +22,12 @@ public class IO {
 
     public static String input(String s) {
         if (gui) {
-            printToIO(">>>" + s + ": \n");
-            return GUI.getInput();
+            printToIO(">>>" + s + " \n");
+            return GraphicRunner.getInput();
         }
         String ans = "";
         while (ans.isEmpty()) {
-            printToIO(">>>" + s + ": ");
+            printToIO(">>>" + s + " ");
             ans = sn.nextLine();
         }
         return ans;
@@ -45,8 +45,14 @@ public class IO {
         System.out.print(s);
     }
 
-    public static void printCard(Card card) {
-        printlnToIO(card.info() + card);
+    public static void printCardPublic(Card card) {
+        println(card.info() + card);
+    }
+
+    public static void printCardsPublic(ArrayList<Card> cards) {
+        for (int i = 1; i <= cards.size(); i++) {
+            println("【" + i + "】 " + cards.get(i - 1).info() + cards.get(i - 1) + " ");
+        }
     }
 
     public static <E> E chooseFromProvided(ArrayList<E> choices) {
@@ -84,7 +90,7 @@ public class IO {
     }
     
     public static void printToIO(String s) {
-        if (CLILauncher.isGUI()) {
+        if (GameLauncher.isGUI()) {
             GameManager.addCurrentIOrequest(s);
         } else {
             print(s);
@@ -92,7 +98,7 @@ public class IO {
     }
     
     public static void printlnToIO(String s) {
-        if (CLILauncher.isGUI()) {
+        if (GameLauncher.isGUI()) {
             GameManager.addCurrentIOrequest(s + "\n");
         } else {
             println(s);

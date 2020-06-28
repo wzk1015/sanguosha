@@ -11,10 +11,8 @@ public abstract class God extends Person {
     @Override
     public void initialize() {
         Nation nation = null;
-        while (nation == null) {
-            printlnToIO("you are GOD! select a nation");
-            nation = chooseFromProvided(Nation.WEI, Nation.SHU, Nation.WU, Nation.QUN);
-        }
+        printlnToIO("you are GOD! select a nation");
+        nation = chooseNoNull(Nation.WEI, Nation.SHU, Nation.WU, Nation.QUN);
         setNation(nation);
     }
 

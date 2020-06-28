@@ -1,6 +1,6 @@
 package sanguosha.people;
 
-import sanguosha.CLILauncher;
+import sanguosha.GameLauncher;
 import sanguosha.cards.Card;
 import sanguosha.cards.Equipment;
 import sanguosha.cards.JudgeCard;
@@ -201,7 +201,7 @@ public abstract class Person extends Attributes implements Serializable {
         }
 
         if (card instanceof TieSuoLianHuan) {
-            if (chooseFromProvided("throw", "use").equals("throw")) {
+            if (chooseNoNull("throw", "use").equals("throw")) {
                 loseCard(card);
                 drawCard();
                 return true;
@@ -224,11 +224,11 @@ public abstract class Person extends Attributes implements Serializable {
 
     public void usePhase() {
         showExtraInfo();
-        if (!CLILauncher.isGUI()) {
+        if (!GameLauncher.isGUI()) {
             println(getPlayerStatus(true, false));
         }
         while (!isDead()) {
-            if (!CLILauncher.isGUI()) {
+            if (!GameLauncher.isGUI()) {
                 println(this + "'s current hand cards: ");
                 printCards(getCards());
                 if (hasEquipment(weapon, "丈八蛇矛")) {

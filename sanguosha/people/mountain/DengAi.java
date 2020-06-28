@@ -13,7 +13,7 @@ import sanguosha.skills.WakeUpSkill;
 import java.util.ArrayList;
 
 public class DengAi extends Person {
-    private ArrayList<Card> tian = new ArrayList<>();
+    private final ArrayList<Card> tian = new ArrayList<>();
 
     public DengAi() {
         super(4, Nation.WEI);
@@ -21,7 +21,7 @@ public class DengAi extends Person {
 
     @Skill("屯田")
     public void tunTian() {
-        if (launchSkill("屯田")) {
+        if (!isMyRound() && launchSkill("屯田")) {
             Card c = CardsHeap.judge(this);
             if (c.color() != Color.HEART) {
                 CardsHeap.getJudgeCard();

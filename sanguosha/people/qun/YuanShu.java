@@ -36,7 +36,7 @@ public class YuanShu extends Person {
         String[] kingSkills = {"激将", "护驾", "救援", "黄天", "血裔", "暴虐", "若愚", "制霸"};
         ArrayList<String> ks = new ArrayList<String>(Arrays.asList(kingSkills));
         if (ks.contains(order)) {
-            println("you can't use 伪帝 because I don't want to implement it");
+            printlnToIO("you can't use 伪帝 because I don't want to implement it");
             return true;
         }
         return false;
@@ -54,7 +54,7 @@ public class YuanShu extends Person {
         int num = getCards().size() - getHP() + numNations;
         num = Math.min(num, getCards().size());
         if (num > 0) {
-            println(String.format("You need to throw %d sanguosha.cards", num));
+            printlnToIO(String.format("You need to throw %d cards", num));
             ArrayList<Card> cs = chooseCards(num, getCards());
             loseCard(cs);
             for (Person p: GameManager.getPlayers()) {

@@ -37,11 +37,17 @@ public class ZuoCi extends Person {
                 setNation(selected.getNation());
             }
         }
-        println("you can't use 化身 because I don't want to implement it");
+        printlnToIO("you can't use 化身 because I don't want to implement it");
     }
 
     public HashSet<String> getSkills() {
-        return selected.getSkills();
+        HashSet<String> ans = new HashSet<>();
+        ans.add("化身");
+        ans.add("新生");
+        if (selected != null) {
+            ans.addAll(selected.getSkills());
+        }
+        return ans;
     }
 
     @Override

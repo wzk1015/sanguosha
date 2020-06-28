@@ -16,7 +16,7 @@ public class QiLinGong extends Weapon {
     public Object use() {
         if (getTarget().hasEquipment(plusOneHorse, null) &&
                 getTarget().hasEquipment(minusOneHorse, null)) {
-            String choice = getSource().chooseFromProvided("shoot down plusonehorse",
+            String choice = getSource().chooseNoNull("shoot down plusonehorse",
                     "shoot down minusonehorse", "pass");
             if (choice.equals("shoot down minusonehorse")) {
                 getTarget().getEquipments().put(minusOneHorse, null);
@@ -25,7 +25,7 @@ public class QiLinGong extends Weapon {
             }
         } else if (getTarget().hasEquipment(plusOneHorse, null) ||
                 getTarget().hasEquipment(minusOneHorse, null)) {
-            String choice = getSource().chooseFromProvided("shoot down horse", "pass");
+            String choice = getSource().chooseNoNull("shoot down horse", "pass");
             if (choice.equals("shoot down horse")) {
                 if (getTarget().hasEquipment(plusOneHorse, null)) {
                     getTarget().getEquipments().put(plusOneHorse, null);
@@ -34,7 +34,7 @@ public class QiLinGong extends Weapon {
                 }
             }
         } else {
-            getSource().println("target has no horse");
+            getSource().printlnToIO("target has no horse");
         }
         return null;
     }

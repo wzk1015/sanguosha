@@ -26,7 +26,7 @@ public class Sha extends BasicCard {
 
     public boolean useWeapon(String s) {
         if (getSource().hasEquipment(weapon, s)) {
-            if (s.equals("青釭剑") || getSource().chooseFromProvided("use " + s, "pass")
+            if (s.equals("青釭剑") || getSource().chooseNoNull("use " + s, "pass")
                     .equals("use " + s)) {
                 getSource().getEquipments().get(weapon).setSource(getSource());
                 getSource().getEquipments().get(weapon).setTarget(getTarget());

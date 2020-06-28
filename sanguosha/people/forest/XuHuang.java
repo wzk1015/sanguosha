@@ -24,7 +24,7 @@ public class XuHuang extends Person {
                 return true;
             }
             if (c instanceof Strategy) {
-                println("you should use black basic card or equipment");
+                printlnToIO("you should use black basic card or equipment");
                 return true;
             }
             BingLiangCunDuan bing  = new BingLiangCunDuan(c.color(), c.number());

@@ -248,7 +248,7 @@ public class CardsHeap {
     public static Card judge(Person source) {
         judgeCard = draw();
         System.out.print("Judge card: ");
-        IO.printCard(judgeCard);
+        IO.printCardPublic(judgeCard);
 
         Card change = null;
         for (Person p : GameManager.getPlayers()) {

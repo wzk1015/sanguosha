@@ -24,7 +24,7 @@ public class PangTong extends Person {
             if (c == null) {
                 return true;
             }
-            if (chooseFromProvided("throw", "use").equals("throw")) {
+            if (chooseNoNull("throw", "use").equals("throw")) {
                 drawCard();
                 return true;
             } else {

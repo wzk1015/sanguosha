@@ -67,6 +67,7 @@ by wzk
 * 6.20  将大部分武器的逻辑移动至武器内部；修复了借刀、强袭、帷幕等若干bug
 * 6.26  增加发行版jar包；增加对ctrl+d中断的响应；修改`showHelp`
 * 6.28  **增加GUI**！swing现学现用~
+* 6.28  修改IO输出方式（公开、私有）；修复若干bug
 
 
 
@@ -77,7 +78,6 @@ TODO list:
 
 waitlist:
 一将成名（1、2）扩展包 (maybe)
-增加GUI (maybe)
 增加国战 (maybe not)
 ```
 

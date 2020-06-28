@@ -11,9 +11,9 @@ public class GuanShiFu extends Weapon {
     @Override
     public Object use() {
         if (getSource().getCardsAndEquipments().size() < 3) {
-            getSource().println("you don't have enough cards");
+            getSource().printlnToIO("you don't have enough cards");
         }
-        String option = getSource().chooseFromProvided(
+        String option = getSource().chooseNoNull(
                 "throw two cards and hurt", "pass");
         if (option.equals("throw two cards and hurt")) {
             getSource().throwCard(getSource().chooseCards(2,

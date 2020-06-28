@@ -72,7 +72,7 @@ public class YuJi extends Person {
             if (p == this) {
                 continue;
             }
-            if (p.chooseFromProvided("believe", "question").equals("question")) {
+            if (p.chooseNoNull("believe", "question").equals("question")) {
                 questioners.add(p);
             }
         }
@@ -123,7 +123,7 @@ public class YuJi extends Person {
                 } else if (type.equals("雷杀")) {
                     intend = new Sha(NOCOLOR, 0, HurtType.thunder);
                 } else {
-                    println("wrong type");
+                    printlnToIO("wrong type");
                     return true;
                 }
                 Card c = requestCard(null);

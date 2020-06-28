@@ -17,13 +17,13 @@ public class HuaTuo extends Person {
     @Override
     public boolean requestTao() {
         if (!isMyRound() && launchSkill("急救")) {
-            if (chooseFromProvided("hand card", "equipment").equals("hand card")) {
+            if (chooseNoNull("hand card", "equipment").equals("hand card")) {
                 if (requestRedBlack("red") != null) {
                     return true;
                 }
                 Card c = chooseCard(new ArrayList<>(getEquipments().values()));
                 while (c != null && c.isBlack()) {
-                    println("you can't choose black card");
+                    printlnToIO("you can't choose black card");
                     c = chooseCard(new ArrayList<>(getEquipments().values()));
                 }
                 if (c != null) {
@@ -41,7 +41,7 @@ public class HuaTuo extends Person {
         if (order.equals("青囊") && hasNotUsedSkill1()) {
             Person p = selectPlayer();
             if (p.getHP() == p.getMaxHP()) {
-                println("you can't person with maxHP");
+                printlnToIO("you can't choose person with maxHP");
                 return true;
             }
             Card c = requestCard(null);

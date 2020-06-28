@@ -48,11 +48,11 @@ public class DaQiao extends Person {
                     return;
                 }
                 if (!GameManager.reachablePeople(this, getShaDistance()).contains(p)) {
-                    println("unreachable person");
+                    printlnToIO("unreachable person");
                     continue;
                 }
                 if (p == sha.getSource()) {
-                    println("you can't select source player of the 杀");
+                    printlnToIO("you can't select source player of the 杀");
                     continue;
                 }
                 break;

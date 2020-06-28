@@ -52,7 +52,7 @@ public class LuSu extends Person {
             Person p1;
             Person p2;
             do {
-                println("choose 2 players");
+                printlnToIO("choose 2 players");
                 p1 = selectPlayer();
                 p2 = selectPlayer();
             } while (p1 != null && p2 != null && (p1 == p2 || getCards().size() <

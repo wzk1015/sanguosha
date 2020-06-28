@@ -11,7 +11,7 @@ public class CiXiongShuangGuJian extends Weapon {
 
     @Override
     public Object use() {
-        String choice = getTarget().chooseFromProvided(
+        String choice = getTarget().chooseNoNull(
                 "you throw a card", "he draws a card");
         if (choice.equals("he draws a card") || getTarget().requestCard(null) == null) {
             getSource().drawCard();

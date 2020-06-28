@@ -13,7 +13,7 @@ public class AI extends Person {
     public void usePhase() {
         int index = 1;
         while (true) {
-            println(this + "'s current hand sanguosha.cards: ");
+            printlnToIO(this + "'s current hand cards: ");
             printCards(getCards());
             try {
                 Thread.sleep(2000);

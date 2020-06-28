@@ -2,6 +2,8 @@ package sanguosha.people.wind;
 
 import sanguosha.cards.Card;
 import sanguosha.cardsheap.CardsHeap;
+import sanguosha.manager.GameManager;
+import sanguosha.manager.IO;
 import sanguosha.people.Nation;
 import sanguosha.people.Person;
 import sanguosha.skills.Skill;
@@ -31,16 +33,16 @@ public class ZhouTai extends Person {
                 println(this + " now has " + num + " 不屈 cards");
                 for (int i = 0; i < num; i++) {
                     Card c = CardsHeap.draw();
-                    printCard(c);
                     buQuNumbers.add(c.number());
                     buQuCards.add(c);
+                    printCardsPublic(buQuCards);
                 }
-                println(this + " now has " + num + " 不屈 cards");
+                println(this + " now has " + buQuCards.size() + " 不屈 cards");
                 while (buQuDuplicated()) {
                     dying();
                 }
                 if (!isDead()) {
-                    println(this + " now has " + num + " 不屈 cards");
+                    println(this + " now has " + buQuCards.size() + " 不屈 cards");
                 }
             } else {
                 dying();
@@ -49,21 +51,29 @@ public class ZhouTai extends Person {
     }
 
     @Override
-    public int getHP() {
-        return Math.max(super.getHP(), 0);
+    public void throwPhase() {
+        int num = getCards().size() - Math.max(getHP(), 0);
+        if (num > 0) {
+            printlnToIO(String.format("You need to throw %d cards", num));
+            ArrayList<Card> cs = chooseCards(num, getCards());
+            loseCard(cs);
+            for (Person p: GameManager.getPlayers()) {
+                p.otherPersonThrowPhase(this, cs);
+            }
+        }
     }
 
     @Override
     public void recover(int num) {
-        if (getHP() == 0) {
-            println("choose 不屈 cards that you want to remove");
+        if (getHP() <= 0 && !buQuCards.isEmpty()) {
+            printlnToIO("choose 不屈 cards that you want to remove");
             ArrayList<Card> cs = chooseCards(num, buQuCards);
             buQuCards.removeAll(cs);
             CardsHeap.discard(cs);
             for (Card c: cs) {
                 buQuNumbers.remove(c.number());
             }
-            println(this + " now has " + num + " 不屈 cards");
+            println(this + " now has " + buQuCards.size() + " 不屈 cards");
         }
         super.recover(num);
     }
