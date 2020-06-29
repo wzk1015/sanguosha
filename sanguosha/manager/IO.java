@@ -3,13 +3,19 @@ package sanguosha.manager;
 import gui.GraphicRunner;
 import sanguosha.GameLauncher;
 import sanguosha.cards.Card;
+import sanguosha.cards.strategy.JieDaoShaRen;
+import sanguosha.cards.strategy.NanManRuQin;
+import sanguosha.cards.strategy.TaoYuanJieYi;
+import sanguosha.cards.strategy.TieSuoLianHuan;
+import sanguosha.cards.strategy.WanJianQiFa;
+import sanguosha.cards.strategy.WuGuFengDeng;
 import sanguosha.people.Person;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class IO {
-    private static final boolean gui = GameLauncher.isGUI();
     private static final Scanner sn = new Scanner(System.in);
 
     public static void debug(String s) {
@@ -21,9 +27,11 @@ public class IO {
     }
 
     public static String input(String s) {
-        if (gui) {
-            printToIO(">>>" + s + " \n");
-            return GraphicRunner.getInput();
+        if (GameLauncher.isGraphic()) {
+            printToIO(">>>" + s + " ");
+            String input = GraphicRunner.getInput();
+            printlnToIO(input);
+            return input;
         }
         String ans = "";
         while (ans.isEmpty()) {
@@ -55,6 +63,25 @@ public class IO {
         }
     }
 
+    public static int chooseNumber(int min, int max) {
+        Utils.assertTrue(min <= max, "min > max");
+        for (int i = min; i <= max; i++) {
+            printToIO("【" + i + "】");
+        }
+        printlnToIO("");
+        try {
+            int num = Integer.parseInt(input("choose a number"));
+            if (num < min || num > max) {
+                printToIO("out of range");
+                return chooseNumber(min, max);
+            }
+            return num;
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
+            printlnToIO("wrong number");
+            return chooseNumber(min, max);
+        }
+    }
+
     public static <E> E chooseFromProvided(ArrayList<E> choices) {
         Utils.assertTrue(!choices.isEmpty(), "choices are empty");
         int i = 1;
@@ -72,6 +99,11 @@ public class IO {
         }
     }
 
+    public static <E> E chooseFromProvided(E... choices) {
+        ArrayList<E> options = new ArrayList<>(Arrays.asList(choices));
+        return chooseFromProvided(options);
+    }
+
     public static Person initialChoosePerson(ArrayList<Person> people) {
         Utils.assertTrue(!people.isEmpty(), "initial people are empty");
         ArrayList<String> options = new ArrayList<>();
@@ -85,12 +117,12 @@ public class IO {
                 return p1;
             }
         }
-        GameManager.endWithError("end of initialChoosePlayer reached");
+        GameManager.panic("end of initialChoosePlayer reached");
         return people.get(0);
     }
     
     public static void printToIO(String s) {
-        if (GameLauncher.isGUI()) {
+        if (GameLauncher.isGraphic()) {
             GameManager.addCurrentIOrequest(s);
         } else {
             print(s);
@@ -98,10 +130,26 @@ public class IO {
     }
     
     public static void printlnToIO(String s) {
-        if (GameLauncher.isGUI()) {
+        if (GameLauncher.isGraphic()) {
             GameManager.addCurrentIOrequest(s + "\n");
         } else {
             println(s);
+        }
+    }
+
+    public static void showUsingCard(Card c) {
+        print(c.getSource().toString() + " uses " + c + " towards ");
+        if (c instanceof TieSuoLianHuan) {
+            println(c.getTarget().toString() + " and " +
+                    ((TieSuoLianHuan) c).getTarget2().toString());
+        } else if (c instanceof JieDaoShaRen) {
+            println(c.getTarget().toString() + " and " +
+                    ((JieDaoShaRen) c).getTarget2().toString());
+        } else if (c instanceof NanManRuQin || c instanceof WanJianQiFa
+                || c instanceof TaoYuanJieYi || c instanceof WuGuFengDeng) {
+            println("everyone");
+        } else {
+            println(c.getTarget().toString());
         }
     }
 }

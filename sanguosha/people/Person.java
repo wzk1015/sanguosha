@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import static sanguosha.cards.EquipType.weapon;
+import static sanguosha.manager.IO.showUsingCard;
 
 public abstract class Person extends Attributes implements Serializable {
 
@@ -132,7 +133,6 @@ public abstract class Person extends Attributes implements Serializable {
     public void putOnEquipment(Card card) {
         if (this.getEquipments().get(((Equipment) card).getEquipType()) != null) {
             loseCard(getEquipments().get(((Equipment) card).getEquipType()));
-            lostEquipment();
         }
         println(this + " puts on equipment " + card);
         getCards().remove(card);
@@ -223,12 +223,11 @@ public abstract class Person extends Attributes implements Serializable {
     }
 
     public void usePhase() {
-        showExtraInfo();
-        if (!GameLauncher.isGUI()) {
-            println(getPlayerStatus(true, false));
+        if (GameLauncher.isCommandLine()) {
+            printlnToIO(getPlayerStatus(true, false));
         }
         while (!isDead()) {
-            if (!GameLauncher.isGUI()) {
+            if (GameLauncher.isCommandLine()) {
                 println(this + "'s current hand cards: ");
                 printCards(getCards());
                 if (hasEquipment(weapon, "丈八蛇矛")) {

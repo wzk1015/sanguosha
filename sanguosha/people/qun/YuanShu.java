@@ -51,7 +51,7 @@ public class YuanShu extends Person {
                 numNations++;
             }
         }
-        int num = getCards().size() - getHP() + numNations;
+        int num = numNations;
         num = Math.min(num, getCards().size());
         if (num > 0) {
             printlnToIO(String.format("You need to throw %d cards", num));

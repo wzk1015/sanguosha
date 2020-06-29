@@ -68,6 +68,7 @@ by wzk
 * 6.26  增加发行版jar包；增加对ctrl+d中断的响应；修改`showHelp`
 * 6.28  **增加GUI**！swing现学现用~
 * 6.28  修改IO输出方式（公开、私有）；修复若干bug
+* 6.29  增加游戏人数、武将包自定义；完善了全局状态信息；endWithError修改为panic
 
 
 

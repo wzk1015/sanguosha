@@ -119,8 +119,8 @@ public class ShenLvBu extends God {
     }
 
     @Override
-    public void showExtraInfo() {
-        println(this + " now has " + baoNuMark + " 暴怒 marks");
+    public String getExtraInfo() {
+        return baoNuMark + " 暴怒 marks";
     }
 
     @Override

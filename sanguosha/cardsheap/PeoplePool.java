@@ -1,5 +1,8 @@
 package sanguosha.cardsheap;
 
+import sanguosha.GameLauncher;
+import sanguosha.manager.GameManager;
+import sanguosha.manager.IO;
 import sanguosha.manager.Utils;
 import sanguosha.people.Identity;
 import sanguosha.people.Person;
@@ -72,10 +75,15 @@ import sanguosha.people.wu.ZhouYu;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static sanguosha.people.Identity.KING;
+import static sanguosha.people.Identity.MINISTER;
+import static sanguosha.people.Identity.REBEL;
+import static sanguosha.people.Identity.TRAITOR;
+
 public class PeoplePool {
     private static final ArrayList<Person> people = new ArrayList<>();
     private static final ArrayList<Identity> identities = new ArrayList<>();
-    private static final int optionsPerPerson = 5;
+    private static int optionsPerPerson = 5;
     private static int peopleIndex = 0;
     private static int identityIndex = 0;
 
@@ -116,7 +124,6 @@ public class PeoplePool {
     }
 
     public static void addFeng() {
-        //风包
         people.add(new CaoRen());
         people.add(new HuangZhong());
         people.add(new WeiYan());
@@ -128,7 +135,6 @@ public class PeoplePool {
     }
 
     public static void addHuo() {
-        //火包
         people.add(new DianWei());
         people.add(new PangDe());
         people.add(new PangTong());
@@ -140,7 +146,6 @@ public class PeoplePool {
     }
 
     public static void addLin() {
-        //林包
         people.add(new CaoPi());
         people.add(new DongZhuo());
         people.add(new JiaXu());
@@ -152,7 +157,6 @@ public class PeoplePool {
     }
 
     public static void addShan() {
-        //山包
         people.add(new CaiWenJi());
         people.add(new DengAi());
         people.add(new JiangWei());
@@ -164,7 +168,6 @@ public class PeoplePool {
     }
 
     public static void addGod() {
-        //神将
         people.add(new ShenCaoCao());
         people.add(new ShenGuanYu());
         people.add(new ShenLvBu());
@@ -175,22 +178,77 @@ public class PeoplePool {
         people.add(new ShenZhuGeLiang());
     }
 
+    public static void addIdentity(Identity id, int num) {
+        for (int i = 0; i < num; i++) {
+            identities.add(id);
+        }
+    }
+
     public static void init() {
         //people.add(new BlankPerson());
         //people.add(new BlankPerson2());
         //people.add(new AI());
         addStandard();
-        addFeng();
-        //addHuo();
-        //addLin();
-        //addShan();
-        //addGod();
-
+        if (GameLauncher.isCommandLine() || GameLauncher.isGraphic()) {
+            if (IO.chooseFromProvided("default people config", "customize")
+                    .equals("default people config")) {
+                addFeng();
+                addHuo();
+                addLin();
+                addShan();
+                addGod();
+                switch (GameManager.getNumPlayers()) {
+                    //case 10: addIdentity(MINISTER, 1);
+                    //fallthrough
+                    case 9: addIdentity(TRAITOR, 1);
+                    //fallthrough
+                    case 8: addIdentity(REBEL, 1);
+                    //fallthrough
+                    case 7: addIdentity(REBEL, 1);
+                    //fallthrough
+                    case 6: addIdentity(MINISTER, 1);
+                    //fallthrough
+                    case 5: addIdentity(REBEL, 1);
+                    //fallthrough
+                    case 4: addIdentity(MINISTER, 1);
+                    //fallthrough
+                    case 3: addIdentity(TRAITOR, 1);
+                    //fallthrough
+                    case 2: addIdentity(KING, 1);
+                            addIdentity(REBEL, 1);
+                            break;
+                    default:
+                        GameManager.panic("invalid players: " + GameManager.getNumPlayers());
+                }
+            } else {
+                if (IO.chooseFromProvided("add 风", "pass").equals("add 风")) {
+                    addFeng();
+                } if (IO.chooseFromProvided("add 火", "pass").equals("add 火")) {
+                    addHuo();
+                } if (IO.chooseFromProvided("add 林", "pass").equals("add 林")) {
+                    addLin();
+                } if (IO.chooseFromProvided("add 山", "pass").equals("add 山")) {
+                    addShan();
+                } if (IO.chooseFromProvided("add 神", "pass").equals("add 神")) {
+                    addGod();
+                }
+                IO.printlnToIO("choose options per person");
+                setOptionsPerPerson(IO.chooseNumber(2, 10));
+                IO.printlnToIO("1 KING (required)");
+                addIdentity(KING, 1);
+                IO.printlnToIO("choose number of MINISTER");
+                addIdentity(MINISTER, IO.chooseNumber(1, 4));
+                IO.printlnToIO("choose number of TRAITOR");
+                addIdentity(TRAITOR, IO.chooseNumber(1, 4));
+                IO.printlnToIO("choose number of REBEL");
+                addIdentity(REBEL, IO.chooseNumber(0, 4));
+            }
+        }
+        Utils.assertTrue(identities.size() == GameManager.getNumPlayers(),
+                "wrong number of identities");
+        Utils.assertTrue(people.size() >= optionsPerPerson * GameManager.getNumPlayers(),
+                "not enough people to choose");
         Collections.shuffle(people);
-
-        identities.add(Identity.KING);
-        identities.add(Identity.TRAITOR);
-        identities.add(Identity.REBEL);
         Collections.shuffle(identities);
     }
 
@@ -198,6 +256,37 @@ public class PeoplePool {
         peopleIndex += optionsPerPerson;
         Utils.assertTrue(peopleIndex <= people.size(), "No people available");
         return new ArrayList<>(people.subList(peopleIndex - optionsPerPerson, peopleIndex));
+    }
+
+    public static void addPerson(Class<? extends Person> cls, ArrayList<Person> kings) {
+        for (Person p: people) {
+            if (p.getClass() == cls) {
+                kings.add(p);
+                return;
+            }
+        }
+    }
+
+    public static ArrayList<Person> allocPeopleForKing() {
+        ArrayList<Person> options = new ArrayList<>();
+        if (optionsPerPerson > 3) {
+            addPerson(LiuBei.class, options);
+            addPerson(CaoCao.class, options);
+            addPerson(SunQuan.class, options);
+        }
+        if (optionsPerPerson > 10) {
+            addPerson(ZhangJiao.class, options);
+            addPerson(YuanShao.class, options);
+            addPerson(DongZhuo.class, options);
+            addPerson(CaoPi.class, options);
+            addPerson(LiuChan.class, options);
+            addPerson(SunCe.class, options);
+        }
+        peopleIndex += optionsPerPerson - options.size();
+        Utils.assertTrue(peopleIndex <= people.size(), "No people available");
+        options.addAll(people.subList(peopleIndex - optionsPerPerson + options.size(),
+                peopleIndex));
+        return options;
     }
 
     public static Person allocOnePerson() {
@@ -213,5 +302,9 @@ public class PeoplePool {
 
     public static ArrayList<Person> getPeople() {
         return people;
+    }
+
+    public static void setOptionsPerPerson(int optionsPerPerson) {
+        PeoplePool.optionsPerPerson = optionsPerPerson;
     }
 }

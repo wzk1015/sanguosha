@@ -11,7 +11,6 @@ import sanguosha.cards.equipments.Shield;
 import sanguosha.cards.equipments.Weapon;
 import sanguosha.cardsheap.CardsHeap;
 import sanguosha.manager.GameManager;
-import sanguosha.manager.IO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,7 +110,6 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
 
     public void die() {
         isDead = true;
-        clearCards();
         GameManager.die((Person) this);
         if (GameManager.gameIsEnd()) {
             GameManager.endGame();
@@ -239,6 +237,13 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
 
     public void loseCard(Card c, boolean throwAway) {
         loseCard(c, throwAway, true);
+    }
+
+    public void loseCard(ArrayList<Card> cs, boolean throwAway, boolean print) {
+        ArrayList<Card> newCs = new ArrayList<>(cs);
+        for (Card c: newCs) {
+            loseCard(c, throwAway, print);
+        }
     }
 
     public void loseCard(Card c, boolean throwAway, boolean print) {

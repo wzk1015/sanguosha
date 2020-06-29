@@ -137,6 +137,11 @@ public class ShenSiMaYi extends God {
     }
 
     @Override
+    public String getExtraInfo() {
+        return renMark + " 忍戒 marks";
+    }
+
+    @Override
     public String toString() {
         return "神司马懿";
     }

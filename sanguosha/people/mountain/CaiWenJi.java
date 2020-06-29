@@ -47,7 +47,7 @@ public class CaiWenJi extends Person {
                     source.turnover();
                     break;
                 default:
-                    throw new IllegalStateException("Unexpected value: " + d.color());
+                    GameManager.panic("Unexpected value: " + d.color());
             }
         }
     }
@@ -82,10 +82,10 @@ public class CaiWenJi extends Person {
                     for (JudgeCard judgeCard : source.getJudgeCards()) {
                         p.addJudgeCard(judgeCard);
                     }
-                    source.clearCards();
-                    source.throwCard(p.getCards());
-                    source.throwCard(new ArrayList<>(p.getRealJudgeCards()));
-                    source.throwCard(new ArrayList<>(p.getEquipments().values()));
+                    CardsHeap.discard(source.getExtraCards());
+                    source.loseCard(p.getCards(), false, false);
+                    source.loseCard(new ArrayList<>(p.getRealJudgeCards()), false, false);
+                    source.loseCard(new ArrayList<>(p.getEquipments().values()), false, false);
                     break;
                 }
             }

@@ -6,7 +6,7 @@ public class GameLauncher extends Thread {
     private static boolean isGUI = false;
 
     public static void main(String[] args) {
-        GameManager.runGame(3);
+        GameManager.runGame();
     }
 
     @Override
@@ -18,7 +18,11 @@ public class GameLauncher extends Thread {
         isGUI = gui;
     }
 
-    public static boolean isGUI() {
+    public static boolean isGraphic() {
         return isGUI;
+    }
+
+    public static boolean isCommandLine() {
+        return !isGUI;
     }
 }

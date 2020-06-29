@@ -4,6 +4,7 @@ import sanguosha.cards.Card;
 import sanguosha.cardsheap.CardsHeap;
 import sanguosha.manager.GameManager;
 
+import sanguosha.manager.Utils;
 import sanguosha.people.Nation;
 import sanguosha.people.Person;
 import sanguosha.skills.ForcesSkill;
@@ -37,7 +38,7 @@ public class ZhuGeLiang extends Person {
                 ArrayList<Card> bottom = chooseCards(view.size(), view);
                 heap.addAll(bottom);
             }
-            GameManager.checkCardsNum();
+            Utils.checkCardsNum();
             CardsHeap.setDrawCards(heap);
         }
     }

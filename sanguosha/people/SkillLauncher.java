@@ -198,12 +198,8 @@ public interface SkillLauncher {
 
     }
 
-    default void showExtraInfo() {
-
-    }
-
-    default void clearCards() {
-
+    default ArrayList<Card> getExtraCards() {
+        return null;
     }
 
     default void killOther() {

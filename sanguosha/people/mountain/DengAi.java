@@ -78,8 +78,13 @@ public class DengAi extends Person {
     }
 
     @Override
-    public void clearCards() {
-        CardsHeap.discard(tian);
+    public ArrayList<Card> getExtraCards() {
+        return tian;
+    }
+
+    @Override
+    public String getExtraInfo() {
+        return tian.size() + " 田";
     }
 
     @Override

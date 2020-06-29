@@ -3,7 +3,6 @@ package sanguosha.people.god;
 import sanguosha.cards.Card;
 import sanguosha.cards.Color;
 import sanguosha.cardsheap.CardsHeap;
-import sanguosha.manager.IO;
 import sanguosha.people.Person;
 import sanguosha.skills.Skill;
 

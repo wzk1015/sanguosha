@@ -114,13 +114,14 @@ public class ShenZhuGeLiang extends God {
         }
     }
 
-    public int numOfStars() {
-        return stars.size();
+    @Override
+    public ArrayList<Card> getExtraCards() {
+        return stars;
     }
 
     @Override
-    public void clearCards() {
-        CardsHeap.discard(stars);
+    public String getExtraInfo() {
+        return stars.size() + " stars";
     }
 
     @Override

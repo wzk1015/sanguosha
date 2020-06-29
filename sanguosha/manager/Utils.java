@@ -1,5 +1,8 @@
 package sanguosha.manager;
 
+import sanguosha.cardsheap.CardsHeap;
+import sanguosha.people.Person;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -11,7 +14,7 @@ import java.util.Random;
 public class Utils {
     public static void assertTrue(boolean bool, String s) {
         if (!bool) {
-            GameManager.endWithError("assertion failed: " + s);
+            GameManager.panic("assertion failed: " + s);
         }
     }
 
@@ -35,5 +38,23 @@ public class Utils {
     public static int randint(int num1, int num2) {
         Random r = new Random();
         return num1 + r.nextInt(num2 - num1 + 1);
+    }
+    
+    public static void checkCardsNum() {
+        int ans = CardsHeap.getDrawCards(0).size() + CardsHeap.getUsedCards().size();
+        for (Person p : GameManager.getPlayers()) {
+            ans += p.getCards().size();
+            ans += p.getEquipments().size();
+            ans += p.getJudgeCards().size();
+            ans += p.getExtraCards().size();
+        }
+        if (ans != CardsHeap.getNumCards()) {
+            IO.println("card number not consistent");
+            for (Person p : GameManager.getPlayers()) {
+                IO.println(p.showAllCards());
+            }
+            GameManager.panic("current number of cards: " + ans
+                    + ", expected: " + CardsHeap.getNumCards());
+        }
     }
 }

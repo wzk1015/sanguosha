@@ -8,12 +8,6 @@ import sanguosha.cards.EquipType;
 import sanguosha.cards.Equipment;
 import sanguosha.cards.JudgeCard;
 import sanguosha.cards.basic.Sha;
-import sanguosha.cards.strategy.JieDaoShaRen;
-import sanguosha.cards.strategy.NanManRuQin;
-import sanguosha.cards.strategy.TaoYuanJieYi;
-import sanguosha.cards.strategy.TieSuoLianHuan;
-import sanguosha.cards.strategy.WanJianQiFa;
-import sanguosha.cards.strategy.WuGuFengDeng;
 import sanguosha.manager.GameManager;
 import sanguosha.manager.IO;
 import sanguosha.manager.Utils;
@@ -34,7 +28,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public interface PlayerIO {
-    boolean gui = GameLauncher.isGUI();
     Scanner sn = IO.getScanner();
 
     default void debug(String s) {
@@ -42,9 +35,11 @@ public interface PlayerIO {
     }
 
     default String input(String s) {
-        if (gui) {
-            printToIO(">>>" + s + " \n");
-            return GraphicRunner.getInput();
+        if (GameLauncher.isGraphic()) {
+            printToIO(">>>" + s + " ");
+            String input = GraphicRunner.getInput();
+            printlnToIO(input);
+            return input;
         }
         String ans = "";
         while (ans.isEmpty()) {
@@ -66,22 +61,6 @@ public interface PlayerIO {
         System.out.print(s);
     }
 
-    default void showUsingCard(Card c) {
-        printToIO(c.getSource().toString() + " uses " + c + " towards ");
-        if (c instanceof TieSuoLianHuan) {
-            printlnToIO(c.getTarget().toString() + " and " +
-                    ((TieSuoLianHuan) c).getTarget2().toString());
-        } else if (c instanceof JieDaoShaRen) {
-            printlnToIO(c.getTarget().toString() + " and " +
-                    ((JieDaoShaRen) c).getTarget2().toString());
-        } else if (c instanceof NanManRuQin || c instanceof WanJianQiFa
-                || c instanceof TaoYuanJieYi || c instanceof WuGuFengDeng) {
-            printlnToIO("everyone");
-        } else {
-            printlnToIO(c.getTarget().toString());
-        }
-    }
-
     default void printCards(ArrayList<Card> cards) {
         for (int i = 1; i <= cards.size(); i++) {
             printlnToIO("【" + i + "】 " + cards.get(i - 1).info() + cards.get(i - 1) + " ");
@@ -93,13 +72,11 @@ public interface PlayerIO {
     }
 
     default void printCardsPublic(ArrayList<Card> cards) {
-        for (int i = 1; i <= cards.size(); i++) {
-            println("【" + i + "】 " + cards.get(i - 1).info() + cards.get(i - 1) + " ");
-        }
+        IO.printCardsPublic(cards);
     }
 
     default void printCardPublic(Card card) {
-        println(card.info() + card);
+        IO.printCardPublic(card);
     }
 
     default Card requestRedBlack(String color) {
@@ -110,7 +87,6 @@ public interface PlayerIO {
         if (order.equals("q")) {
             return null;
         }
-
         try {
             Card c = getCards().get(Integer.parseInt(order) - 1);
             if ((color.equals("red") && c.isBlack()) || (color.equals("black") && c.isRed())) {
@@ -151,7 +127,6 @@ public interface PlayerIO {
         if (order.equals("q")) {
             return null;
         }
-
         try {
             Card c = getCards().get(Integer.parseInt(order) - 1);
             if (type != null && !c.toString().equals(type) &&
@@ -220,11 +195,6 @@ public interface PlayerIO {
             ans = chooseFromProvided(choices);
         } while (ans == null);
         return ans;
-    }
-    
-    default <E> ArrayList<E> chooseManyFromProvided(int num, E... choices) {
-        ArrayList<E> options = new ArrayList<>(Arrays.asList(choices));
-        return chooseManyFromProvided(num, options);
     }
 
     default <E> ArrayList<E> chooseManyFromProvided(int num, List<E> choices) {
@@ -456,6 +426,10 @@ public interface PlayerIO {
 
     boolean isLinked();
 
+    default String getExtraInfo() {
+        return "";
+    }
+
     default String getPlayerStatus(boolean privateAccess, boolean onlyCards) {
         String ans = "";
         if (!onlyCards) {
@@ -464,12 +438,16 @@ public interface PlayerIO {
                 ans += "【" + s + "】";
             }
             ans += "\ncurrent HP: " + getHP() + "/" + getMaxHP() + "\n";
-            ans += isDrunk() ? "[喝酒]" : "";
-            ans += isTurnedOver() ? "[翻面]" : "";
-            ans += isLinked() ? "[连环]" : "";
-            ans += isKuangFeng() ? "[狂风]" : "";
-            ans += isDaWu() ? "[大雾]" : "";
-            ans += hasWakenUp() ? "[觉醒]\n" : "\n";
+            if (isDrunk() || isDaWu() || isKuangFeng() || isLinked() ||
+                    isTurnedOver() || hasWakenUp()) {
+                ans += isDrunk() ? "[喝酒]" : "";
+                ans += isTurnedOver() ? "[翻面]" : "";
+                ans += isLinked() ? "[连环]" : "";
+                ans += isKuangFeng() ? "[狂风]" : "";
+                ans += isDaWu() ? "[大雾]" : "";
+                ans += hasWakenUp() ? "[觉醒]\n" : "\n";
+            }
+            ans += getExtraInfo() + (getExtraInfo().isEmpty() ? "" : "\n");
         }
         if (privateAccess) {
             ans += "identity: " + getIdentity();
@@ -495,7 +473,7 @@ public interface PlayerIO {
     }
 
     default void printToIO(String s) {
-        if (GameLauncher.isGUI()) {
+        if (GameLauncher.isGraphic()) {
             GameManager.addCurrentIOrequest(s);
         } else {
             print(s);
@@ -503,7 +481,7 @@ public interface PlayerIO {
     }
 
     default void printlnToIO(String s) {
-        if (GameLauncher.isGUI()) {
+        if (GameLauncher.isGraphic()) {
             GameManager.addCurrentIOrequest(s + "\n");
         } else {
             println(s);

@@ -89,6 +89,15 @@ public class ShenGuanYu extends God {
     }
 
     @Override
+    public String getExtraInfo() {
+        String ans = "梦魇 marks: ";
+        for (Person p: mengYan.keySet()) {
+            ans += p + mengYan.get(p).toString() + " ";
+        }
+        return ans;
+    }
+
+    @Override
     public String toString() {
         return "神关羽";
     }

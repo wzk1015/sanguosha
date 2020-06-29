@@ -86,7 +86,7 @@ public class ZhangHe extends Person {
                 }
             }
             else {
-                GameManager.endWithError("unknown type of card in 巧变: " + c);
+                GameManager.panic("unknown type of card in 巧变: " + c);
             }
         }
         return false;

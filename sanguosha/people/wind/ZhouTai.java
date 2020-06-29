@@ -3,7 +3,6 @@ package sanguosha.people.wind;
 import sanguosha.cards.Card;
 import sanguosha.cardsheap.CardsHeap;
 import sanguosha.manager.GameManager;
-import sanguosha.manager.IO;
 import sanguosha.people.Nation;
 import sanguosha.people.Person;
 import sanguosha.skills.Skill;
@@ -83,8 +82,13 @@ public class ZhouTai extends Person {
     }
 
     @Override
-    public void clearCards() {
-        CardsHeap.discard(buQuCards);
+    public ArrayList<Card> getExtraCards() {
+        return buQuCards;
+    }
+
+    @Override
+    public String getExtraInfo() {
+        return buQuCards.size() + " 不屈 cards";
     }
 
     @Override

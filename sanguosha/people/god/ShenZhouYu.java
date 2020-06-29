@@ -68,8 +68,7 @@ public class ShenZhouYu extends God {
                         return false;
                     }
                 }
-            }
-            if (option.equals("1") || option.equals("1+1") || option.equals("1+1+1")
+            } if (option.equals("1") || option.equals("1+1") || option.equals("1+1+1")
                     || option.equals("1+2") || option.equals("2") || option.equals("3")) {
                 p1 = selectPlayer();
                 if (option.equals("3")) {
@@ -82,8 +81,7 @@ public class ShenZhouYu extends God {
                     realNum = p1.hurt((Card) null, this, 1, HurtType.fire);
                 }
                 GameManager.linkHurt(null, this, realNum, HurtType.fire);
-            }
-            if (option.equals("1+1") || option.equals("1+1+1") || option.equals("1+2")) {
+            } if (option.equals("1+1") || option.equals("1+1+1") || option.equals("1+2")) {
                 do {
                     printlnToIO("choose another person");
                     p2 = selectPlayer();
@@ -95,8 +93,7 @@ public class ShenZhouYu extends God {
                     realNum = p2.hurt((Card) null, this, 1, HurtType.fire);
                 }
                 GameManager.linkHurt(null, this, realNum, HurtType.fire);
-            }
-            if (option.equals("1+1+1")) {
+            } if (option.equals("1+1+1")) {
                 do {
                     printlnToIO("choose another person");
                     p3 = selectPlayer();

@@ -9,9 +9,6 @@ import sanguosha.people.Identity;
 import sanguosha.people.Nation;
 import sanguosha.cardsheap.PeoplePool;
 import sanguosha.people.Person;
-import sanguosha.people.god.ShenZhuGeLiang;
-import sanguosha.people.mountain.DengAi;
-import sanguosha.people.wind.ZhouTai;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,15 +18,22 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameManager {
     private static final CopyOnWriteArrayList<Person> players = new CopyOnWriteArrayList<>();
-    private static int numPlayers = 2;
+    private static int numPlayers = 3;
     private static final HashMap<Identity, ArrayList<Person>> idMap = new HashMap<>();
     private static final HashMap<Identity, ArrayList<Person>> idMapAll = new HashMap<>();
     private static final ArrayList<Person> winners = new ArrayList<>();
+    private static final ArrayList<Person> dead = new ArrayList<>();
     private static Person currentPerson = null;
     private static String currentIOrequest = "";
+    private static boolean gameRunning = false;
+    private static int round = 1;
 
     public static void startGame() {
         IO.println("wzk's sanguosha begins!");
+        if (GameLauncher.isCommandLine() || GameLauncher.isGraphic()) {
+            IO.printlnToIO("choose number of players");
+            setNumPlayers(IO.chooseNumber(2, 10));
+        }
 
         PeoplePool.init();
         CardsHeap.init();
@@ -45,10 +49,10 @@ public class GameManager {
 
         for (int i = 0; i < numPlayers; i++) {
             Identity identity = PeoplePool.allocIdentity();
-            ArrayList<Person> options = PeoplePool.allocPeople();
             IO.printlnToIO("player " + (i + 1) + ", your identity is " + identity.toString() +
                     "\nchoose your person");
-            Person selected = IO.initialChoosePerson(options);
+            Person selected = IO.initialChoosePerson(identity == Identity.KING ?
+                    PeoplePool.allocPeopleForKing() : PeoplePool.allocPeople());
             selected.setIdentity(identity);
             players.add(selected);
             idMap.get(identity).add(selected);
@@ -59,38 +63,35 @@ public class GameManager {
             p.addCard(CardsHeap.draw(4));
         }
 
+        if (numPlayers > 4) {
+            Person king = idMap.get(Identity.KING).get(0);
+            king.setMaxHP(king.getMaxHP() + 1);
+            king.setCurrentHP(king.getMaxHP());
+        }
+
+        for (Person p : players) {
+            p.initialize();
+        }
+        gameRunning = true;
     }
 
-    public static void runGame(int num) {
-
+    public static void runGame() {
         try {
-            GameManager.numPlayers = num;
             startGame();
 
-            if (num > 4) {
-                Person king = idMap.get(Identity.KING).get(0);
-                king.setMaxHP(king.getMaxHP() + 1);
-                king.setCurrentHP(king.getMaxHP());
-            }
-
-            for (Person p : players) {
-                p.initialize();
-            }
-
-            int roundCount = 1;
             while (!gameIsEnd()) {
-                IO.println("round " + roundCount++);
+                IO.println("round " + round++);
                 for (Person p : players) {
                     currentPerson = p;
                     p.run();
-                    checkCardsNum();
+                    Utils.checkCardsNum();
                     currentIOrequest = "";
                 }
             }
             endGame();
 
         } catch (NoSuchElementException e) {
-            endWithError("\nno line found");
+            panic("\nno line found");
         }
     }
 
@@ -124,8 +125,20 @@ public class GameManager {
     }
 
     public static void endGame() {
-        if (!GameLauncher.isGUI()) {
+        gameRunning = false;
+        if (GameLauncher.isCommandLine()) {
             System.exit(0);
+        }
+    }
+
+    public static void panic(String s) {
+        IO.print("panic at ");
+        IO.print(Thread.currentThread().getStackTrace()[1].getFileName());
+        IO.print(" line" + Thread.currentThread().getStackTrace()[1].getLineNumber());
+        IO.println(": " + s);
+        gameRunning = false;
+        if (GameLauncher.isCommandLine()) {
+            System.exit(1);
         }
     }
 
@@ -171,20 +184,20 @@ public class GameManager {
 
     public static void die(Person p) {
         Person cp = null;
-        for (Person p2: players) {
+        for (Person p2 : players) {
             if (p2.usesXingShang()) {
                 cp = p2;
                 break;
             }
         }
+        CardsHeap.discard(p.getExtraCards());
         if (cp == null) {
             p.loseCard(p.getCards());
             p.loseCard(new ArrayList<>(p.getRealJudgeCards()));
             p.loseCard(new ArrayList<>(p.getEquipments().values()));
-        }
-        else {
+        } else {
             p.loseCard(p.getCards(), false);
-            p.loseCard(new ArrayList<>(p.getRealJudgeCards()),false);
+            p.loseCard(new ArrayList<>(p.getRealJudgeCards()), false);
             p.loseCard(new ArrayList<>(p.getEquipments().values()), false);
             cp.addCard(p.getCards());
             cp.addCard(new ArrayList<>(p.getRealJudgeCards()));
@@ -193,6 +206,7 @@ public class GameManager {
         players.remove(p);
         numPlayers--;
         idMap.get(p.getIdentity()).remove(p);
+        dead.add(p);
         IO.println(p + " dead, identity: " + p.getIdentity());
     }
 
@@ -246,22 +260,18 @@ public class GameManager {
     }
 
     public static void callItEven() {
-        if (!GameLauncher.isGUI()) {
+        if (GameLauncher.isCommandLine()) {
             IO.println("call it even");
         }
         System.exit(0);
     }
 
-    public static void endWithError(String s) {
-        IO.println(s);
-        IO.println("game end with error\n");
-        if (!GameLauncher.isGUI()) {
-            System.exit(1);
-        }
-    }
-
     public static int getNumPlayers() {
         return numPlayers;
+    }
+
+    public static void setNumPlayers(int numPlayers) {
+        GameManager.numPlayers = numPlayers;
     }
 
     public static List<Person> getPlayers() {
@@ -273,9 +283,25 @@ public class GameManager {
     }
 
     public static String getOverallStatus() {
-        String ans = "";
+        if (!gameRunning) {
+            return "";
+        }
+        String ans = "Round " + round + "\n";
+        ans += "Cards heap: " + CardsHeap.getDrawCards(1).size() + "\n\n";
+        ans += dead.isEmpty() ? "" : "\ndead people: " + dead.size() + " : ";
+        for (Person p: dead) {
+            ans += p.toString() + "(" + p.getIdentity() + ") ";
+        }
+        ans += "alive people: " + numPlayers + " : ";
         for (Person p: players) {
-            ans += p.getPlayerStatus(false, false) + "\n";
+            ans += p.toString() + " ";
+        }
+        ans += "\nKING:    " + idMap.get(Identity.KING).get(0) + "\n";
+        ans += "MINISTER: " + idMap.get(Identity.MINISTER).size() + "\n";
+        ans += "TRAITOR:  " + idMap.get(Identity.TRAITOR).size() + "\n";
+        ans += "REBEL:    " + idMap.get(Identity.REBEL).size() + "\n";
+        for (Person p : players) {
+            ans += "\n" + p.getPlayerStatus(false, false) + "\n";
         }
         return ans;
     }
@@ -286,31 +312,5 @@ public class GameManager {
 
     public static void addCurrentIOrequest(String currentIOrequest) {
         GameManager.currentIOrequest += currentIOrequest;
-    }
-
-    public static void checkCardsNum() {
-        int ans = CardsHeap.getDrawCards(0).size() + CardsHeap.getUsedCards().size();
-        for (Person p : players) {
-            ans += p.getCards().size();
-            ans += p.getEquipments().size();
-            ans += p.getJudgeCards().size();
-            if (p instanceof DengAi) {
-                ans += p.numOfTian();
-            }
-            if (p instanceof ShenZhuGeLiang) {
-                ans += ((ShenZhuGeLiang) p).numOfStars();
-            }
-            if (p instanceof ZhouTai) {
-                ans += ((ZhouTai) p).numOfBuQu();
-            }
-        }
-        if (ans != CardsHeap.getNumCards()) {
-            IO.println("card number not consistent");
-            for (Person p : players) {
-                IO.println(p.showAllCards());
-            }
-            endWithError("current number of cards: " + ans +
-                    ", expected: " + CardsHeap.getNumCards());
-        }
     }
 }
