@@ -33,14 +33,20 @@ public class ZhenJi extends Person {
     public boolean skillShan() {
         if (requestShan()) {
             if (launchSkill("倾国")) {
-                return  requestRedBlack("black") != null;
+                return  requestRedBlack("black", true) != null;
             }
         }
         return false;
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "甄姬";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "倾国：你可以将一张黑色手牌当【闪】使用或打出。\n" +
+                "洛神：准备阶段，你可以进行判定，若结果为黑色，你获得此牌，然后你可以重复此流程。";
     }
 }

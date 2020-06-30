@@ -61,7 +61,7 @@ public class DengAi extends Person {
     public boolean useSkillInUsePhase(String order) {
         if (order.equals("急袭") && hasWakenUp()) {
             println(this + " uses 急袭");
-            Card c = chooseCard(tian);
+            Card c = chooseCard(tian, true);
             if (c == null) {
                 return true;
             }
@@ -88,7 +88,15 @@ public class DengAi extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "邓艾";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "屯田：当你于回合外失去牌后，你可以进行判定，若结果不为红桃，将判定牌置于你的武将牌上，称为\"田\"；" +
+                "你计算与其他角色的距离-X（X为\"田\"的数量）。\n" +
+                "凿险：觉醒技，准备阶段，若“田”的数量大于等于3，你减1点体力上限，然后获得“急袭”。\n" +
+                (hasWakenUp() ? "急袭——你可以将一张“田”当【顺手牵羊】使用。" : "");
     }
 }

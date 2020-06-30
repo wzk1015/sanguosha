@@ -50,4 +50,9 @@ public class NanManRuQin extends Strategy {
     public String toString() {
         return "南蛮入侵";
     }
+
+    @Override
+    public String details() {
+        return "出牌阶段，对所有其他角色使用。每名目标角色需打出一张【杀】，否则受到1点伤害。";
+    }
 }

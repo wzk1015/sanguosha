@@ -1,8 +1,6 @@
 package sanguosha.people.mountain;
 
 import sanguosha.cards.Card;
-import sanguosha.cards.Equipment;
-import sanguosha.cards.JudgeCard;
 import sanguosha.cards.basic.HurtType;
 import sanguosha.cardsheap.CardsHeap;
 import sanguosha.manager.GameManager;
@@ -23,7 +21,7 @@ public class CaiWenJi extends Person {
     @Override
     public void otherPersonHurtBySha(Person source, Person target) {
         if (launchSkill("悲歌")) {
-            Card c = chooseCard(getCardsAndEquipments());
+            Card c = chooseCard(getCardsAndEquipments(), true);
             if (c == null) {
                 return;
             }
@@ -39,7 +37,7 @@ public class CaiWenJi extends Person {
                 case CLUB:
                     if (source.getCardsAndEquipments().size() == 1) {
                         source.loseCard(source.getCardsAndEquipments().get(0));
-                    } else if (source.getCardsAndEquipments().size() >= 3) {
+                    } else if (source.getCardsAndEquipments().size() >= 2) {
                         source.loseCard(source.chooseCards(2, source.getCardsAndEquipments()));
                     }
                     break;
@@ -58,43 +56,30 @@ public class CaiWenJi extends Person {
         int realNum = super.hurt(cs, source, num, type);
         if (isDead() && source != null) {
             println(this + " uses 断肠");
-            for (Person p : GameManager.getPlayers()) {
-                if (p == source) {
-                    p = new BlankPerson(source.getMaxHP());
-                    p.setSex(source.getSex());
-                    p.setCurrentHP(source.getHP());
-                    p.setDaWu(source.isDaWu());
-                    p.setKuangFeng(source.isKuangFeng());
-                    p.setIdentity(source.getIdentity());
-                    p.setNation(source.getNation());
-                    p.setDrunk(source.isDrunk());
-                    p.setShaCount(source.getShaCount());
-                    if (source.isLinked()) {
-                        p.link();
-                    }
-                    if (source.isTurnedOver()) {
-                        p.turnover();
-                    }
-                    p.addCard(source.getCards());
-                    for (Equipment equipment : source.getEquipments().values()) {
-                        p.putOnEquipment(equipment);
-                    }
-                    for (JudgeCard judgeCard : source.getJudgeCards()) {
-                        p.addJudgeCard(judgeCard);
-                    }
-                    CardsHeap.discard(source.getExtraCards());
-                    source.loseCard(p.getCards(), false, false);
-                    source.loseCard(new ArrayList<>(p.getRealJudgeCards()), false, false);
-                    source.loseCard(new ArrayList<>(p.getEquipments().values()), false, false);
-                    break;
-                }
+            Person p = new BlankPerson(source.getMaxHP());
+            p.setSex(source.getSex());
+            p.setNation(source.getNation());
+            source.changePerson(p);
+            if (source.isMyRound() && !source.isDead()) {
+                p.usePhase();
+                p.throwPhase();
+                p.setMyRound(false);
+                p.endPhase();
+                p.println("----------" + p + "'s round ends" + "----------");
             }
         }
         return realNum;
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "蔡文姬";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "悲歌：当一名角色受到【杀】造成的伤害后，你可以弃置一张牌，然后令其进行判定，若结果为：" +
+                "红桃，其回复1点体力；方块，其摸两张牌；梅花，伤害来源弃置两张牌；黑桃，伤害来源翻面。\n" +
+                "断肠：锁定技，当你死亡时，杀死你的角色失去所有武将技能。(half implemented)";
     }
 }

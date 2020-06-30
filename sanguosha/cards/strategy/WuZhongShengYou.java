@@ -22,4 +22,9 @@ public class WuZhongShengYou extends Strategy {
     public String toString() {
         return "无中生有";
     }
+
+    @Override
+    public String details() {
+        return "出牌阶段，对你使用。你摸两张牌。";
+    }
 }

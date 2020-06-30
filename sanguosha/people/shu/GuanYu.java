@@ -15,7 +15,7 @@ public class GuanYu extends Person {
 
     @Skill("武圣")
     public Card wuSheng() {
-        return requestRedBlack("red");
+        return requestRedBlack("red", true);
     }
 
     @Override
@@ -46,7 +46,12 @@ public class GuanYu extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "关羽";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "武圣：你可以将一张红色牌当【杀】使用或打出。";
     }
 }

@@ -43,4 +43,9 @@ public class QiLinGong extends Weapon {
     public String toString() {
         return "麒麟弓";
     }
+
+    @Override
+    public String details() {
+        return "每当你使用【杀】对目标角色造成伤害时，你可以弃置其装备区里的一张坐骑牌。";
+    }
 }

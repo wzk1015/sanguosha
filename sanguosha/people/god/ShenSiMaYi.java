@@ -69,7 +69,7 @@ public class ShenSiMaYi extends God {
         if (jiLue("鬼才")) {
             Card c = requestCard(null);
             if (c != null) {
-                addCard(CardsHeap.retrieve(c));
+                CardsHeap.retrieve(c);
                 CardsHeap.discard(d);
                 return c;
             }
@@ -142,7 +142,20 @@ public class ShenSiMaYi extends God {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "神司马懿";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "忍戒：锁定技，当你受到伤害后，或于弃牌阶段内弃置手牌后，你获得X枚“忍”标记（X为伤害值或弃置的手牌数）。\n" +
+                "连破：当你杀死一名角色后，你可于此回合结束后获得一个额外回合。\n" +
+                "拜印：觉醒技，准备阶段开始时，若“忍”标记的数量不小于4，你减1点体力上限，然后获得“极略”。\n" +
+                (hasWakenUp() ? "极略：你可以弃置1枚“忍”标记，发动下列一项技能：“鬼才”、“放逐”、“集智”、“制衡”或“完杀”。\n" +
+                "鬼才：当一名角色的判定牌生效前，你可以打出一张手牌代替之。\n" +
+                "放逐：当你受到伤害后，你可以令一名其他角色翻面，然后该角色摸X张牌（X为你已损失的体力值）。\n" +
+                "集智：当你使用普通锦囊牌时，你可以摸一张牌。\n" +
+                "制衡：出牌阶段限一次，你可以弃置任意张牌，然后摸等量的牌。\n" +
+                "完杀：锁定技，你的回合内，只有你和处于濒死状态的角色才能使用【桃】。" : "");
     }
 }

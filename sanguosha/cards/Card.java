@@ -1,21 +1,11 @@
 package sanguosha.cards;
 
-import sanguosha.cards.basic.Sha;
-import sanguosha.cards.strategy.GuoHeChaiQiao;
-import sanguosha.cards.strategy.HuoGong;
-import sanguosha.cards.strategy.JieDaoShaRen;
-import sanguosha.cards.strategy.ShunShouQianYang;
-import sanguosha.cards.strategy.TieSuoLianHuan;
-import sanguosha.cards.strategy.judgecards.LeBuSiShu;
-import sanguosha.manager.GameManager;
 import sanguosha.manager.IO;
 import sanguosha.manager.Utils;
 import sanguosha.people.Person;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import static sanguosha.cards.EquipType.weapon;
 
 public abstract class Card implements Serializable {
     private final Color color;
@@ -48,6 +38,7 @@ public abstract class Card implements Serializable {
 
     public Color color() {
         if (owner != null && owner.hasHongYan() && color == Color.SPADE) {
+            IO.println(owner + " uses 红颜");
             return Color.HEART;
         }
         return color;
@@ -135,99 +126,22 @@ public abstract class Card implements Serializable {
     public Person getOwner() {
         return owner;
     }
-    
-    public String askMultiTargets() {
-        Person p1 = source.selectPlayer(GameManager.getPlayers(), true);
-        Person p2 = source.selectPlayer(GameManager.getPlayers(), true);
-        if (p1 == null || p2 == null) {
-            return "false";
-        }
-        if (p1 == p2) {
-            IO.printlnToIO("can't select two same people");
-            return "continue";
-        }
-        if (this instanceof JieDaoShaRen && (p1 == source)) {
-            IO.printlnToIO("can't select yourself");
-            return "continue";
-        }
-        if (this instanceof JieDaoShaRen && !p1.hasEquipment(weapon, null)) {
-            IO.printlnToIO("target has no weapon");
-            return "continue";
-        }
-        setTarget(p1);
-        if (this instanceof TieSuoLianHuan) {
-            ((TieSuoLianHuan) this).setTarget2(p2);
-        } else if (this instanceof JieDaoShaRen) {
-            ((JieDaoShaRen) this).setTarget2(p2);
-        }
-        return "true";
+
+    public Person selectTarget(Person user) {
+        source = user;
+        target = user.selectPlayer(false);
+        return target;
     }
 
     public boolean askTarget(Person user) {
-        source = user;
-
+        setSource(user);
         if (!this.needChooseTarget()) {
             setTarget(user);
             return true;
         }
 
-        while (true) {
-            if (this instanceof TieSuoLianHuan || this instanceof JieDaoShaRen) {
-                String ret = askMultiTargets();
-                if (ret.equals("true")) {
-                    return true;
-                } else if (ret.equals("false")) {
-                    return false;
-                } else {
-                    continue;
-                }
-            }
-
-            Person p;
-            if (this instanceof HuoGong) {
-                p = user.selectPlayer(GameManager.getPlayers(), true);
-            } else {
-                p = user.selectPlayer(GameManager.getPlayers());
-            }
-
-            if (p == null) {
-                return false;
-            }
-            if (this instanceof Strategy &&
-                    GameManager.calDistance(user, p) > ((Strategy) this).getDistance()) {
-                IO.printlnToIO("distance unreachable");
-                continue;
-            }
-            if (this instanceof Strategy && this.isBlack() && p.hasWeiMu()) {
-                IO.printlnToIO("can't use that because of 帷幕");
-                continue;
-            }
-            if (this instanceof Sha) {
-                if (GameManager.calDistance(user, p) > user.getShaDistance()) {
-                    IO.printlnToIO("distance unreachable");
-                    continue;
-                } else if (p.hasKongCheng() && p.getCards().isEmpty()) {
-                    IO.printlnToIO("can't sha because of 空城");
-                    continue;
-                }
-            }
-            if ((this instanceof ShunShouQianYang || this instanceof LeBuSiShu) &&
-                    p.hasQianXun()) {
-                IO.printlnToIO("can't use that because of 谦逊");
-                continue;
-            }
-            if ((this instanceof GuoHeChaiQiao || this instanceof ShunShouQianYang) &&
-                    p.getCardsAndEquipments().isEmpty()
-                    && p.getJudgeCards().isEmpty()) {
-                IO.printlnToIO("you can't choose a person with no cards");
-                continue;
-            }
-            target = p;
-            return true;
-        }
+        return selectTarget(user) != null;
     }
 
-    public String help() {
-        return "not implemented";
-    }
+    public abstract String help();
 }

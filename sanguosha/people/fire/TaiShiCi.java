@@ -64,7 +64,13 @@ public class TaiShiCi extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "太史慈";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "天义：出牌阶段限一次，你可以与一名角色拼点：若你赢，本回合你可以多使用一张【杀】、" +
+                "使用【杀】无距离限制且可以多选择一个目标；若你没赢，本回合你不能使用【杀】。";
     }
 }

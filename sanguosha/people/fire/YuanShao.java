@@ -27,8 +27,8 @@ public class YuanShao extends Person {
             Card c2;
             do {
                 printlnToIO("choose two cards of same color");
-                c1 = chooseCard(getCards());
-                c2 = chooseCard(getCards());
+                c1 = chooseCard(getCards(), true);
+                c2 = chooseCard(getCards(), true);
             } while (c1 != null && c2 != null && c1.color() != c2.color());
             if (c1 == null || c2 == null) {
                 return true;
@@ -49,8 +49,8 @@ public class YuanShao extends Person {
     @Override
     public void throwPhase() {
         if (getIdentity() == Identity.KING) {
-            int extra = 2 * GameManager.peoplefromNation(Nation.QUN).size();
-            int num = getCards().size() - getHP() - extra;
+            int num = getCards().size() - getHP()
+                    - 2 * GameManager.peoplefromNation(Nation.QUN).size();
             if (num > 0) {
                 printlnToIO(String.format("You need to throw %d cards", num));
                 ArrayList<Card> cs = chooseCards(num, getCards());
@@ -66,7 +66,13 @@ public class YuanShao extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "袁绍";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "乱击：你可以将两张花色相同的手牌当【万箭齐发】使用。\n" +
+                "血裔：主公技，锁定技，你的手牌上限+X（X为其他群势力角色数的两倍）。";
     }
 }

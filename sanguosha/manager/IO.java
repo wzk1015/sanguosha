@@ -29,9 +29,7 @@ public class IO {
     public static String input(String s) {
         if (GameLauncher.isGraphic()) {
             printToIO(">>>" + s + " ");
-            String input = GraphicRunner.getInput();
-            printlnToIO(input);
-            return input;
+            return GraphicRunner.getInput();
         }
         String ans = "";
         while (ans.isEmpty()) {

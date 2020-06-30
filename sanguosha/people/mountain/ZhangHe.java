@@ -68,7 +68,7 @@ public class ZhangHe extends Person {
             }
             ArrayList<Card> options = new ArrayList<>(new ArrayList<>(p.getEquipments().values()));
             options.addAll(p.getJudgeCards());
-            Card c = chooseCard(options);
+            Card c = chooseCard(options, true);
             if (c == null) {
                 return true;
             }
@@ -98,7 +98,14 @@ public class ZhangHe extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "张郃";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "巧变：你可以弃置一张手牌并跳过一个阶段（准备阶段和结束阶段除外）。" +
+                "若你以此法跳过摸牌阶段，你可以获得至多两名角色的各一张手牌；" +
+                "若你以此法跳过出牌阶段，你可以将一名角色场上的一张牌置入另一名角色区域里的相应位置。";
     }
 }

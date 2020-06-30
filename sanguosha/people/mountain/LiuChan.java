@@ -31,7 +31,7 @@ public class LiuChan extends Person {
         if (type == null) {
             return true;
         }
-        return p.requestCard(type) == null;
+        return p.requestCard(type.replace("throw ", "")) == null;
     }
 
     @Skill("放权")
@@ -118,7 +118,15 @@ public class LiuChan extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "刘禅";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "享乐：锁定技，当你成为一名角色使用【杀】的目标后，除非该角色弃置一张基本牌，否则此【杀】对你无效。\n" +
+                "放权：你可以跳过出牌阶段，然后此回合结束时，你可以弃置一张手牌并令一名其他角色获得一个额外的回合。\n" +
+                "若愚：主公技，觉醒技，准备阶段，若你是体力值最小的角色，你加1点体力上限，回复1点体力，然后获得\"激将\"。\n" +
+                (hasWakenUp() ? "激将：主公技，其他蜀势力角色可以在你需要时代替你使用或打出【杀】。" : "");
     }
 }

@@ -25,7 +25,7 @@ public class ZhuRong extends Person {
         if (getCards().size() > 0 && p.getCards().size() > 0 && launchSkill("烈刃")) {
             if (GameManager.pinDian(this, p)) {
                 if (!p.getCardsAndEquipments().isEmpty()) {
-                    Card c = chooseTargetCardsAndEquipments(p);
+                    Card c = chooseTargetCards(p);
                     p.loseCard(c, false);
                     addCard(c);
                 }
@@ -34,7 +34,13 @@ public class ZhuRong extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "祝融";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "巨象：锁定技，【南蛮入侵】对你无效；当其他角色使用的【南蛮入侵】结算结束后，你获得之。\n" +
+                "烈刃：当你使用【杀】对目标角色造成伤害后，你可以与其拼点，若你赢，你获得其一张牌。";
     }
 }

@@ -70,7 +70,14 @@ public class XunYu extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "荀彧";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "驱虎：出牌阶段限一次，你可以与体力值大于你的一名角色拼点：" +
+                "若你赢，你令该角色对其攻击范围内的另一名角色造成1点伤害；若你没赢，其对你造成1点伤害。\n" +
+                "节命：当你受到1点伤害后，你可以令一名角色将手牌摸至X张（X为其体力上限且最多为5）。";
     }
 }

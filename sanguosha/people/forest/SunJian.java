@@ -36,7 +36,13 @@ public class SunJian extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "孙坚";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "英魂：准备阶段，若你已受伤，你可以选择一名其他角色并选择一项：" +
+                "1.令其摸X张牌，然后弃置一张牌；2.令其摸一张牌，然后弃置X张牌。（X为你已损失的体力值）";
     }
 }

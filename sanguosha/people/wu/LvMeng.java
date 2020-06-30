@@ -31,7 +31,12 @@ public class LvMeng extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "吕蒙";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "克己：若你未于出牌阶段内使用或打出过【杀】，你可以跳过弃牌阶段。";
     }
 }

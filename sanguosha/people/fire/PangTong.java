@@ -32,7 +32,7 @@ public class PangTong extends Person {
                 if (ts.askTarget(this)) {
                     useCard(ts);
                 } else {
-                    addCard(CardsHeap.retrieve(c));
+                    addCard(CardsHeap.retrieve(c), false);
                 }
             }
         }
@@ -61,7 +61,13 @@ public class PangTong extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "庞统";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "连环：你可以将一张梅花手牌当【铁索连环】使用或重铸。\n" +
+                "涅槃：限定技，当你处于濒死状态时，你可以弃置区域里的所有牌，然后复原你的武将牌，摸三张牌，将体力回复至3点。";
     }
 }

@@ -18,4 +18,9 @@ public class BaGuaZhen extends Shield {
     public String toString() {
         return "八卦阵";
     }
+
+    @Override
+    public String details() {
+        return "每当你需要使用或打出一张【闪】时，你可以进行一次判定，若判定结果为红色，视为你使用或打出了一张【闪】。";
+    }
 }

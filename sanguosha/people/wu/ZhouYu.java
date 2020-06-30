@@ -27,7 +27,7 @@ public class ZhouYu extends Person {
     public boolean useSkillInUsePhase(String order) {
         if (getCards().size() > 0 && order.equals("反间") && hasNotUsedSkill1()) {
             println(this + " uses 反间");
-            Card c = chooseCard(getCards());
+            Card c = chooseCard(getCards(), false);
             Person p = selectPlayer();
             if (p == null) {
                 return true;
@@ -44,7 +44,13 @@ public class ZhouYu extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "周瑜";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "英姿：摸牌阶段，你可以多摸一张牌。\n" +
+                "反间：出牌阶段限一次，你可以令一名其他角色选择一种花色，然后该角色获得你的一张手牌并展示之，若此牌的花色与其所选的花色不同，则你对其造成1点伤害。";
     }
 }

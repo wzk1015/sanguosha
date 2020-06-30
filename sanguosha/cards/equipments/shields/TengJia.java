@@ -17,4 +17,9 @@ public class TengJia extends Shield {
     public String toString() {
         return "藤甲";
     }
+
+    @Override
+    public String details() {
+        return "锁定技，【南蛮入侵】、【万箭齐发】和普通【杀】对你无效；锁定技，每当你受到火焰伤害时，此伤害+1。";
+    }
 }

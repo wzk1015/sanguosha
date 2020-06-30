@@ -24,4 +24,10 @@ public class QingLongYanYueDao extends Weapon {
     public String toString() {
         return "青龙偃月刀";
     }
+
+    @Override
+    public String details() {
+        return "每当你使用的【杀】被目标角色使用的【闪】抵消时，你可以对其使用一张【杀】（无距离限制）。\n" +
+                "如果有足够的【杀】，可以一直追杀下去，直到目标角色不使用【闪】或使用者无【杀】为止。";
+    }
 }

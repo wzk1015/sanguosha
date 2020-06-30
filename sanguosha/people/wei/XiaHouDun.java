@@ -38,7 +38,12 @@ public class XiaHouDun extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "夏侯惇";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "刚烈：当你受到伤害后，你可以进行判定，若结果不为红桃，伤害来源选择一项：1.弃置两张手牌；2.受到你造成的1点伤害。";
     }
 }

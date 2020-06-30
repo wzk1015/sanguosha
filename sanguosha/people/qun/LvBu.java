@@ -16,7 +16,12 @@ public class LvBu extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "吕布";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "无双：锁定技，你使用的【杀】需两张【闪】才能抵消；与你进行【决斗】的角色每次需打出两张【杀】。";
     }
 }

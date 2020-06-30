@@ -1,18 +1,11 @@
 package sanguosha.cards.equipments.horses;
 
 import sanguosha.cards.Color;
-import sanguosha.cards.EquipType;
-import sanguosha.cards.Equipment;
 
-public class DiLu extends Equipment {
+public class DiLu extends PlusOneHorse {
 
     public DiLu(Color color, int number) {
-        super(color, number, EquipType.plusOneHorse);
-    }
-
-    @Override
-    public Object use() {
-        return null;
+        super(color, number);
     }
 
     @Override

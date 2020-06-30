@@ -52,7 +52,13 @@ public class CaoCao extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "曹操";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "奸雄：当你受到伤害后，你可以获得造成此伤害的牌。\n" +
+                "护驾：主公技，当你需要使用或打出“闪”时，你可以令其他魏势力角色选择是否打出一张“闪”（视为由你使用或打出）。";
     }
 }

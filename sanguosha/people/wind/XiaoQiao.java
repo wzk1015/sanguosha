@@ -36,7 +36,13 @@ public class XiaoQiao extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "小乔";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "天香：当你受到伤害时，你可以弃置一张红桃手牌并选择一名其他角色。若如此做，你将此伤害转移给该角色，然后其摸X张牌（X为该角色已损失的体力值）。\n" +
+                "红颜：锁定技，你的黑桃牌视为红桃牌。";
     }
 }

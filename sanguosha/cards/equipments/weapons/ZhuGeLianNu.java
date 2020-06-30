@@ -17,4 +17,9 @@ public class ZhuGeLianNu extends Weapon {
     public String toString() {
         return "诸葛连弩";
     }
+
+    @Override
+    public String details() {
+        return "锁定技，你于出牌阶段内使用【杀】无次数限制。";
+    }
 }

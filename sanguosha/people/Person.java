@@ -17,14 +17,25 @@ import sanguosha.cardsheap.PeoplePool;
 import sanguosha.manager.GameManager;
 
 import sanguosha.manager.Utils;
+import sanguosha.skills.AfterWakeSkill;
+import sanguosha.skills.ForcesSkill;
+import sanguosha.skills.KingSkill;
+import sanguosha.skills.RestrictedSkill;
+import sanguosha.skills.Skill;
+import sanguosha.skills.WakeUpSkill;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static sanguosha.cards.EquipType.weapon;
 import static sanguosha.manager.IO.showUsingCard;
 
 public abstract class Person extends Attributes implements Serializable {
+    private boolean isZuoCi = false;
+    private ArrayList<Person> huaShen = new ArrayList<>();
+    private Person selected = null;
 
     public Person(int maxHP, String sex, Nation nation) {
         Utils.assertTrue(sex.equals("male") || sex.equals("female"), "invalid sex");
@@ -42,11 +53,13 @@ public abstract class Person extends Attributes implements Serializable {
         println("----------" + this + "'s round begins" + "----------");
         if (isTurnedOver()) {
             turnover();
-            println(this + "turns over");
             return;
         }
         setHasUsedSkill1(false);
         setMyRound(true);
+        if (huaShen(true)) {
+            return;
+        }
         beginPhase();
         if (isDead()) {
             return;
@@ -68,7 +81,6 @@ public abstract class Person extends Attributes implements Serializable {
             }
             usePhase();
         }
-        setDrunk(false);
         if (isDead()) {
             return;
         }
@@ -77,6 +89,7 @@ public abstract class Person extends Attributes implements Serializable {
         }
         setMyRound(false);
         endPhase();
+        huaShen(false);
         Utils.assertTrue(getHP() <= getMaxHP(), "currentHP exceeds maxHP");
         println("----------" + this + "'s round ends" + "----------");
     }
@@ -227,12 +240,10 @@ public abstract class Person extends Attributes implements Serializable {
             printlnToIO(getPlayerStatus(true, false));
         }
         while (!isDead()) {
-            if (GameLauncher.isCommandLine()) {
-                println(this + "'s current hand cards: ");
-                printCards(getCards());
-                if (hasEquipment(weapon, "丈八蛇矛")) {
-                    println("【丈八蛇矛】");
-                }
+            printlnToIO(this + "'s current hand cards: ");
+            printCards(getCards());
+            if (hasEquipment(weapon, "丈八蛇矛")) {
+                printlnToIO("【丈八蛇矛】");
             }
             String order = input("input an order, 'help' for help");
             if (order.equals("q")) {
@@ -261,12 +272,18 @@ public abstract class Person extends Attributes implements Serializable {
 
     public void showHelp() {
         printlnToIO("Number: use card, Name: skill or weapon, 'q':end phase");
-        String type = input("input name of card or person to get information, 'q' to quit");
+        String type = input("input name of card or person to get information, " +
+                "'' for this person ,'q' to quit");
         if (type.equals("q")) {
             return;
         }
         if (type.equals("")) {
             printlnToIO(this + "'s help:\n" + help());
+            if (isZuoCi) {
+                printlnToIO("化身：游戏开始时，你随机获得两张武将牌作为\"化身\"牌，然后亮出其中一张，" +
+                    "获得该\"化身\"牌的一个技能。回合开始时或结束后，你可以更改亮出的\"化身\"牌。\n" +
+                    "新生：当你受到1点伤害后，你可以获得一张新的\"化身\"牌。\n");
+            }
             return;
         }
         for (Card c: CardsHeap.getAllCards()) {
@@ -275,7 +292,7 @@ public abstract class Person extends Attributes implements Serializable {
                 return;
             }
         }
-        for (Person p: PeoplePool.getPeople()) {
+        for (Person p: PeoplePool.getAllPeople()) {
             if (p.toString().equals(type)) {
                 printlnToIO(p + "'s help:\n" + p.help());
                 return;
@@ -284,7 +301,183 @@ public abstract class Person extends Attributes implements Serializable {
         printlnToIO("unknown help type: " + type);
     }
 
-    public String help() {
-        return "not implemented";
+    public final String help() {
+        return (isZuoCi ? "化身：游戏开始时，你随机获得两张武将牌作为\"化身\"牌，然后亮出其中一张，" +
+                "获得该\"化身\"牌的一个技能。回合开始时或结束后，你可以更改亮出的\"化身\"牌。\n" +
+                "新生：当你受到1点伤害后，你可以获得一张新的\"化身\"牌。\n\n" : "") + skillsDescription();
+    }
+
+    public abstract String skillsDescription();
+
+    public final String toString() {
+        if (isZuoCi) {
+            return "左慈[" + name() + "]";
+        }
+        return name();
+    }
+
+    public abstract String name();
+
+    public String getPlayerStatus(boolean privateAccess, boolean onlyCards) {
+        String ans = "";
+        if (!onlyCards) {
+            ans += this.toString() + "  ";
+            for (String s : getSkills()) {
+                ans += "【" + s + "】";
+            }
+            ans += "  HP: " + getHP() + "/" + getMaxHP() + "\n";
+            if (isDrunk() || isDaWu() || isKuangFeng() || isLinked() ||
+                    isTurnedOver() || hasWakenUp()) {
+                ans += isDrunk() ? "[喝酒]" : "";
+                ans += isTurnedOver() ? "[翻面]" : "";
+                ans += isLinked() ? "[连环]" : "";
+                ans += isKuangFeng() ? "[狂风]" : "";
+                ans += isDaWu() ? "[大雾]" : "";
+                ans += hasWakenUp() ? "[觉醒]\n" : "\n";
+            }
+            ans += getExtraInfo() + (getExtraInfo().isEmpty() ? "" : "\n");
+        }
+        if (privateAccess) {
+            ans += "identity: " + getIdentity();
+            ans += "\nhand cards:\n";
+            for (int i = 1; i <= getCards().size(); i++) {
+                ans += "【" + i + "】" + getCards().get(i - 1).info() + getCards().get(i - 1) + "\n";
+            }
+        }
+        else {
+            ans += getCards().size() + " hand cards";
+        }
+        ans += "\nequipments:";
+        ArrayList<Card> equips = new ArrayList<>(getEquipments().values());
+        for (int i = 1; i <= equips.size(); i++) {
+            ans += equips.get(i - 1) + " ";
+        }
+        ans += "\njudge cards:";
+        ArrayList<Card> judges = new ArrayList<>(getJudgeCards());
+        for (int i = 1; i <= judges.size(); i++) {
+            ans += judges.get(i - 1) + " ";
+        }
+        return ans;
+    }
+
+    public String getKingSkill() {
+        if (getIdentity() != Identity.KING) {
+            return "";
+        }
+        for (Method method : getClass().getDeclaredMethods()) {
+            if (method.getAnnotation(KingSkill.class) != null) {
+                return method.getAnnotation(KingSkill.class).value();
+            }
+        }
+        return "";
+    }
+
+    public HashSet<String> getSkills() {
+        HashSet<String> skills = new HashSet<>();
+        for (Method method : getClass().getDeclaredMethods()) {
+            if (method.getAnnotation(Skill.class) != null) {
+                if (method.getAnnotation(Skill.class).value().equals("化身") ||
+                    method.getAnnotation(Skill.class).value().equals("新生")) {
+                    if (!isZuoCi) {
+                        continue;   // for 左慈
+                    }
+                }
+                skills.add(method.getAnnotation(Skill.class).value());
+            } else if (method.getAnnotation(ForcesSkill.class) != null) {
+                if (method.getAnnotation(ForcesSkill.class).value().equals("无双")) {
+                    if (!hasWuShuang()) {
+                        continue;   // for 神吕布
+                    }
+                }
+                skills.add(method.getAnnotation(ForcesSkill.class).value());
+            } else if (method.getAnnotation(RestrictedSkill.class) != null) {
+                skills.add(method.getAnnotation(RestrictedSkill.class).value());
+            } else if (method.getAnnotation(WakeUpSkill.class) != null) {
+                skills.add(method.getAnnotation(WakeUpSkill.class).value());
+            } else if (method.getAnnotation(KingSkill.class) != null) {
+                skills.add(method.getAnnotation(KingSkill.class).value());
+            } else if (method.getAnnotation(AfterWakeSkill.class) != null) {
+                if (hasWakenUp()) {
+                    skills.add(method.getAnnotation(AfterWakeSkill.class).value());
+                }
+            }
+        }
+        return skills;
+    }
+
+    public void setZuoCi(boolean zuoCi) {
+        isZuoCi = zuoCi;
+    }
+
+    public void zuoCiInitialize() {
+        setZuoCi(true);
+        huaShen.add(PeoplePool.allocOnePerson());
+        println(this + " got 化身 " + huaShen.get(0));
+        huaShen.get(0).setZuoCi(true);
+        huaShen.add(PeoplePool.allocOnePerson());
+        println(this + " got 化身 " + huaShen.get(1));
+        huaShen.get(1).setZuoCi(true);
+        selected = huaShen.get(0);
+        while (!huaShen(false)) {
+            printlnToIO("you must choose a 化身");
+        }
+    }
+
+    @Skill("化身")
+    public boolean huaShen(boolean beginPhase) {
+        if (isZuoCi && launchSkill("化身")) {
+            Person choice = selectPlayer(huaShen, true);
+            if (choice != null) {
+                selected = choice;
+                changePerson(selected);
+                if (beginPhase) {
+                    selected.run();
+                }
+                return true;
+            }
+        }
+        //printlnToIO("you can't use 化身 because I don't want to implement it");
+        return false;
+    }
+
+    @Skill("新生")
+    public void addHuaShen() {
+        huaShen.add(PeoplePool.allocOnePerson());
+        huaShen.get(huaShen.size() - 1).setZuoCi(true);
+        println(this + " got new 化身 " + huaShen.get(huaShen.size() - 1));
+        println(this + " now has " + huaShen.size() + " 化身");
+    }
+
+    public void changePerson(Person p) {
+        p.setCurrentHP(getHP());
+        p.setDaWu(isDaWu());
+        p.setKuangFeng(isKuangFeng());
+        p.setIdentity(getIdentity());
+        p.setDrunk(isDrunk());
+        p.setShaCount(getShaCount());
+        if (isLinked() != p.isLinked()) {
+            p.link();
+        }
+        if (isTurnedOver() != p.isTurnedOver()) {
+            p.turnover();
+        }
+        p.getCards().clear();
+        p.getCards().addAll(getCards());
+        for (Equipment equipment : getEquipments().values()) {
+            p.getEquipments().put(equipment.getEquipType(), equipment);
+        }
+        p.getJudgeCards().clear();
+        p.getJudgeCards().addAll(getJudgeCards());
+        if (getExtraCards() != null) {
+            CardsHeap.discard(getExtraCards());
+        }
+        loseCard(p.getCards(), false, false);
+        loseCard(new ArrayList<>(p.getRealJudgeCards()), false, false);
+        loseCard(new ArrayList<>(p.getEquipments().values()), false, false);
+        p.huaShen = huaShen;
+        p.selected = p;
+        p.isZuoCi = isZuoCi;
+        int index = GameManager.getPlayers().indexOf(this);
+        GameManager.getPlayers().set(index, p);
     }
 }

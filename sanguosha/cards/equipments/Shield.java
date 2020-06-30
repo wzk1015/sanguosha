@@ -18,4 +18,11 @@ public abstract class Shield extends Equipment {
     public void setValid(boolean valid) {
         this.valid = valid;
     }
+
+    public abstract String details();
+
+    @Override
+    public String help() {
+        return details() + "\n\n防具：防具是可以增强防御力的装备，装备区里始终只能放有一张防具牌。\n\n" + super.help();
+    }
 }

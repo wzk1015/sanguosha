@@ -46,7 +46,7 @@ public class Utils {
             ans += p.getCards().size();
             ans += p.getEquipments().size();
             ans += p.getJudgeCards().size();
-            ans += p.getExtraCards().size();
+            ans += p.getExtraCards() == null ? 0 : p.getExtraCards().size();
         }
         if (ans != CardsHeap.getNumCards()) {
             IO.println("card number not consistent");

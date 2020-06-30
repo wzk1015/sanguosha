@@ -133,7 +133,7 @@ public class YuJi extends Person {
                         useCard(intend);
                     }
                 } else {
-                    addCard(CardsHeap.retrieve(c));
+                    addCard(CardsHeap.retrieve(c), false);
                 }
             } catch (InstantiationException | IllegalAccessException
                     | InvocationTargetException | NoSuchMethodException e) {
@@ -146,7 +146,14 @@ public class YuJi extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "于吉";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "蛊惑：你可以说出任何一种基本牌或普通锦囊牌，并正面朝下使用或打出一张手牌。体力值不为0的其他角色依次选择是否质疑。" +
+                "若无角色质疑，则该牌按你所述之牌结算。若有角色质疑则亮出验明：若为真，质疑者各失去1点体力；若为假，质疑者各摸一张牌。无论真假，弃置被质疑的牌。" +
+                "仅当被质疑的牌为红桃花色且为真时，该牌仍然可以进行结算。";
     }
 }

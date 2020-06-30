@@ -36,4 +36,9 @@ public class BingLiangCunDuan extends JudgeCard {
         }
         return super.getDistance();
     }
+
+    @Override
+    public String details() {
+        return "出牌阶段，对对距离为1的其他角色使用。若判定的结果不为梅花，跳过其摸牌阶段。";
+    }
 }

@@ -24,13 +24,14 @@ public class JiangWei extends Person {
         if (order.equals("挑衅")) {
             println(this + " uses 挑衅");
             Person p = selectPlayer();
-            while (!GameManager.reachablePeople(p, p.getShaDistance()).contains(this)) {
-                printlnToIO("he can't reach you");
+            while (!GameManager.reachablePeople(p, p.getShaDistance()).contains(this)
+                    || p.getCardsAndEquipments().isEmpty()) {
+                printlnToIO("he can't reach you or he has no cards");
                 p = selectPlayer();
             }
             Sha sha = p.requestSha();
             if (sha == null) {
-                p.loseCard(chooseTargetCardsAndEquipments(p));
+                p.loseCard(chooseTargetCards(p));
                 return true;
             }
             CardsHeap.retrieve(sha);
@@ -94,7 +95,14 @@ public class JiangWei extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "姜维";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "挑衅：出牌阶段限一次，你可以选择一名攻击范围内含有你的角色，然后除非该角色对你使用一张【杀】，否则你弃置其一张牌。\n" +
+                "志继：觉醒技，准备阶段，若你没有手牌，你回复1点体力或摸两张牌，然后减1点体力上限，获得“观星”。\n" +
+                (hasWakenUp() ? "观星：准备阶段，你可以观看牌堆顶的X张牌（X为全场角色数且最多为5），然后以任意顺序放回牌堆顶或牌堆底。" : "");
     }
 }

@@ -16,7 +16,7 @@ public class GanNing extends Person {
     @Override
     public boolean useSkillInUsePhase(String order) {
         if (order.equals("奇袭")) {
-            Card c = requestRedBlack("black");
+            Card c = requestRedBlack("black", true);
             if (c == null) {
                 return true;
             }
@@ -24,7 +24,7 @@ public class GanNing extends Person {
             if (chai.askTarget(this)) {
                 useCard(chai);
             } else {
-                addCard(CardsHeap.retrieve(c));
+                addCard(CardsHeap.retrieve(c), false);
             }
 
             return true;
@@ -33,7 +33,12 @@ public class GanNing extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "甘宁";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "奇袭：你可以将一张黑色牌当【过河拆桥】使用。";
     }
 }

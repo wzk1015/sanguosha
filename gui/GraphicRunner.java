@@ -40,7 +40,7 @@ public class GraphicRunner {
     public static void run() {
 
         frame = new JFrame("sanguosha GUI");
-        frame.setSize(1000, 600);
+        frame.setSize(1000, 700);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         panel = new JPanel();
@@ -60,16 +60,16 @@ public class GraphicRunner {
         panel.add(label1);
 
         overallStatusArea = new JTextArea();
-        overallStatusArea.setBounds(30,50,300,300);
+        overallStatusArea.setBounds(30,50,300,400);
         overallStatusArea.setEditable(false);
         panel.add(overallStatusArea);
 
         JLabel label2 = new JLabel("玩家状态");
-        label2.setBounds(40,370,80,25);
+        label2.setBounds(40,470,80,25);
         panel.add(label2);
 
         playerStatusArea = new JTextArea();
-        playerStatusArea.setBounds(30,400, 300, 150);
+        playerStatusArea.setBounds(30,500, 300, 150);
         playerStatusArea.setEditable(false);
         panel.add(playerStatusArea);
 
@@ -78,42 +78,42 @@ public class GraphicRunner {
         panel.add(label3);
 
         logArea = new JTextArea();
-        logArea.setBounds(400,50,500,100);
+        logArea.setBounds(400,50,500,200);
         logArea.setEditable(false);
         logArea.setForeground(Color.BLACK);
         panel.add(logArea);
 
         JLabel label4 = new JLabel("IO交互");
-        label4.setBounds(410,170,80,25);
+        label4.setBounds(410,270,80,25);
         panel.add(label4);
 
         ioArea = new JTextArea();
-        ioArea.setBounds(400,200, 500, 200);
+        ioArea.setBounds(400,300, 500, 200);
         ioArea.setEditable(false);
         panel.add(ioArea);
 
         JLabel label5 = new JLabel("输入区");
-        label5.setBounds(410,420,80,25);
+        label5.setBounds(410,520,80,25);
         panel.add(label5);
 
         inputField = new JTextField(20);
-        inputField.setBounds(400,450, 500, 50);
+        inputField.setBounds(400,550, 500, 50);
         panel.add(inputField);
 
         okButton = new JButton("OK");
-        okButton.setBounds(820, 510, 80, 40);
+        okButton.setBounds(820, 610, 80, 40);
         panel.add(okButton);
 
         cancelButton = new JButton("Cancel");
-        cancelButton.setBounds(720, 510, 80, 40);
+        cancelButton.setBounds(720, 610, 80, 40);
         panel.add(cancelButton);
 
         JLabel label6 = new JLabel("powered by wzk");
-        label6.setBounds(550,520,160,25);
+        label6.setBounds(550,620,160,25);
         panel.add(label6);
 
         helpButton = new JButton("Help");
-        helpButton.setBounds(400, 510, 80, 40);
+        helpButton.setBounds(400, 610, 80, 40);
         panel.add(helpButton);
 
         logScroll = newScroll(logArea);
@@ -174,9 +174,6 @@ public class GraphicRunner {
             overallStatusArea.setText(GameManager.getOverallStatus());
             ioArea.setText(GameManager.getCurrentIOrequest());
             ioArea.setCaretPosition(ioArea.getText().length());
-            if (ioArea.getText().equals("null")) {
-                debug("null");
-            }
             try {
                 sleep(100);
             } catch (InterruptedException e) {
@@ -199,7 +196,7 @@ public class GraphicRunner {
         String a = input;
         input = "";
         debug("get input: " + a);
-
+        GameManager.clearCurrentIOrequest();
         return a;
     }
 }

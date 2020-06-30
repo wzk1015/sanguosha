@@ -50,10 +50,10 @@ public class XiaHouYuan extends Person {
     @Override
     public void usePhase() {
         if (launchSkill("神速")) {
-            Card c = chooseCard(getCardsAndEquipments());
+            Card c = chooseCard(getCardsAndEquipments(), true);
             while (!(c instanceof Equipment) && c != null) {
                 printlnToIO("you should choose an equipment");
-                c = chooseCard(getCardsAndEquipments());
+                c = chooseCard(getCardsAndEquipments(), true);
             }
             if (c != null) {
                 useShenSu2 = true;
@@ -74,7 +74,12 @@ public class XiaHouYuan extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "夏侯渊";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "神速：你可以做出如下选择：1.跳过你此回合的判定阶段和摸牌阶段。2.跳过出牌阶段并弃置一张装备牌。你每选择一项，视为对一名其他角色使用一张【杀】。";
     }
 }

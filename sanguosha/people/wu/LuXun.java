@@ -25,7 +25,13 @@ public class LuXun extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "陆逊";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "谦逊：锁定技，你不能成为【顺手牵羊】和【乐不思蜀】的目标。\n" +
+                "连营：当你失去最后的手牌时，你可以摸一张牌。";
     }
 }

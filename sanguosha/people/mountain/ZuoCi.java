@@ -1,17 +1,9 @@
 package sanguosha.people.mountain;
 
-import sanguosha.cards.Card;
-import sanguosha.cardsheap.PeoplePool;
 import sanguosha.people.Nation;
 import sanguosha.people.Person;
-import sanguosha.skills.Skill;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 
 public class ZuoCi extends Person {
-    private ArrayList<Person> huaShen = new ArrayList<>();
-    private Person selected = null;
 
     public ZuoCi() {
         super(3, Nation.QUN);
@@ -19,59 +11,19 @@ public class ZuoCi extends Person {
 
     @Override
     public void initialize() {
-        huaShen.add(PeoplePool.allocOnePerson());
-        println(this + " got 化身 " + huaShen.get(0));
-        huaShen.add(PeoplePool.allocOnePerson());
-        println(this + " got 化身 " + huaShen.get(1));
-        selected = huaShen.get(0);
-        huaShen();
-    }
-
-    @Skill("化身")
-    public void huaShen() {
-        if (launchSkill("化身")) {
-            Person choice = selectPlayer(huaShen);
-            if (choice != null) {
-                selected = choice;
-                setSex(selected.getSex());
-                setNation(selected.getNation());
-            }
-        }
-        printlnToIO("you can't use 化身 because I don't want to implement it");
-    }
-
-    public HashSet<String> getSkills() {
-        HashSet<String> ans = new HashSet<>();
-        ans.add("化身");
-        ans.add("新生");
-        if (selected != null) {
-            ans.addAll(selected.getSkills());
-        }
-        return ans;
+        zuoCiInitialize();
+        //after this, ZuoCi switched to another person with isZuoCi == true
     }
 
     @Override
-    public void beginPhase() {
-        huaShen();
-    }
-
-    @Override
-    public void endPhase() {
-        huaShen();
-    }
-
-    @Skill("新生")
-    @Override
-    public void gotHurt(ArrayList<Card> cards, Person p, int num) {
-        if (launchSkill("新生")) {
-            huaShen.add(PeoplePool.allocOnePerson());
-            println(this + " got new 化身" + huaShen.get(huaShen.size() - 1));
-            println(this + " now has " + huaShen.size() + " 化身");
-        }
-    }
-
-    @Override
-    public String toString() {
+    public String name() {
         return "左慈";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "化身：游戏开始时，你随机获得两张武将牌作为\"化身\"牌，然后亮出其中一张，获得该\"化身\"牌的一个技能。" +
+                "回合开始时或结束后，你可以更改亮出的\"化身\"牌。\n" +
+                "新生：当你受到1点伤害后，你可以获得一张新的\"化身\"牌。";
     }
 }

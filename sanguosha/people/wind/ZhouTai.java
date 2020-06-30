@@ -3,6 +3,7 @@ package sanguosha.people.wind;
 import sanguosha.cards.Card;
 import sanguosha.cardsheap.CardsHeap;
 import sanguosha.manager.GameManager;
+import sanguosha.manager.IO;
 import sanguosha.people.Nation;
 import sanguosha.people.Person;
 import sanguosha.skills.Skill;
@@ -34,7 +35,7 @@ public class ZhouTai extends Person {
                     Card c = CardsHeap.draw();
                     buQuNumbers.add(c.number());
                     buQuCards.add(c);
-                    printCardsPublic(buQuCards);
+                    IO.printCardsPublic(buQuCards);
                 }
                 println(this + " now has " + buQuCards.size() + " 不屈 cards");
                 while (buQuDuplicated()) {
@@ -66,7 +67,7 @@ public class ZhouTai extends Person {
     public void recover(int num) {
         if (getHP() <= 0 && !buQuCards.isEmpty()) {
             printlnToIO("choose 不屈 cards that you want to remove");
-            ArrayList<Card> cs = chooseCards(num, buQuCards);
+            ArrayList<Card> cs = chooseCards(Math.max(num, buQuCards.size()), buQuCards);
             buQuCards.removeAll(cs);
             CardsHeap.discard(cs);
             for (Card c: cs) {
@@ -92,7 +93,14 @@ public class ZhouTai extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "周泰";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "不屈：每当你扣减1点体力后，若你体力值为0，你可以从牌堆亮出一张牌置于你的武将牌上。" +
+                "若此牌的点数与你武将牌上已有的任何一张牌都不同，你不会死亡。" +
+                "若出现相同点数的牌，你进入濒死状态。\n";
     }
 }

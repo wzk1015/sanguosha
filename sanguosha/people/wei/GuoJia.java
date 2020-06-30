@@ -32,7 +32,13 @@ public class GuoJia extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "郭嘉";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "天妒：当你的判定牌生效后，你可以获得此牌。\n" +
+                "遗计：当你受到1点伤害后，你可以观看牌堆顶的两张牌，然后将这些牌交给任意角色。";
     }
 }

@@ -37,7 +37,7 @@ public class DianWei extends Person {
                 Card c;
                 do {
                     printlnToIO("choose a weapon");
-                    c = chooseCard(getCardsAndEquipments());
+                    c = chooseCard(getCardsAndEquipments(), true);
                 } while (!(c instanceof Weapon) && c != null);
                 if (c == null) {
                     return true;
@@ -52,7 +52,12 @@ public class DianWei extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "典韦";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "强袭：出牌阶段限一次，你可以失去1点体力或弃置一张武器牌，并对你攻击范围内的一名其他角色造成1点伤害。";
     }
 }

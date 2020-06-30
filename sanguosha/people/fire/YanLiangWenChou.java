@@ -36,7 +36,7 @@ public class YanLiangWenChou extends Person {
             if (jd.askTarget(this)) {
                 useCard(jd);
             } else {
-                addCard(CardsHeap.retrieve(c));
+                addCard(CardsHeap.retrieve(c), false);
             }
             return true;
         }
@@ -44,7 +44,13 @@ public class YanLiangWenChou extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "颜良文丑";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "双雄：摸牌阶段，你可以改为进行判定，你获得生效后的判定牌，" +
+                "然后本回合你可以将与判定结果颜色不同的一张手牌当【决斗】使用。";
     }
 }

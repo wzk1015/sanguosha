@@ -47,7 +47,13 @@ public class SunShangXiang extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "孙尚香";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "结姻：出牌阶段限一次，你可以弃置两张手牌，令你和一名已受伤的男性角色各回复1点体力。\n" +
+                "枭姬：当你失去装备区里的一张牌后，你可以摸两张牌。";
     }
 }

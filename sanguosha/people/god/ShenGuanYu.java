@@ -6,6 +6,7 @@ import sanguosha.cards.basic.Sha;
 import sanguosha.cards.basic.Tao;
 import sanguosha.cards.strategy.TaoYuanJieYi;
 import sanguosha.cardsheap.CardsHeap;
+import sanguosha.manager.IO;
 import sanguosha.people.Person;
 import sanguosha.skills.ForcesSkill;
 
@@ -22,21 +23,45 @@ public class ShenGuanYu extends God {
 
     @ForcesSkill("武魂")
     @Override
-    public void addCard(Card c) {
+    public void addCard(Card c, boolean print) {
         if (c.color() == Color.HEART) {
             Sha sha = new Sha(c.color(), c.number());
             sha.setThisCard(c);
-            super.addCard(sha);
+            super.addCard(sha, print);
         }
         else {
-            super.addCard(c);
+            super.addCard(c, print);
+        }
+    }
+
+    @Override
+    public void loseCard(Card c, boolean throwAway, boolean print) {
+        if (c.color() == Color.HEART && (getCards().contains(c)
+                || getCards().contains(c.getThisCard().get(0)))) {
+            getCards().remove(c);
+            if (!isDead()) {
+                lostCard();
+            }
+            if (print && throwAway) {
+                print(this + " lost hand card: ");
+                IO.printCardPublic(c.getThisCard().get(0));
+            }
+            c.getThisCard().get(0).setOwner(null);
+            if (throwAway) {
+                CardsHeap.discard(c.getThisCard().get(0));
+            } else {
+                c.getThisCard().get(0).setTaken(true);
+            }
+        }
+        else {
+            super.loseCard(c, throwAway, print);
         }
     }
 
     @Override
     public boolean useSha(Card card) {
-        if (super.useSha(card) && card.color() == Color.HEART) {
-            useHeartSha = true;
+        if (super.useSha(card)) {
+            useHeartSha = card.color() == Color.HEART;
             return true;
         }
         return false;
@@ -98,7 +123,14 @@ public class ShenGuanYu extends God {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "神关羽";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "武神：锁定技，你的红桃手牌视为【杀】；你使用红桃【杀】无距离限制。\n" +
+                "武魂：锁定技，当你受到1点伤害后，你令伤害来源获得1枚“梦魇”标记；" +
+                "当你死亡时，你令拥有最多“梦魇”标记的一名其他角色判定，若结果不为【桃】或【桃园结义】，则该角色死亡。";
     }
 }

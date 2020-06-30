@@ -41,4 +41,10 @@ public class JueDou extends Strategy {
     public boolean needChooseTarget() {
         return true;
     }
+
+    @Override
+    public String details() {
+        return "出牌阶段，对一名其他角色使用。由其开始，其与你轮流打出一张【杀】，直到其中一方未打出【杀】为止。" +
+                "未打出【杀】的一方受到另一方对其造成的1点伤害。";
+    }
 }

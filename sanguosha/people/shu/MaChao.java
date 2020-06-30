@@ -29,7 +29,13 @@ public class MaChao extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "马超";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "马术：锁定技，你计算与其他角色的距离-1。\n" +
+                "铁骑：当你使用【杀】指定目标后，你可以进行判定，若结果为红色，该角色不能使用【闪】。";
     }
 }

@@ -10,7 +10,12 @@ public class BlankPerson extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "白板";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "我是快乐的小白板";
     }
 }

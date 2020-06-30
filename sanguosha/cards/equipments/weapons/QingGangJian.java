@@ -26,4 +26,9 @@ public class QingGangJian extends Weapon {
     public String toString() {
         return "青釭剑";
     }
+
+    @Override
+    public String details() {
+        return "锁定技，每当你使用【杀】指定一名目标角色后，你无视其防具。";
+    }
 }

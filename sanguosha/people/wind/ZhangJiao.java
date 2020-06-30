@@ -40,7 +40,7 @@ public class ZhangJiao extends Person {
     @Override
     public Card changeJudge(Card d) {
         if (launchSkill("鬼道")) {
-            Card c =  requestRedBlack("black");
+            Card c =  requestRedBlack("black", true);
             if (c != null) {
                 CardsHeap.retrieve(c);
                 addCard(d);
@@ -67,7 +67,14 @@ public class ZhangJiao extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "张角";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "雷击：当你使用或打出【闪】时，你可以令一名角色进行判定，若结果为黑桃，你对其造成2点雷电伤害。\n" +
+                "鬼道：当一名角色的判定牌生效前，你可以打出一张黑色牌替换之。\n" +
+                "黄天：主公技，其他群势力角色的出牌阶段限一次，该角色可以将一张【闪】或【闪电】交给你。";
     }
 }

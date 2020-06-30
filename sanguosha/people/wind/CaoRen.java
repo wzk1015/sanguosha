@@ -19,7 +19,12 @@ public class CaoRen extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "曹仁";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "结束阶段，你可以翻面，若如此做，你摸四张牌，然后选择一项：1.弃置一张不为装备牌的牌；2.使用一张装备牌。";
     }
 }

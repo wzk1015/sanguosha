@@ -11,14 +11,7 @@ import sanguosha.cards.basic.Sha;
 import sanguosha.manager.GameManager;
 import sanguosha.manager.IO;
 import sanguosha.manager.Utils;
-import sanguosha.skills.AfterWakeSkill;
-import sanguosha.skills.ForcesSkill;
-import sanguosha.skills.KingSkill;
-import sanguosha.skills.RestrictedSkill;
-import sanguosha.skills.Skill;
-import sanguosha.skills.WakeUpSkill;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,16 +23,10 @@ import java.util.Scanner;
 public interface PlayerIO {
     Scanner sn = IO.getScanner();
 
-    default void debug(String s) {
-        //println(s);
-    }
-
     default String input(String s) {
         if (GameLauncher.isGraphic()) {
             printToIO(">>>" + s + " ");
-            String input = GraphicRunner.getInput();
-            printlnToIO(input);
-            return input;
+            return GraphicRunner.getInput();
         }
         String ans = "";
         while (ans.isEmpty()) {
@@ -53,12 +40,28 @@ public interface PlayerIO {
         return input("");
     }
 
+    default void print(String s) {
+        System.out.print(s);
+    }
+
     default void println(String s) {
         System.out.println(s);
     }
 
-    default void print(String s) {
-        System.out.print(s);
+    default void printToIO(String s) {
+        if (GameLauncher.isGraphic()) {
+            GameManager.addCurrentIOrequest(s);
+        } else {
+            print(s);
+        }
+    }
+
+    default void printlnToIO(String s) {
+        if (GameLauncher.isGraphic()) {
+            GameManager.addCurrentIOrequest(s + "\n");
+        } else {
+            println(s);
+        }
     }
 
     default void printCards(ArrayList<Card> cards) {
@@ -71,34 +74,63 @@ public interface PlayerIO {
         printlnToIO(card.info() + card);
     }
 
-    default void printCardsPublic(ArrayList<Card> cards) {
-        IO.printCardsPublic(cards);
-    }
-
-    default void printCardPublic(Card card) {
-        IO.printCardPublic(card);
+    default Card requestRedBlack(String color, boolean fromEquipments) {
+        Utils.assertTrue(color.equals("red") || color.equals("black"), "invalid color");
+        Card c;
+        if (fromEquipments && chooseNoNull("from hand cards", "from equipments")
+                .equals("from equipments")) {
+            c = chooseCard(new ArrayList<>(getEquipments().values()), true);
+            while (c != null && ((color.equals("red") && c.isBlack())
+                    || (color.equals("black") && c.isRed()))) {
+                printlnToIO("you can't choose black card");
+                c = chooseCard(new ArrayList<>(getEquipments().values()), true);
+            }
+            if (c != null) {
+                loseCard(c);
+            }
+        } else {
+            printlnToIO("choose a " + color + " card, 'q' to ignore");
+            c = requestCard(null);
+            while (c != null && ((color.equals("red") && c.isBlack())
+                    || (color.equals("black") && c.isRed()))) {
+                addCard(c, false);
+                printlnToIO("wrong color");
+                c = requestCard(null);
+            }
+        }
+        return c;
     }
 
     default Card requestRedBlack(String color) {
-        Utils.assertTrue(color.equals("red") || color.equals("black"), "invalid color");
-        printlnToIO("choose a " + color + " card, 'q' to ignore");
-        printCards(getCards());
-        String order = input();
-        if (order.equals("q")) {
-            return null;
-        }
-        try {
-            Card c = getCards().get(Integer.parseInt(order) - 1);
-            if ((color.equals("red") && c.isBlack()) || (color.equals("black") && c.isRed())) {
-                printlnToIO("Wrong color");
-                return requestRedBlack(color);
+        return requestRedBlack(color, false);
+    }
+
+    default Card requestColor(Color color, boolean fromEquipments) {
+        Card c;
+        if (fromEquipments && chooseNoNull("from hand cards", "from equipments")
+                .equals("from equipments")) {
+            c = chooseCard(new ArrayList<>(getEquipments().values()), true);
+            while (c != null && c.color() != color) {
+                printlnToIO("you can't choose black card");
+                c = chooseCard(new ArrayList<>(getEquipments().values()), true);
             }
-            loseCard(c);
-            return c;
-        } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            printlnToIO("Wrong input");
-            return requestRedBlack(color);
+            if (c != null) {
+                loseCard(c);
+            }
+        } else {
+            printlnToIO("choose a " + color + " card, 'q' to ignore");
+            c = requestCard(null);
+            while (c != null && c.color() != color) {
+                addCard(c, false);
+                printlnToIO("wrong color");
+                c = requestCard(null);
+            }
         }
+        return c;
+    }
+
+    default Card requestColor(Color color) {
+        return requestColor(color, false);
     }
 
     default Card requestCard(String type) {
@@ -123,7 +155,7 @@ public interface PlayerIO {
             println("AI passes");
             return null;
         }
-        String order = input();
+        String order = input(); // doesn't use chooseFromProvided because need info()
         if (order.equals("q")) {
             return null;
         }
@@ -140,7 +172,6 @@ public interface PlayerIO {
             printlnToIO("Wrong input");
             return requestCard(type);
         }
-
     }
 
     default String showAllCards() {
@@ -241,7 +272,14 @@ public interface PlayerIO {
     }
 
     default Card chooseCard(ArrayList<Card> cs) {
-        return chooseFromProvided(cs);
+        return chooseCard(cs, false);
+    }
+
+    default Card chooseCard(ArrayList<Card> cs, boolean allowNull) {
+        if (allowNull) {
+            return chooseFromProvided(cs);
+        }
+        return chooseNoNull(cs);
     }
 
     default ArrayList<Card> chooseCards(int num, ArrayList<Card> cs) {
@@ -271,65 +309,16 @@ public interface PlayerIO {
         return false;
     }
 
-    default Card requestColor(Color color) {
-        printlnToIO("choose a " + color + " card, 'q' to ignore");
-        printCards(getCards());
-        String order = input();
-        if (order.equals("q")) {
-            return null;
-        }
-
-        try {
-            Card c = getCards().get(Integer.parseInt(order) - 1);
-            if (c.color() != color) {
-                printlnToIO("Wrong color");
-                return requestColor(color);
-            }
-            loseCard(c);
-            return c;
-        } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            printlnToIO("Wrong input");
-            return requestColor(color);
-        }
-
-    }
-
-    default HashSet<String> getSkills() {
-        HashSet<String> skills = new HashSet<>();
-        for (Method method : getClass().getDeclaredMethods()) {
-            if (method.getAnnotation(Skill.class) != null) {
-                skills.add(method.getAnnotation(Skill.class).value());
-            } else if (method.getAnnotation(ForcesSkill.class) != null) {
-                if (method.getAnnotation(ForcesSkill.class).value().equals("无双")) {
-                    if (!hasWuShuang()) {
-                        continue;   // for 神吕布
-                    }
-                }
-                skills.add(method.getAnnotation(ForcesSkill.class).value());
-            } else if (method.getAnnotation(RestrictedSkill.class) != null) {
-                skills.add(method.getAnnotation(RestrictedSkill.class).value());
-            } else if (method.getAnnotation(WakeUpSkill.class) != null) {
-                skills.add(method.getAnnotation(WakeUpSkill.class).value());
-            } else if (method.getAnnotation(KingSkill.class) != null) {
-                skills.add(method.getAnnotation(KingSkill.class).value());
-            } else if (method.getAnnotation(AfterWakeSkill.class) != null) {
-                if (hasWakenUp()) {
-                    skills.add(method.getAnnotation(AfterWakeSkill.class).value());
-                }
-            }
-        }
-        return skills;
-    }
-
-    default Card chooseTargetAllCards(Person target) {
+    default Card chooseTargetCards(Person target, boolean includeJudge) {
+        printlnToIO("choose a card from " + target);
         printlnToIO(target.showAllCards());
         String option;
-        if (!target.getEquipments().isEmpty()
+        if (includeJudge && !target.getEquipments().isEmpty()
                 && !target.getRealJudgeCards().isEmpty()) {
             option = chooseNoNull("hand cards", "equipments", "judge cards");
         } else if (!target.getEquipments().isEmpty()) {
             option = chooseNoNull("hand cards", "equipments");
-        } else if (!target.getRealJudgeCards().isEmpty()) {
+        } else if (includeJudge && !target.getRealJudgeCards().isEmpty()) {
             option = chooseNoNull("hand cards", "judge cards");
         } else {
             option = "hand cards";
@@ -339,31 +328,16 @@ public interface PlayerIO {
             if (option.equals("hand cards")) {
                 c = chooseAnonymousCard(target.getCards());
             } else if (option.equals("equipments")) {
-                c = chooseCard(new ArrayList<>(target.getEquipments().values()));
+                c = chooseCard(new ArrayList<>(target.getEquipments().values()), false);
             } else {
-                c = chooseCard(new ArrayList<>(target.getRealJudgeCards()));
+                c = chooseCard(new ArrayList<>(target.getRealJudgeCards()), false);
             }
         }
         return c;
     }
 
-    default Card chooseTargetCardsAndEquipments(Person target) {
-        printlnToIO(target.showAllCards());
-        String option;
-        if (!target.getEquipments().isEmpty()) {
-            option = chooseNoNull("hand cards", "equipments");
-        } else {
-            option = "hand cards";
-        }
-        Card c = null;
-        while (c == null) {
-            if (option.equals("hand cards")) {
-                c = chooseAnonymousCard(target.getCards());
-            } else {
-                c = chooseCard(new ArrayList<>(target.getEquipments().values()));
-            }
-        }
-        return c.getThisCard().get(0);
+    default Card chooseTargetCards(Person target) {
+        return chooseTargetCards(target, false);
     }
 
     default Person selectPlayer(List<Person> people, boolean chooseSelf) {
@@ -426,65 +400,9 @@ public interface PlayerIO {
 
     boolean isLinked();
 
-    default String getExtraInfo() {
-        return "";
-    }
+    String getPlayerStatus(boolean privateAccess, boolean onlyCards);
 
-    default String getPlayerStatus(boolean privateAccess, boolean onlyCards) {
-        String ans = "";
-        if (!onlyCards) {
-            ans += this.toString() + "  ";
-            for (String s : getSkills()) {
-                ans += "【" + s + "】";
-            }
-            ans += "\ncurrent HP: " + getHP() + "/" + getMaxHP() + "\n";
-            if (isDrunk() || isDaWu() || isKuangFeng() || isLinked() ||
-                    isTurnedOver() || hasWakenUp()) {
-                ans += isDrunk() ? "[喝酒]" : "";
-                ans += isTurnedOver() ? "[翻面]" : "";
-                ans += isLinked() ? "[连环]" : "";
-                ans += isKuangFeng() ? "[狂风]" : "";
-                ans += isDaWu() ? "[大雾]" : "";
-                ans += hasWakenUp() ? "[觉醒]\n" : "\n";
-            }
-            ans += getExtraInfo() + (getExtraInfo().isEmpty() ? "" : "\n");
-        }
-        if (privateAccess) {
-            ans += "identity: " + getIdentity();
-            ans += "\nhand cards:\n";
-            for (int i = 1; i <= getCards().size(); i++) {
-                ans += "【" + i + "】" + getCards().get(i - 1).info() + getCards().get(i - 1) + "\n";
-            }
-        }
-        else {
-            ans += getCards().size() + " hand cards";
-        }
-        ans += "\nequipments:";
-        ArrayList<Card> equips = new ArrayList<>(getEquipments().values());
-        for (int i = 1; i <= equips.size(); i++) {
-            ans += equips.get(i - 1) + " ";
-        }
-        ans += "\njudge cards:";
-        ArrayList<Card> judges = new ArrayList<>(getJudgeCards());
-        for (int i = 1; i <= judges.size(); i++) {
-            ans += judges.get(i - 1) + " ";
-        }
-        return ans;
-    }
+    HashSet<String> getSkills();
 
-    default void printToIO(String s) {
-        if (GameLauncher.isGraphic()) {
-            GameManager.addCurrentIOrequest(s);
-        } else {
-            print(s);
-        }
-    }
-
-    default void printlnToIO(String s) {
-        if (GameLauncher.isGraphic()) {
-            GameManager.addCurrentIOrequest(s + "\n");
-        } else {
-            println(s);
-        }
-    }
+    void addCard(Card c,boolean print);
 }

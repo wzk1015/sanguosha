@@ -17,4 +17,9 @@ public class ZhuQueYuShan extends Weapon {
     public String toString() {
         return "朱雀羽扇";
     }
+
+    @Override
+    public String details() {
+        return "你可以将一张普通【杀】当火【杀】使用。";
+    }
 }

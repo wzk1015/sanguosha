@@ -43,4 +43,10 @@ public class ShanDian extends JudgeCard {
     public String toString() {
         return "闪电";
     }
+
+    @Override
+    public String details() {
+        return "出牌阶段，对你（你是第一个目标，之后可能会不断改变）使用。" +
+                "若判定结果为黑桃2~9，则目标角色受到3点雷电伤害。若判定不为黑桃2~9，将之移动到其下家的判定区里。";
+    }
 }

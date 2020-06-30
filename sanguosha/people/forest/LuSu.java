@@ -75,7 +75,13 @@ public class LuSu extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "鲁肃";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "好施：摸牌阶段，你可以多摸两张牌，然后若你的手牌数大于5，则你将一半的手牌（向下取整）交给手牌最少的一名其他角色。\n" +
+                "缔盟：出牌阶段限一次，你可以选择两名其他角色并弃置X张牌（X为这两名角色手牌数的差），然后令这两名角色交换手牌。";
     }
 }

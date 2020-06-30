@@ -10,7 +10,7 @@ public class GuanShiFu extends Weapon {
 
     @Override
     public Object use() {
-        if (getSource().getCardsAndEquipments().size() < 3) {
+        if (getSource().getCardsAndEquipments().size() < 2) {
             getSource().printlnToIO("you don't have enough cards");
         }
         String option = getSource().chooseNoNull(
@@ -26,5 +26,10 @@ public class GuanShiFu extends Weapon {
     @Override
     public String toString() {
         return "贯石斧";
+    }
+
+    @Override
+    public String details() {
+        return "每当你使用的【杀】被目标角色使用的【闪】抵消时，你可以弃置两张牌，令此【杀】依然对其造成伤害。\n";
     }
 }

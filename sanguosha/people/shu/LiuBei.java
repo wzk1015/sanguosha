@@ -86,7 +86,13 @@ public class LiuBei extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "刘备";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "仁德：出牌阶段，你可以将任意张手牌交给其他角色，然后你于此阶段内给出第二张手牌时，你回复1点体力。\n" +
+                "激将：主公技，其他蜀势力角色可以在你需要时代替你使用或打出【杀】。（视为由你使用或打出）。";
     }
 }

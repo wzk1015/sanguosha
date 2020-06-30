@@ -21,7 +21,7 @@ public class SunQuan extends Person {
     public boolean useSkillInUsePhase(String order) {
         if (order.equals("制衡") && hasNotUsedSkill1()) {
             println(this + " uses 制衡");
-            ArrayList<Card> cs = chooseCards(0, getCards());
+            ArrayList<Card> cs = chooseCards(0, getCardsAndEquipments());
             if (!cs.isEmpty()) {
                 loseCard(cs);
                 drawCards(cs.size());
@@ -48,7 +48,13 @@ public class SunQuan extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "孙权";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "制衡：出牌阶段限一次，你可以弃置任意张牌，然后摸等量的牌。\n" +
+                "救援：主公技，锁定技，其他吴势力角色对你使用【桃】回复的体力+1。";
     }
 }

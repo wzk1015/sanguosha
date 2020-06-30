@@ -46,7 +46,7 @@ public class WoLong extends Person {
             if (hg.askTarget(this)) {
                 useCard(hg);
             } else {
-                addCard(CardsHeap.retrieve(c));
+                addCard(CardsHeap.retrieve(c), false);
             }
         }
         return false;
@@ -62,7 +62,14 @@ public class WoLong extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "卧龙诸葛亮";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "八阵：锁定技，若你的装备区里没有防具牌，你视为装备着【八卦阵】。\n" +
+                "火计：你可以将一张红色手牌当【火攻】使用。\n" +
+                "看破：你可以将一张黑色手牌当【无懈可击】使用。";
     }
 }

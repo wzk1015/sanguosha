@@ -42,7 +42,12 @@ public class ZhangLiao extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "张辽";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "突袭：摸牌阶段，你可以改为获得最多两名角色的各一张手牌。";
     }
 }

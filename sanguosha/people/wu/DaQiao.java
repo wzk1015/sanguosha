@@ -21,7 +21,7 @@ public class DaQiao extends Person {
     public boolean useSkillInUsePhase(String order) {
         if (order.equals("国色")) {
             println(this + " uses 国色");
-            Card c = requestColor(Color.DIAMOND);
+            Card c = requestColor(Color.DIAMOND, true);
             if (c == null) {
                 return true;
             }
@@ -30,7 +30,7 @@ public class DaQiao extends Person {
             if (le.askTarget(this) && le.getTarget().addJudgeCard((JudgeCard) le)) {
                 useCard(le);
             } else {
-                addCard(CardsHeap.retrieve(c));
+                addCard(CardsHeap.retrieve(c), false);
             }
             return true;
         }
@@ -62,7 +62,13 @@ public class DaQiao extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "大乔";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "国色：你可以将一张方块牌当【乐不思蜀】使用。\n" +
+                "流离：当你成为【杀】的目标时，你可以弃置一张牌并将此【杀】转移给你攻击范围内的一名其他角色。（不能是此【杀】的使用者）";
     }
 }

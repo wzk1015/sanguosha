@@ -23,7 +23,7 @@ public class WuGuFengDeng extends Strategy {
                 if (cards.size() == 1) {
                     c = cards.get(0);
                 } else {
-                    c = p.chooseCard(cards);
+                    c = p.chooseCard(cards, false);
                 }
                 p.addCard(c);
                 cards.remove(c);
@@ -38,5 +38,11 @@ public class WuGuFengDeng extends Strategy {
     @Override
     public String toString() {
         return "五谷丰登";
+    }
+
+    @Override
+    public String details() {
+        return "出牌阶段，对所有角色使用。" +
+                "（选择目标后）你从牌堆顶亮出等同于角色数量的牌，每名目标角色获得这些牌中（剩余的）的任意一张。";
     }
 }

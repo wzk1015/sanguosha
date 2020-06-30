@@ -29,4 +29,9 @@ public class SanJianLiangRenDao extends Weapon {
     public String toString() {
         return "三尖两刃刀";
     }
+
+    @Override
+    public String details() {
+        return "你使用【杀】对目标角色造成伤害后，可弃置一张手牌并对该角色距离1的另一名角色造成1点伤害。";
+    }
 }

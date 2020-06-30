@@ -20,7 +20,12 @@ public class WeiYan extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "魏延";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "狂骨：锁定技，当你对距离1以内的一名角色造成1点伤害后，你回复1点体力。";
     }
 }

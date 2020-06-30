@@ -34,7 +34,12 @@ public class XuChu extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "许褚";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "裸衣：摸牌阶段，你可以少摸一张牌，然后本回合你使用【杀】或【决斗】造成伤害时，此伤害+1。";
     }
 }

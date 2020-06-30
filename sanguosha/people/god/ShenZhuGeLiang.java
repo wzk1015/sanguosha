@@ -41,7 +41,7 @@ public class ShenZhuGeLiang extends God {
         if (p == null) {
             return;
         }
-        Card c = chooseCard(stars);
+        Card c = chooseCard(stars, true);
         if (c == null) {
             return;
         }
@@ -125,7 +125,15 @@ public class ShenZhuGeLiang extends God {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "神诸葛亮";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "七星：游戏开始时，你将牌堆顶的七张牌扣置于你的武将牌上，称为“星”，然后你可以用任意张手牌替换等量的“星”；" +
+                "摸牌阶段结束时，你可以用任意张手牌替换等量的“星”。\n" +
+                "狂风：结束阶段，你可以移去一张“星”并选择一名角色，然后直到你的下回合开始之前，当该角色受到火焰伤害时，此伤害+1。\n" +
+                "大雾：结束阶段，你可以移去任意张“星”并选择等量的角色，然后直到你的下回合开始之前，当这些角色受到非雷电伤害时，防止此伤害。";
     }
 }

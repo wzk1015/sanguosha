@@ -109,7 +109,15 @@ public class ShenZhouYu extends God {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "神周瑜";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "琴音：弃牌阶段结束时，若你于此阶段内弃置过你的至少两张手牌，则你可以选择一项：" +
+                "1.令所有角色各回复1点体力；2.令所有角色各失去1点体力。\n" +
+                "业炎：限定技，出牌阶段，你可以选择至多三名角色，对这些角色造成共计至多3点火焰伤害。\n" +
+                "若你将对一名角色分配2点或更多火焰伤害，你须先弃置四张花色各不相同的手牌并失去3点体力。";
     }
 }

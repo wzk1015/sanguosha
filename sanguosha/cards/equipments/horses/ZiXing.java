@@ -1,22 +1,15 @@
 package sanguosha.cards.equipments.horses;
 
 import sanguosha.cards.Color;
-import sanguosha.cards.EquipType;
-import sanguosha.cards.Equipment;
 
-public class ZiXing extends Equipment {
+public class ZiXing extends MinusOneHorse {
 
     public ZiXing(Color color, int number) {
-        super(color, number, EquipType.minusOneHorse);
-    }
-
-    @Override
-    public Object use() {
-        return null;
+        super(color, number);
     }
 
     @Override
     public String toString() {
-        return "紫骍";
+        return "赤兔";
     }
 }

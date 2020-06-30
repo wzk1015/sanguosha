@@ -11,6 +11,7 @@ import sanguosha.cards.equipments.Shield;
 import sanguosha.cards.equipments.Weapon;
 import sanguosha.cardsheap.CardsHeap;
 import sanguosha.manager.GameManager;
+import sanguosha.manager.IO;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,13 +101,28 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
 
     public boolean isDrunk() { return isDrunk; }
 
-    public void setDrunk(boolean drunk) { isDrunk = drunk; }
+    public void setDrunk(boolean drunk) {
+        isDrunk = drunk;
+        if (isDrunk) {
+            println(this + " is drunk");
+        }
+    }
 
     public boolean isLinked() { return isLinked; }
 
-    public void turnover() { isTurnedOver = !isTurnedOver; }
+    public boolean isTurnedOver() {
+        return isTurnedOver;
+    }
 
-    public void link() { isLinked = !isLinked; }
+    public void link() {
+        isLinked = !isLinked;
+        println(this + " is linked, now " + (isLinked ? "连环状态" : "非连环状态"));
+    }
+
+    public void turnover() {
+        isTurnedOver = !isTurnedOver;
+        println(this + " is turned over, now " + (isTurnedOver ? "反面朝上" : "正面朝上"));
+    }
 
     public void die() {
         isDead = true;
@@ -127,12 +143,6 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
     public void setHasUsedSkill1(boolean hasUsedSkill1) {
         this.hasUsedSkill1 = hasUsedSkill1;
     }
-
-    public boolean isTurnedOver() {
-        return isTurnedOver;
-    }
-
-    public abstract String toString();
 
     public ArrayList<Card> getCards() {
         return cards;
@@ -197,16 +207,32 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
     }
 
     public void addCard(Card c) {
+        addCard(c, true);
+    }
+
+    public void addCard(Card c, boolean print) {
         getCards().add(c);
-        println(this + " got 1 card");
-        printToIO(this + " got card: ");
+        if (print) {
+            println(this + " got 1 card");
+            printToIO(this + " got card: ");
+            printCard(c);
+        }
         c.setOwner((Person) this);
-        printlnToIO(c.info() + c);
     }
 
     public void addCard(ArrayList<Card> cs) {
+        addCard(cs, true);
+    }
+
+    public void addCard(ArrayList<Card> cs, boolean print) {
+        println(this + " got " + cs.size() + " cards");
         for (Card c : cs) {
-            addCard(c);
+            getCards().add(c);
+            if (print) {
+                printToIO(this + " got card: ");
+                printCards(cs);
+            }
+            c.setOwner((Person) this);
         }
     }
 
@@ -252,7 +278,7 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
             removeJudgeCard(c);
             if (print && throwAway) {
                 print(this + " lost judge card: ");
-                printCardPublic(c);
+                IO.printCardPublic(c);
             }
         } else if (c instanceof Equipment && getEquipments().containsValue(c)) {
             getEquipments().remove(((Equipment) c).getEquipType());
@@ -264,7 +290,7 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
             }
             if (print && throwAway) {
                 print(this + " lost equipment: ");
-                printCardPublic(c);
+                IO.printCardPublic(c);
             }
         } else if (getCards().contains(c) || getCards().contains(c.getThisCard().get(0))) {
             getCards().remove(c);
@@ -273,7 +299,7 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
             }
             if (print && throwAway) {
                 print(this + " lost hand card: ");
-                printCardPublic(c);
+                IO.printCardPublic(c);
             }
         }
 
@@ -346,17 +372,14 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
             p.otherPersonMakeHurt((Person) this);
         }
         if (!isDead()) {
+            if (launchSkill("新生")) {
+                addHuaShen();
+            }
             gotHurt(cs, source, realNum);
         }
-        else {
+        else if (source != null) {
             source.killOther();
-            if (getIdentity() == Identity.REBEL) {
-                source.drawCards(3);
-            }
-            else if (getIdentity() == Identity.MINISTER && source.getIdentity() == Identity.KING) {
-                source.loseCard(source.getCards());
-                source.loseCard(new ArrayList<>(source.getEquipments().values()));
-            }
+            GameManager.deathRewardPunish(getIdentity(), source);
         }
         return realNum;
     }
@@ -430,17 +453,7 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
 
     public Sha requestSha() {
         if (hasEquipment(weapon, "丈八蛇矛") && getCards().size() >= 2) {
-            if (chooseNoNull("throw two cards to sha", "pass").equals(
-                    "throw two cards to sha")) {
-                ArrayList<Card> cs = chooseCards(2, getCards());
-                loseCard(cs);
-                if (cs.get(0).isRed() && cs.get(1).isRed()) {
-                    return new Sha(Color.DIAMOND, 0);
-                } else if (cs.get(1).isBlack() && cs.get(1).isBlack()) {
-                    return new Sha(Color.CLUB, 0);
-                }
-                return new Sha(Color.NOCOLOR, 0);
-            }
+            return (Sha) getEquipments().get(weapon).use();
         }
         if (skillSha()) {
             return new Sha(Color.NOCOLOR, 0);
@@ -464,10 +477,11 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
             if (sha.getType() == HurtType.normal) {
                 return true;
             }
-        }
-        if (hasEquipment(shield, "仁王盾") && ((Shield) getEquipments().get(shield)).isValid()) {
+        } if (hasEquipment(shield, "仁王盾") && ((Shield) getEquipments().get(shield)).isValid()) {
             return sha.isBlack();
         }
         return false;
     }
+
+    public abstract void addHuaShen();
 }

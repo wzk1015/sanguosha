@@ -6,7 +6,7 @@ public class AI extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "AI";
     }
 
@@ -29,5 +29,10 @@ public class AI extends Person {
                 break;
             }
         }
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "我是AI，我是辣鸡，纯瞎玩";
     }
 }

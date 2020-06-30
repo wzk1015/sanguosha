@@ -82,10 +82,9 @@ import static sanguosha.people.Identity.TRAITOR;
 
 public class PeoplePool {
     private static final ArrayList<Person> people = new ArrayList<>();
+    private static final ArrayList<Person> allPeople = new ArrayList<>();
     private static final ArrayList<Identity> identities = new ArrayList<>();
-    private static int optionsPerPerson = 5;
-    private static int peopleIndex = 0;
-    private static int identityIndex = 0;
+    private static int optionsPerPerson = 2;
 
     public static void addStandard() {
         //蜀国
@@ -188,17 +187,18 @@ public class PeoplePool {
         //people.add(new BlankPerson());
         //people.add(new BlankPerson2());
         //people.add(new AI());
-        addStandard();
+        //addStandard();
+
         if (GameLauncher.isCommandLine() || GameLauncher.isGraphic()) {
             if (IO.chooseFromProvided("default people config", "customize")
                     .equals("default people config")) {
-                addFeng();
-                addHuo();
-                addLin();
+                //addFeng();
+                //addHuo();
+                //addLin();
                 addShan();
-                addGod();
+                //addGod();
                 switch (GameManager.getNumPlayers()) {
-                    //case 10: addIdentity(MINISTER, 1);
+                    case 10: addIdentity(MINISTER, 1);
                     //fallthrough
                     case 9: addIdentity(TRAITOR, 1);
                     //fallthrough
@@ -237,31 +237,27 @@ public class PeoplePool {
                 IO.printlnToIO("1 KING (required)");
                 addIdentity(KING, 1);
                 IO.printlnToIO("choose number of MINISTER");
-                addIdentity(MINISTER, IO.chooseNumber(1, 4));
+                addIdentity(MINISTER, IO.chooseNumber(0, 4));
                 IO.printlnToIO("choose number of TRAITOR");
-                addIdentity(TRAITOR, IO.chooseNumber(1, 4));
+                addIdentity(TRAITOR, IO.chooseNumber(0, 4));
                 IO.printlnToIO("choose number of REBEL");
-                addIdentity(REBEL, IO.chooseNumber(0, 4));
+                addIdentity(REBEL, IO.chooseNumber(1, 4));
             }
         }
         Utils.assertTrue(identities.size() == GameManager.getNumPlayers(),
                 "wrong number of identities");
         Utils.assertTrue(people.size() >= optionsPerPerson * GameManager.getNumPlayers(),
                 "not enough people to choose");
+        allPeople.addAll(people);
         Collections.shuffle(people);
         Collections.shuffle(identities);
     }
 
-    public static ArrayList<Person> allocPeople() {
-        peopleIndex += optionsPerPerson;
-        Utils.assertTrue(peopleIndex <= people.size(), "No people available");
-        return new ArrayList<>(people.subList(peopleIndex - optionsPerPerson, peopleIndex));
-    }
-
-    public static void addPerson(Class<? extends Person> cls, ArrayList<Person> kings) {
+    public static void addPersonToList(Class<? extends Person> cls, ArrayList<Person> kings) {
         for (Person p: people) {
             if (p.getClass() == cls) {
                 kings.add(p);
+                people.remove(p);
                 return;
             }
         }
@@ -270,38 +266,57 @@ public class PeoplePool {
     public static ArrayList<Person> allocPeopleForKing() {
         ArrayList<Person> options = new ArrayList<>();
         if (optionsPerPerson > 3) {
-            addPerson(LiuBei.class, options);
-            addPerson(CaoCao.class, options);
-            addPerson(SunQuan.class, options);
+            addPersonToList(LiuBei.class, options);
+            addPersonToList(CaoCao.class, options);
+            addPersonToList(SunQuan.class, options);
         }
         if (optionsPerPerson > 10) {
-            addPerson(ZhangJiao.class, options);
-            addPerson(YuanShao.class, options);
-            addPerson(DongZhuo.class, options);
-            addPerson(CaoPi.class, options);
-            addPerson(LiuChan.class, options);
-            addPerson(SunCe.class, options);
+            addPersonToList(ZhangJiao.class, options);
+            addPersonToList(YuanShao.class, options);
+            addPersonToList(DongZhuo.class, options);
+            addPersonToList(CaoPi.class, options);
+            addPersonToList(LiuChan.class, options);
+            addPersonToList(SunCe.class, options);
         }
-        peopleIndex += optionsPerPerson - options.size();
-        Utils.assertTrue(peopleIndex <= people.size(), "No people available");
-        options.addAll(people.subList(peopleIndex - optionsPerPerson + options.size(),
-                peopleIndex));
+        Utils.assertTrue(people.size() >= optionsPerPerson, "No people available");
+        options.addAll(people.subList(0, optionsPerPerson - options.size()));
+        people.removeAll(options);
         return options;
     }
 
+    public static ArrayList<Person> allocPeople() {
+        Utils.assertTrue(people.size() >= optionsPerPerson, "No people available");
+        ArrayList<Person> ans = new ArrayList<>(people.subList(0, optionsPerPerson));
+        people.removeAll(ans);
+        return ans;
+    }
+
     public static Person allocOnePerson() {
-        peopleIndex += 1;
-        Utils.assertTrue(peopleIndex <= people.size(), "No people available");
-        return people.get(peopleIndex - 1);
+        Utils.assertTrue(people.size() >= 1, "No people available");
+        Person ans = people.get(0);
+        people.remove(ans);
+        return ans;
+    }
+
+    public static Identity allocIdentityForKing() {
+        Utils.assertTrue(identities.contains(KING), "KING not in identities");
+        identities.remove(KING);
+        return KING;
     }
 
     public static Identity allocIdentity() {
-        Utils.assertTrue(identityIndex < identities.size(), "No identity available");
-        return identities.get(identityIndex++);
+        Utils.assertTrue(identities.size() >= 1, "No identity available");
+        Identity ans = identities.get(0);
+        identities.remove(ans);
+        return ans;
     }
 
     public static ArrayList<Person> getPeople() {
         return people;
+    }
+
+    public static ArrayList<Person> getAllPeople() {
+        return allPeople;
     }
 
     public static void setOptionsPerPerson(int optionsPerPerson) {

@@ -59,7 +59,12 @@ public class ZhaoYun extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "赵云";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "龙胆：你可以将一张【杀】当【闪】、【闪】当【杀】使用或打出。";
     }
 }

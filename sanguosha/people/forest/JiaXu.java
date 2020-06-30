@@ -108,7 +108,14 @@ public class JiaXu extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "贾诩";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "完杀——锁定技，你的回合内，只有你和处于濒死状态的角色才能使用【桃】。\n" +
+                "乱武——限定技，出牌阶段，你可以令所有其他角色除非对各自距离最小的另一名角色使用一张【杀】，否则失去1点体力。\n" +
+                "帷幕——锁定技，你不能成为黑色锦囊牌的目标。";
     }
 }

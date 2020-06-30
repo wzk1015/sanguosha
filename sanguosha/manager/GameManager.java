@@ -25,7 +25,8 @@ public class GameManager {
     private static final ArrayList<Person> dead = new ArrayList<>();
     private static Person currentPerson = null;
     private static String currentIOrequest = "";
-    private static boolean gameRunning = false;
+    private static Status gameStatus = Status.preparing;
+    private static String panic = "";
     private static int round = 1;
 
     public static void startGame() {
@@ -46,13 +47,21 @@ public class GameManager {
         idMapAll.put(Identity.TRAITOR, new ArrayList<>());
         idMapAll.put(Identity.REBEL, new ArrayList<>());
 
+        IO.printlnToIO("player 1, your identity is KING\nchoose your person");
+        Person selected = IO.initialChoosePerson(PeoplePool.allocPeopleForKing());
+        selected.setIdentity(PeoplePool.allocIdentityForKing());
+        players.add(selected);
+        idMap.get(Identity.KING).add(selected);
+        idMapAll.get(Identity.KING).add(selected);
+        if (numPlayers > 4) {
+            selected.setMaxHP(selected.getMaxHP() + 1);
+        }
 
-        for (int i = 0; i < numPlayers; i++) {
+        for (int i = 2; i <= numPlayers; i++) {
             Identity identity = PeoplePool.allocIdentity();
-            IO.printlnToIO("player " + (i + 1) + ", your identity is " + identity.toString() +
+            IO.printlnToIO("player " + i + ", your identity is " + identity.toString() +
                     "\nchoose your person");
-            Person selected = IO.initialChoosePerson(identity == Identity.KING ?
-                    PeoplePool.allocPeopleForKing() : PeoplePool.allocPeople());
+            selected = IO.initialChoosePerson(PeoplePool.allocPeople());
             selected.setIdentity(identity);
             players.add(selected);
             idMap.get(identity).add(selected);
@@ -60,19 +69,14 @@ public class GameManager {
         }
 
         for (Person p : players) {
-            p.addCard(CardsHeap.draw(4));
-        }
-
-        if (numPlayers > 4) {
-            Person king = idMap.get(Identity.KING).get(0);
-            king.setMaxHP(king.getMaxHP() + 1);
-            king.setCurrentHP(king.getMaxHP());
+            p.drawCards(4);
         }
 
         for (Person p : players) {
             p.initialize();
         }
-        gameRunning = true;
+
+        gameStatus = Status.running;
     }
 
     public static void runGame() {
@@ -125,18 +129,22 @@ public class GameManager {
     }
 
     public static void endGame() {
-        gameRunning = false;
+        gameStatus = Status.end;
         if (GameLauncher.isCommandLine()) {
             System.exit(0);
         }
     }
 
+    public static void callItEven() {
+        IO.println("call it even");
+        endGame();
+    }
+
     public static void panic(String s) {
-        IO.print("panic at ");
-        IO.print(Thread.currentThread().getStackTrace()[1].getFileName());
-        IO.print(" line" + Thread.currentThread().getStackTrace()[1].getLineNumber());
-        IO.println(": " + s);
-        gameRunning = false;
+        panic += "panic at " + Thread.currentThread().getStackTrace()[1].getFileName();
+        panic += " line" + Thread.currentThread().getStackTrace()[1].getLineNumber() + ": " + s;
+        IO.print(panic);
+        gameStatus = Status.error;
         if (GameLauncher.isCommandLine()) {
             System.exit(1);
         }
@@ -179,18 +187,24 @@ public class GameManager {
             num2 = Math.min(num2 - 3, 1);
         }
         IO.println((num1 > num2 ? source : target) + " wins");
+        if (num1 > num2 && target.usesZhiBa()) {
+            target.addCard(c1);
+            target.addCard(c2);
+        }
         return num1 > num2;
     }
 
     public static void die(Person p) {
         Person cp = null;
         for (Person p2 : players) {
-            if (p2.usesXingShang()) {
+            if (!p2.isDead() && p2.usesXingShang()) {
                 cp = p2;
                 break;
             }
         }
-        CardsHeap.discard(p.getExtraCards());
+        if (p.getExtraCards() != null) {
+            CardsHeap.discard(p.getExtraCards());
+        }
         if (cp == null) {
             p.loseCard(p.getCards());
             p.loseCard(new ArrayList<>(p.getRealJudgeCards()));
@@ -208,6 +222,16 @@ public class GameManager {
         idMap.get(p.getIdentity()).remove(p);
         dead.add(p);
         IO.println(p + " dead, identity: " + p.getIdentity());
+    }
+
+    public static void deathRewardPunish(Identity deadIdentity, Person source) {
+        if (deadIdentity == Identity.REBEL) {
+            source.drawCards(3);
+        }
+        else if (deadIdentity == Identity.MINISTER && source.getIdentity() == Identity.KING) {
+            source.loseCard(source.getCards());
+            source.loseCard(new ArrayList<>(source.getEquipments().values()));
+        }
     }
 
     public static boolean isExtinct(Identity id) {
@@ -259,11 +283,8 @@ public class GameManager {
         return ans;
     }
 
-    public static void callItEven() {
-        if (GameLauncher.isCommandLine()) {
-            IO.println("call it even");
-        }
-        System.exit(0);
+    public static Person getKing() {
+        return idMapAll.get(Identity.KING).get(0);
     }
 
     public static int getNumPlayers() {
@@ -283,8 +304,11 @@ public class GameManager {
     }
 
     public static String getOverallStatus() {
-        if (!gameRunning) {
-            return "";
+        switch (gameStatus) {
+            case preparing: return players.isEmpty() ? "preparing" : "KING: " + players.get(0);
+            case error: return panic;
+            case end: return "end";
+            default:
         }
         String ans = "Round " + round + "\n";
         ans += "Cards heap: " + CardsHeap.getDrawCards(1).size() + "\n\n";
@@ -307,10 +331,14 @@ public class GameManager {
     }
 
     public static String getCurrentIOrequest() {
-        return currentIOrequest == null ? "" : currentIOrequest;
+        return currentIOrequest;
     }
 
     public static void addCurrentIOrequest(String currentIOrequest) {
         GameManager.currentIOrequest += currentIOrequest;
+    }
+
+    public static void clearCurrentIOrequest() {
+        currentIOrequest = "";
     }
 }

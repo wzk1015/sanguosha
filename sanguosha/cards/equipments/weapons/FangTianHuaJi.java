@@ -45,4 +45,9 @@ public class FangTianHuaJi extends Weapon {
     public String toString() {
         return "方天画戟";
     }
+
+    @Override
+    public String details() {
+        return "你使用的【杀】若是你最后的手牌，你可以额外选择至多两个目标。\n";
+    }
 }

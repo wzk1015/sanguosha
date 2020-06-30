@@ -72,7 +72,8 @@ public class DongZhuo extends Person {
     @KingSkill("暴虐")
     @Override
     public void otherPersonMakeHurt(Person p) {
-        if (getHP() < getMaxHP() && getIdentity() == Identity.KING && p.launchSkill("暴虐")) {
+        if (getHP() < getMaxHP() && getIdentity() == Identity.KING && p.getNation() == Nation.QUN
+                && p.launchSkill("暴虐")) {
             if (CardsHeap.judge(p).color() == Color.SPADE) {
                 recover(1);
             }
@@ -80,7 +81,15 @@ public class DongZhuo extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "董卓";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "酒池：你可以将一张黑桃手牌当【酒】使用。\n" +
+                "肉林：锁定技，你对女性角色使用的【杀】和女性角色对你使用的【杀】均需使用两张【闪】才能抵消。\n" +
+                "崩坏：锁定技，结束阶段，若你不是体力值最小的角色，你失去1点体力或减1点体力上限。\n" +
+                "暴虐：主公技，当其他群势力角色造成伤害后，其可以进行判定，若结果为黑桃，你回复1点体力。";
     }
 }

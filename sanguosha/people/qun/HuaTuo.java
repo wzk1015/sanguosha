@@ -5,8 +5,6 @@ import sanguosha.people.Nation;
 import sanguosha.people.Person;
 import sanguosha.skills.Skill;
 
-import java.util.ArrayList;
-
 public class HuaTuo extends Person {
 
     public HuaTuo() {
@@ -17,20 +15,7 @@ public class HuaTuo extends Person {
     @Override
     public boolean requestTao() {
         if (!isMyRound() && launchSkill("急救")) {
-            if (chooseNoNull("hand card", "equipment").equals("hand card")) {
-                if (requestRedBlack("red") != null) {
-                    return true;
-                }
-                Card c = chooseCard(new ArrayList<>(getEquipments().values()));
-                while (c != null && c.isBlack()) {
-                    printlnToIO("you can't choose black card");
-                    c = chooseCard(new ArrayList<>(getEquipments().values()));
-                }
-                if (c != null) {
-                    loseCard(c);
-                    return true;
-                }
-            }
+            return requestRedBlack("red", true) != null;
         }
         return super.requestTao();
     }
@@ -56,7 +41,13 @@ public class HuaTuo extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "华佗";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "急救：你的回合外，你可以将一张红色牌当【桃】使用。\n" +
+                "青囊：出牌阶段限一次，你可以弃置一张手牌令一名角色回复1点体力。";
     }
 }

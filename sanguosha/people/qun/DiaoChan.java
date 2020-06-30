@@ -59,7 +59,13 @@ public class DiaoChan extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "貂蝉";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "离间：出牌阶段限一次，你可以弃置一张牌，令一名男性角色视为对另一名男性角色使用一张【决斗】。\n" +
+                "闭月：结束阶段，你可以摸一张牌。";
     }
 }

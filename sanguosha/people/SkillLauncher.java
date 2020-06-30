@@ -14,10 +14,6 @@ public interface SkillLauncher {
 
     }
 
-    default void hurtBySha() {
-
-    }
-
     default void lostCard() {
 
     }
@@ -154,6 +150,10 @@ public interface SkillLauncher {
         return "";
     }
 
+    default boolean usesZhiBa() {
+        return false;
+    }
+
     default boolean skipJudge() {
         return false;
     }
@@ -204,5 +204,9 @@ public interface SkillLauncher {
 
     default void killOther() {
 
+    }
+
+    default String getExtraInfo() {
+        return "";
     }
 }

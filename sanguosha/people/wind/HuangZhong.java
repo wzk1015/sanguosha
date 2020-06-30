@@ -20,7 +20,12 @@ public class HuangZhong extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "黄忠";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "当你于出牌阶段内使用【杀】指定一个目标后，若该角色的手牌数不小于你的体力值或不大于你的攻击范围，则你可以令其不能使用【闪】响应此【杀】。";
     }
 }

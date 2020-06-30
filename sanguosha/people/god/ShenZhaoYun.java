@@ -45,7 +45,7 @@ public class ShenZhaoYun extends God {
             println(this + " uses 龙魂");
             ArrayList<Card> cs = new ArrayList<>();
             for (int i = 0; i < Math.max(getHP(), 1); i++) {
-                Card c = requestColor(Color.DIAMOND);
+                Card c = requestColor(Color.DIAMOND, true);
                 if (c == null) {
                     return true;
                 }
@@ -68,7 +68,7 @@ public class ShenZhaoYun extends God {
         if (launchSkill("龙魂")) {
             Card c;
             for (int i = 0; i < Math.max(getHP(), 1); i++) {
-                c = requestColor(Color.DIAMOND);
+                c = requestColor(Color.DIAMOND, true);
                 if (c == null) {
                     return false;
                 }
@@ -83,7 +83,7 @@ public class ShenZhaoYun extends God {
         if (launchSkill("龙魂")) {
             Card c;
             for (int i = 0; i < Math.max(getHP(), 1); i++) {
-                c = requestColor(Color.CLUB);
+                c = requestColor(Color.CLUB, true);
                 if (c == null) {
                     return false;
                 }
@@ -98,7 +98,7 @@ public class ShenZhaoYun extends God {
         if (launchSkill("龙魂")) {
             Card c;
             for (int i = 0; i < Math.max(getHP(), 1); i++) {
-                c = requestColor(Color.SPADE);
+                c = requestColor(Color.SPADE, true);
                 if (c == null) {
                     return false;
                 }
@@ -113,7 +113,7 @@ public class ShenZhaoYun extends God {
         if (launchSkill("龙魂")) {
             Card c;
             for (int i = 0; i < Math.max(getHP(), 1); i++) {
-                c = requestColor(Color.HEART);
+                c = requestColor(Color.HEART, true);
                 if (c == null) {
                     return super.requestTao();
                 }
@@ -124,7 +124,13 @@ public class ShenZhaoYun extends God {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "神赵云";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "绝境：锁定技，摸牌阶段，你多摸等同于你已损失的体力值数的牌；你的手牌上限+2。\n" +
+                "龙魂：你可以将花色相同的X张牌按下列规则使用或打出：红桃当【桃】；方块当火【杀】；梅花当【闪】；黑桃当【无懈可击】（X为你的体力值且最少为1）。";
     }
 }

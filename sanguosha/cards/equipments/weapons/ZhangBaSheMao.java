@@ -34,4 +34,11 @@ public class ZhangBaSheMao extends Weapon {
     public String toString() {
         return "丈八蛇矛";
     }
+
+    @Override
+    public String details() {
+        return "你可以将两张手牌当【杀】使用或打出。\n" +
+                "如2张牌为红色，则视为红色的【杀】；如2张牌为黑色，视为黑色的【杀】；如2张牌为1红1黑，视为无色的【杀】。\n" +
+                "发动〖丈八蛇矛〗使用或打出的杀视为无点数性质。";
+    }
 }

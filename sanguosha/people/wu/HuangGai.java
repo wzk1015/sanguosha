@@ -22,7 +22,12 @@ public class HuangGai extends Person {
     }
 
     @Override
-    public String toString() {
+    public String name() {
         return "黄盖";
+    }
+
+    @Override
+    public String skillsDescription() {
+        return "苦肉：出牌阶段，你可以失去1点体力，然后摸两张牌。";
     }
 }
