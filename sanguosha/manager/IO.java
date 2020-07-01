@@ -9,6 +9,8 @@ import sanguosha.cards.strategy.TaoYuanJieYi;
 import sanguosha.cards.strategy.TieSuoLianHuan;
 import sanguosha.cards.strategy.WanJianQiFa;
 import sanguosha.cards.strategy.WuGuFengDeng;
+import sanguosha.cardsheap.CardsHeap;
+import sanguosha.cardsheap.PeoplePool;
 import sanguosha.people.Person;
 
 import java.util.ArrayList;
@@ -89,6 +91,10 @@ public class IO {
         printlnToIO("");
         try {
             String in = input("make a choice");
+            if (in.equals("help")) {
+                showHelp("[make a choice]: input number to make your choice");
+                return chooseFromProvided(choices);
+            }
             int option = Integer.parseInt(in) - 1;
             return choices.get(option);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
@@ -149,5 +155,29 @@ public class IO {
         } else {
             println(c.getTarget().toString());
         }
+    }
+
+    public static void showHelp(String info) {
+        printlnToIO(info);
+        printlnToIO("\nHow to input: press Enter/OK-button to input," +
+                " or 'q'/Cancel-button to quit");
+        String type = input("now input name of Card or Person to get information, " +
+                "\ne.g. '关羽' / '过河拆桥', or 'q' to quit");
+        if (type.equals("q")) {
+            return;
+        }
+        for (Card c: CardsHeap.getAllCards()) {
+            if (c.toString().equals(type)) {
+                printlnToIO(c + "'s help:\n" + c.help() + "\n");
+                return;
+            }
+        }
+        for (Person p: PeoplePool.getAllPeople()) {
+            if (p.toString().equals(type)) {
+                printlnToIO(p + "'s help:\n" + p.help() + "\n");
+                return;
+            }
+        }
+        printlnToIO("unknown help type: " + type);
     }
 }

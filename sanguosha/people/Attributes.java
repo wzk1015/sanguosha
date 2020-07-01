@@ -19,7 +19,7 @@ import java.util.HashMap;
 import static sanguosha.cards.EquipType.shield;
 import static sanguosha.cards.EquipType.weapon;
 
-public abstract class Attributes implements PlayerIO, SkillLauncher {
+public abstract class Attributes implements HuaShen {
     private boolean isTurnedOver = false;
     private boolean isLinked = false;
     private boolean isDrunk = false;
@@ -230,7 +230,7 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
             getCards().add(c);
             if (print) {
                 printToIO(this + " got card: ");
-                printCards(cs);
+                printCard(c);
             }
             c.setOwner((Person) this);
         }
@@ -240,10 +240,12 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
         addCard(CardsHeap.draw());
     }
 
+    public void drawCards(int num, boolean print) {
+        addCard(CardsHeap.draw(num), print);
+    }
+
     public void drawCards(int num) {
-        for (int i = 0; i < num; i++) {
-            drawCard();
-        }
+        drawCards(num, true);
     }
 
     public void loseCard(ArrayList<Card> cs) {
@@ -372,8 +374,8 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
             p.otherPersonMakeHurt((Person) this);
         }
         if (!isDead()) {
-            if (launchSkill("新生")) {
-                addHuaShen();
+            if (isZuoCi() && launchSkill("新生")) {
+                xinSheng();
             }
             gotHurt(cs, source, realNum);
         }
@@ -483,5 +485,8 @@ public abstract class Attributes implements PlayerIO, SkillLauncher {
         return false;
     }
 
-    public abstract void addHuaShen();
+    @Override
+    public ArrayList<Card> getExtraCards() {
+        return null;
+    }
 }

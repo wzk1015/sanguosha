@@ -158,6 +158,8 @@ public interface PlayerIO {
         String order = input(); // doesn't use chooseFromProvided because need info()
         if (order.equals("q")) {
             return null;
+        } else if (order.equals("help")) {
+            IO.showHelp("[request card]: choose a card of request type");
         }
         try {
             Card c = getCards().get(Integer.parseInt(order) - 1);
@@ -204,6 +206,10 @@ public interface PlayerIO {
             if (in.equals("q")) {
                 return null;
             }
+            if (in.equals("help")) {
+                IO.showHelp("[make a choice]: input number to make your choice");
+                return chooseFromProvided(choices);
+            }
             int option = Integer.parseInt(in) - 1;
             return choices.get(option);
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
@@ -245,16 +251,20 @@ public interface PlayerIO {
             return new ArrayList<>(choices.subList(0, num));
         }
         try {
-            String input = input(this + " choose " +
-                    (num == 0 ? "several" : num)  + " options, or q");
+            String input = input(this + " choose " + (num == 0 ? "several" : num)  + " options, " +
+                    "or q to ignore");
+            ArrayList<E> ans = new ArrayList<>();
+            if (input.equals("q") && num == 0) {
+                return ans;
+            } else if (input.equals("help")) {
+                IO.showHelp("[choose multiple options]: input several numbers to " +
+                        "make your choice, split with space, e.g. '1 2 3' ");
+                return chooseManyFromProvided(num, choices);
+            }
             String[] split = input.split(" ");
             if (split.length != num && num != 0) {
                 printlnToIO("wrong number of choices: " + split.length);
                 return chooseManyFromProvided(num, choices);
-            }
-            ArrayList<E> ans = new ArrayList<>();
-            if (input.equals("q") && num == 0) {
-                return ans;
             }
             for (String s: split) {
                 int option = Integer.parseInt(s) - 1;

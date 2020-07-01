@@ -21,6 +21,7 @@ import sanguosha.cards.strategy.WuXieKeJi;
 import sanguosha.cards.strategy.WuZhongShengYou;
 import sanguosha.cardsheap.CardsHeap;
 import sanguosha.manager.GameManager;
+import sanguosha.manager.IO;
 import sanguosha.people.Nation;
 import sanguosha.people.Person;
 import sanguosha.skills.Skill;
@@ -112,6 +113,10 @@ public class YuJi extends Person {
         if (order.equals("蛊惑")) {
             println(this + " uses 蛊惑");
             String type = input("input a type");
+            if (type.equals("help")) {
+                IO.showHelp("[蛊惑]: input a type of card to 蛊惑");
+                return true;
+            }
             try {
                 Card intend;
                 if (cardsMap.containsKey(type)) {

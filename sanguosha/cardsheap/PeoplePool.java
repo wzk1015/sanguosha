@@ -74,6 +74,7 @@ import sanguosha.people.wu.ZhouYu;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
 import static sanguosha.people.Identity.KING;
 import static sanguosha.people.Identity.MINISTER;
@@ -82,11 +83,23 @@ import static sanguosha.people.Identity.TRAITOR;
 
 public class PeoplePool {
     private static final ArrayList<Person> people = new ArrayList<>();
-    private static final ArrayList<Person> allPeople = new ArrayList<>();
+    private static final HashSet<Person> allPeople = new HashSet<>();
     private static final ArrayList<Identity> identities = new ArrayList<>();
     private static int optionsPerPerson = 2;
+    private static int numPlayers;
 
     public static void addStandard() {
+        if (allPeople.isEmpty()) {
+            addFeng();
+            addHuo();
+            addLin();
+            addShan();
+            addGod();
+            allPeople.addAll(people);
+            addStandard();
+            allPeople.addAll(people);
+            people.clear();
+        }
         //蜀国
         people.add(new GuanYu());
         people.add(new HuangYueYing());
@@ -183,19 +196,33 @@ public class PeoplePool {
         }
     }
 
+    public static int defaultMinister(int total) {
+        return total == 10 ? 3 : total >= 6 ? 2 : total >= 4 ? 1 : 0;
+    }
+
+    public static int defaultTraitor(int total) {
+        return total >= 9 ? 2 : total >= 3 ? 1 : 0;
+    }
+
+    public static int defaultRebel(int total) {
+        return total >= 8 ? 4 : total >= 7 ? 3 : total >= 5 ? 2 : 1;
+    }
+
     public static void init() {
         //people.add(new BlankPerson());
         //people.add(new BlankPerson2());
         //people.add(new AI());
         //addStandard();
+        numPlayers = GameManager.getNumPlayers();
 
-        if (GameLauncher.isCommandLine() || GameLauncher.isGraphic()) {
+        if (GameLauncher.isCommandLine()) {
             if (IO.chooseFromProvided("default people config", "customize")
                     .equals("default people config")) {
+                addStandard();
                 //addFeng();
                 //addHuo();
                 //addLin();
-                addShan();
+                //addShan();
                 //addGod();
                 switch (GameManager.getNumPlayers()) {
                     case 10: addIdentity(MINISTER, 1);
@@ -221,6 +248,7 @@ public class PeoplePool {
                         GameManager.panic("invalid players: " + GameManager.getNumPlayers());
                 }
             } else {
+                addStandard();
                 if (IO.chooseFromProvided("add 风", "pass").equals("add 风")) {
                     addFeng();
                 } if (IO.chooseFromProvided("add 火", "pass").equals("add 火")) {
@@ -233,24 +261,45 @@ public class PeoplePool {
                     addGod();
                 }
                 IO.printlnToIO("choose options per person");
-                setOptionsPerPerson(IO.chooseNumber(2, 10));
-                IO.printlnToIO("1 KING (required)");
-                addIdentity(KING, 1);
-                IO.printlnToIO("choose number of MINISTER");
-                addIdentity(MINISTER, IO.chooseNumber(0, 4));
-                IO.printlnToIO("choose number of TRAITOR");
-                addIdentity(TRAITOR, IO.chooseNumber(0, 4));
-                IO.printlnToIO("choose number of REBEL");
-                addIdentity(REBEL, IO.chooseNumber(1, 4));
+                setOptionsPerPerson(IO.chooseNumber(2, people.size() / numPlayers));
+                while (true) {
+                    IO.printlnToIO("1 KING (required)");
+                    addIdentity(KING, 1);
+                    IO.printlnToIO("choose number of MINISTER");
+                    addIdentity(MINISTER, IO.chooseNumber(0, 4));
+                    IO.printlnToIO("choose number of TRAITOR");
+                    addIdentity(TRAITOR, IO.chooseNumber(0, 4));
+                    IO.printlnToIO("choose number of REBEL");
+                    addIdentity(REBEL, IO.chooseNumber(1, 4));
+                    if (illegalIdentityNumber()) {
+                        IO.printToIO("wrong number of identites! expect: " + numPlayers +
+                                " get: " + identities.size());
+                        continue;
+                    }
+                    break;
+                }
             }
         }
-        Utils.assertTrue(identities.size() == GameManager.getNumPlayers(),
-                "wrong number of identities");
-        Utils.assertTrue(people.size() >= optionsPerPerson * GameManager.getNumPlayers(),
-                "not enough people to choose");
-        allPeople.addAll(people);
+        Utils.assertTrue(!illegalOptionsPerPerson(), "not enough people to choose");
         Collections.shuffle(people);
         Collections.shuffle(identities);
+    }
+
+    public static void setNumPlayers(int numPlayers) {
+        PeoplePool.numPlayers = numPlayers;
+    }
+
+    public static boolean illegalIdentityNumber() {
+        return identities.size() != GameManager.getNumPlayers();
+    }
+
+    public static boolean illegalOptionsPerPerson() {
+        return people.size() < numPlayers * optionsPerPerson;
+    }
+
+    public static void restart() {
+        people.clear();
+        identities.clear();
     }
 
     public static void addPersonToList(Class<? extends Person> cls, ArrayList<Person> kings) {
@@ -315,7 +364,7 @@ public class PeoplePool {
         return people;
     }
 
-    public static ArrayList<Person> getAllPeople() {
+    public static HashSet<Person> getAllPeople() {
         return allPeople;
     }
 

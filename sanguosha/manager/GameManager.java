@@ -31,7 +31,7 @@ public class GameManager {
 
     public static void startGame() {
         IO.println("wzk's sanguosha begins!");
-        if (GameLauncher.isCommandLine() || GameLauncher.isGraphic()) {
+        if (GameLauncher.isCommandLine()) {
             IO.printlnToIO("choose number of players");
             setNumPlayers(IO.chooseNumber(2, 10));
         }
@@ -69,7 +69,7 @@ public class GameManager {
         }
 
         for (Person p : players) {
-            p.drawCards(4);
+            p.drawCards(4, false);
         }
 
         for (Person p : players) {

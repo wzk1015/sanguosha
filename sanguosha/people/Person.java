@@ -13,9 +13,9 @@ import sanguosha.cards.equipments.weapons.FangTianHuaJi;
 import sanguosha.cards.strategy.TieSuoLianHuan;
 import sanguosha.cards.strategy.WuXieKeJi;
 import sanguosha.cardsheap.CardsHeap;
-import sanguosha.cardsheap.PeoplePool;
 import sanguosha.manager.GameManager;
 
+import sanguosha.manager.IO;
 import sanguosha.manager.Utils;
 import sanguosha.skills.AfterWakeSkill;
 import sanguosha.skills.ForcesSkill;
@@ -202,7 +202,8 @@ public abstract class Person extends Attributes implements Serializable {
             card = (Card) getEquipments().get(weapon).use();
         }
         else if (order.contains("help")) {
-            showHelp();
+            IO.showHelp("[use phase]: input number: use card, " +
+                    "name: skill or weapon (e.g. '制衡'), 'q':end phase");
             return true;
         } else {
             try {
@@ -268,37 +269,6 @@ public abstract class Person extends Attributes implements Serializable {
 
     public void endPhase() {
 
-    }
-
-    public void showHelp() {
-        printlnToIO("Number: use card, Name: skill or weapon, 'q':end phase");
-        String type = input("input name of card or person to get information, " +
-                "'' for this person ,'q' to quit");
-        if (type.equals("q")) {
-            return;
-        }
-        if (type.equals("")) {
-            printlnToIO(this + "'s help:\n" + help());
-            if (isZuoCi) {
-                printlnToIO("化身：游戏开始时，你随机获得两张武将牌作为\"化身\"牌，然后亮出其中一张，" +
-                    "获得该\"化身\"牌的一个技能。回合开始时或结束后，你可以更改亮出的\"化身\"牌。\n" +
-                    "新生：当你受到1点伤害后，你可以获得一张新的\"化身\"牌。\n");
-            }
-            return;
-        }
-        for (Card c: CardsHeap.getAllCards()) {
-            if (c.toString().equals(type)) {
-                printlnToIO(c + "'s help:\n" + c.help());
-                return;
-            }
-        }
-        for (Person p: PeoplePool.getAllPeople()) {
-            if (p.toString().equals(type)) {
-                printlnToIO(p + "'s help:\n" + p.help());
-                return;
-            }
-        }
-        printlnToIO("unknown help type: " + type);
     }
 
     public final String help() {
@@ -405,79 +375,27 @@ public abstract class Person extends Attributes implements Serializable {
         return skills;
     }
 
+    public boolean isZuoCi() {
+        return isZuoCi;
+    }
+
     public void setZuoCi(boolean zuoCi) {
         isZuoCi = zuoCi;
     }
 
-    public void zuoCiInitialize() {
-        setZuoCi(true);
-        huaShen.add(PeoplePool.allocOnePerson());
-        println(this + " got 化身 " + huaShen.get(0));
-        huaShen.get(0).setZuoCi(true);
-        huaShen.add(PeoplePool.allocOnePerson());
-        println(this + " got 化身 " + huaShen.get(1));
-        huaShen.get(1).setZuoCi(true);
-        selected = huaShen.get(0);
-        while (!huaShen(false)) {
-            printlnToIO("you must choose a 化身");
-        }
+    public void addHuaShen(Person p) {
+        huaShen.add(p);
     }
 
-    @Skill("化身")
-    public boolean huaShen(boolean beginPhase) {
-        if (isZuoCi && launchSkill("化身")) {
-            Person choice = selectPlayer(huaShen, true);
-            if (choice != null) {
-                selected = choice;
-                changePerson(selected);
-                if (beginPhase) {
-                    selected.run();
-                }
-                return true;
-            }
-        }
-        //printlnToIO("you can't use 化身 because I don't want to implement it");
-        return false;
+    public ArrayList<Person> getHuaShen() {
+        return huaShen;
     }
 
-    @Skill("新生")
-    public void addHuaShen() {
-        huaShen.add(PeoplePool.allocOnePerson());
-        huaShen.get(huaShen.size() - 1).setZuoCi(true);
-        println(this + " got new 化身 " + huaShen.get(huaShen.size() - 1));
-        println(this + " now has " + huaShen.size() + " 化身");
+    public void setHuaShen(ArrayList<Person> huaShen) {
+        this.huaShen = huaShen;
     }
 
-    public void changePerson(Person p) {
-        p.setCurrentHP(getHP());
-        p.setDaWu(isDaWu());
-        p.setKuangFeng(isKuangFeng());
-        p.setIdentity(getIdentity());
-        p.setDrunk(isDrunk());
-        p.setShaCount(getShaCount());
-        if (isLinked() != p.isLinked()) {
-            p.link();
-        }
-        if (isTurnedOver() != p.isTurnedOver()) {
-            p.turnover();
-        }
-        p.getCards().clear();
-        p.getCards().addAll(getCards());
-        for (Equipment equipment : getEquipments().values()) {
-            p.getEquipments().put(equipment.getEquipType(), equipment);
-        }
-        p.getJudgeCards().clear();
-        p.getJudgeCards().addAll(getJudgeCards());
-        if (getExtraCards() != null) {
-            CardsHeap.discard(getExtraCards());
-        }
-        loseCard(p.getCards(), false, false);
-        loseCard(new ArrayList<>(p.getRealJudgeCards()), false, false);
-        loseCard(new ArrayList<>(p.getEquipments().values()), false, false);
-        p.huaShen = huaShen;
-        p.selected = p;
-        p.isZuoCi = isZuoCi;
-        int index = GameManager.getPlayers().indexOf(this);
-        GameManager.getPlayers().set(index, p);
+    public void selectHuaShen(Person p) {
+        selected = p;
     }
 }

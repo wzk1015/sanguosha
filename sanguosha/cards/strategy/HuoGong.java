@@ -55,7 +55,7 @@ public class HuoGong extends Strategy {
                 getSource().printlnToIO("you can't choose a person with no cards");
                 continue;
             }
-            setTarget(user.selectPlayer());
+            setTarget(p);
             return true;
         }
     }
