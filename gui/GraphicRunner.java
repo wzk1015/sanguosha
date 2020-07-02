@@ -177,7 +177,8 @@ public class GraphicRunner {
         startFrame.add(mainPanel);
 
         JPanel imagePanel = new JPanel();
-        imagePanel.add(new JLabel(new ImageIcon("src/images/start.jpg")));
+        imagePanel.add(new JLabel(new ImageIcon(GraphicRunner.class.getResource(
+                "/gui/images/start.jpg"))));
         mainPanel.add(imagePanel, BorderLayout.NORTH);
 
         mainPanel.add(makeOptionsPanel(), BorderLayout.CENTER);
@@ -268,7 +269,8 @@ public class GraphicRunner {
 
         JPanel gamePanel = new JPanel() {
             protected void paintComponent(Graphics g) {
-                ImageIcon icon = new ImageIcon("src/images/bg.jpg");
+                ImageIcon icon = new ImageIcon(GraphicRunner.class.getResource(
+                        "/gui/images/bg.jpg"));
                 g.drawImage(icon.getImage(), 0, 0, 930, 720, icon.getImageObserver());
             }
         };

@@ -241,8 +241,6 @@ public abstract class Person extends Attributes implements Serializable {
             printlnToIO(getPlayerStatus(true, false));
         }
         while (!isDead()) {
-            printlnToIO(this + "'s current hand cards: ");
-            printCards(getCards());
             if (hasEquipment(weapon, "丈八蛇矛")) {
                 printlnToIO("【丈八蛇矛】");
             }
@@ -251,6 +249,8 @@ public abstract class Person extends Attributes implements Serializable {
                 break;
             }
             parseOrder(order);
+            printlnToIO(this + "'s current hand cards: ");
+            printCards(getCards());
         }
     }
 

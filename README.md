@@ -20,13 +20,19 @@ by wzk
 
 `git clone`或直接下载`sanguosha.jar`，使用命令行（windows下可按下win+R输入cmd，mac下打开终端）进入下载目录，运行`java -jar sgsgui.jar`即可畅玩！
 
+<img src="README.assets/image-20200702143730552.png" alt="image-20200702143730552" style="zoom: 33%;" />
+
+<img src="README.assets/image-20200702143815869.png" alt="image-20200702143815869" style="zoom:33%;" />
+
 ### 命令行运行
 
 同上，运行`java -jar sanguosha.jar`，即可命令行运行
 
+<img src="README.assets/image-20200702143543760.png" alt="image-20200702143543760" style="zoom:33%;" />
+
 ### 自定义！
 
-默认配置下使用全套卡牌+所有武将扩展包（风、火、林、山、神将），身份根据人数预先设定，若想自定义可以在初始化时选择`【2】customize`即可自定义扩展包、身份分配、每个玩家可选的武将数量
+默认配置下使用全套卡牌+武将标准包，身份根据人数预先设定。在初始化时选择`customize`，即可自定义扩展包、身份分配、每个玩家可选的武将数量。
 
 
 
@@ -67,6 +73,7 @@ by wzk
 * 6.29  增加游戏人数、武将包自定义；完善了全局状态信息；endWithError修改为panic
 * 7.1    10000行！！！重构IO；实现化身伪帝；完善help；修改GUI
 * 7.2    **基本完成！**增加GUI启动页面，完善help，将左慈技能改为接口
+* 7.2    修复了图片路径问题；修改README
 
 
 
