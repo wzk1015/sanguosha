@@ -4,6 +4,7 @@ import sanguosha.cards.Color;
 import sanguosha.cards.EquipType;
 import sanguosha.cards.Strategy;
 import sanguosha.manager.GameManager;
+import sanguosha.manager.Status;
 import sanguosha.people.Person;
 
 import java.util.Iterator;
@@ -22,6 +23,9 @@ public class WanJianQiFa extends Strategy {
             if (p != getSource() && !gotWuXie(p) && !p.requestShan()
                     && !p.hasEquipment(EquipType.shield, "藤甲")) {
                 p.hurt(getThisCard(), getSource(), 1);
+            }
+            if (GameManager.status() == Status.end) {
+                return null;
             }
             if (p.isDead()) {
                 it.remove();

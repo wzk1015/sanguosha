@@ -247,7 +247,7 @@ public class CardsHeap {
 
     public static Card judge(Person source) {
         judgeCard = draw();
-        System.out.print("Judge card: ");
+        IO.print("Judge card: ");
         IO.printCardPublic(judgeCard);
 
         Card change = null;
@@ -258,6 +258,7 @@ public class CardsHeap {
             }
         }
         if (change != null) {
+            IO.println("judge card changed to " + change);
             judgeCard = change;
         }
 

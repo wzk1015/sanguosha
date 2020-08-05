@@ -4,6 +4,7 @@ import sanguosha.GameLauncher;
 import sanguosha.manager.GameManager;
 import sanguosha.manager.IO;
 import sanguosha.manager.Utils;
+import sanguosha.people.AI;
 import sanguosha.people.Identity;
 import sanguosha.people.Person;
 import sanguosha.people.fire.DianWei;
@@ -85,8 +86,23 @@ public class PeoplePool {
     private static final ArrayList<Person> people = new ArrayList<>();
     private static final HashSet<Person> allPeople = new HashSet<>();
     private static final ArrayList<Identity> identities = new ArrayList<>();
-    private static int optionsPerPerson = 2;
+    private static int optionsPerPerson = 1;
     private static int numPlayers;
+
+    public static void addAI() {
+        people.add(new AI() {
+                @Override
+                public String name() {
+                    return "AI甲";
+                }
+        });
+        people.add(new AI() {
+                @Override
+                public String name() {
+                    return "AI乙";
+                }
+        });
+    }
 
     public static void addStandard() {
         if (allPeople.isEmpty()) {
@@ -209,21 +225,13 @@ public class PeoplePool {
     }
 
     public static void init() {
-        //people.add(new BlankPerson());
-        //people.add(new BlankPerson2());
-        //people.add(new AI());
-        //addStandard();
         numPlayers = GameManager.getNumPlayers();
 
         if (GameLauncher.isCommandLine()) {
             if (IO.chooseFromProvided("default people config", "customize")
                     .equals("default people config")) {
-                addStandard();
-                //addFeng();
-                //addHuo();
-                //addLin();
-                //addShan();
-                //addGod();
+                //addStandard();
+                addAI();
                 switch (GameManager.getNumPlayers()) {
                     case 10: addIdentity(MINISTER, 1);
                     //fallthrough

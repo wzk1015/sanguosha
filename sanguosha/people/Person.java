@@ -16,6 +16,7 @@ import sanguosha.cardsheap.CardsHeap;
 import sanguosha.manager.GameManager;
 
 import sanguosha.manager.IO;
+import sanguosha.manager.Status;
 import sanguosha.manager.Utils;
 import sanguosha.skills.AfterWakeSkill;
 import sanguosha.skills.ForcesSkill;
@@ -81,7 +82,7 @@ public abstract class Person extends Attributes implements Serializable {
             }
             usePhase();
         }
-        if (isDead()) {
+        if (isDead() || GameManager.status() == Status.end) {
             return;
         }
         if (!skipThrow()) {
@@ -150,6 +151,7 @@ public abstract class Person extends Attributes implements Serializable {
         println(this + " puts on equipment " + card);
         getCards().remove(card);
         card.setTaken(true);
+        card.setSource(this);
         this.getEquipments().put(((Equipment) card).getEquipType(), (Equipment) card);
     }
 
@@ -218,6 +220,7 @@ public abstract class Person extends Attributes implements Serializable {
             if (chooseNoNull("throw", "use").equals("throw")) {
                 loseCard(card);
                 drawCard();
+                println(this + " 重铸 铁索连环");
                 return true;
             }
         }

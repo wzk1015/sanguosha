@@ -18,7 +18,7 @@ by wzk
 
 ### GUI运行
 
-`git clone`或直接下载`sanguosha.jar`，使用命令行（windows下可按下win+R输入cmd，mac下打开终端）进入下载目录，运行`java -jar sgsgui.jar`即可畅玩！
+`git clone`或直接下载仓库，使用命令行（windows下可按下win+R输入cmd，mac下打开终端）进入下载目录，运行`java -jar sgsgui.jar`即可畅玩！
 
 <img src="README.assets/image-20200702143730552.png" alt="image-20200702143730552" style="zoom: 33%;" />
 

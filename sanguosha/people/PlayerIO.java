@@ -26,12 +26,12 @@ public interface PlayerIO {
     default String input(String s) {
         if (GameLauncher.isGraphic()) {
             printToIO(">>>" + s + " ");
-            return GraphicRunner.getInput();
+            return GraphicRunner.getInput().trim();
         }
         String ans = "";
         while (ans.isEmpty()) {
             printToIO(">>>" + s + " ");
-            ans = sn.nextLine();
+            ans = sn.nextLine().trim();
         }
         return ans;
     }
@@ -144,17 +144,6 @@ public interface PlayerIO {
             printlnToIO(toString() + " choose a card");
         }
         printCards(getCards());
-        if (this instanceof AI) {
-            for (Card c : getCards()) {
-                if (c.toString().equals(type)) {
-                    println("AI uses " + type);
-                    loseCard(c);
-                    return c;
-                }
-            }
-            println("AI passes");
-            return null;
-        }
         String order = input(); // doesn't use chooseFromProvided because need info()
         if (order.equals("q")) {
             return null;
@@ -196,11 +185,6 @@ public interface PlayerIO {
             printToIO("【" + i++ + "】" + choice.toString() + "  ");
         }
         printlnToIO("");
-        if (this instanceof AI) {
-            int option = Utils.randint(0, choices.size() - 1);
-            println("AI chooses option " + option);
-            return choices.get(option);
-        }
         try {
             String in = input(toString() + " make a choice");
             if (in.equals("q")) {
@@ -245,11 +229,6 @@ public interface PlayerIO {
             printToIO("【" + i++ + "】 " + choice.toString() + " ");
         }
         printlnToIO("");
-
-        if (this instanceof AI) {
-            println("AI chooses options 0 - " + num);
-            return new ArrayList<>(choices.subList(0, num));
-        }
         try {
             String input = input(this + " choose " + (num == 0 ? "several" : num)  + " options, " +
                     "or q to ignore");

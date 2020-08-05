@@ -4,6 +4,7 @@ import sanguosha.cards.Color;
 import sanguosha.cards.EquipType;
 import sanguosha.cards.Strategy;
 import sanguosha.manager.GameManager;
+import sanguosha.manager.Status;
 import sanguosha.people.Person;
 
 import java.util.Iterator;
@@ -29,6 +30,9 @@ public class NanManRuQin extends Strategy {
                     && !p.hasEquipment(EquipType.shield, "藤甲")
                     && !gotWuXie(p) && p.requestSha() == null) {
                 p.hurt(this, realSource, 1);
+            }
+            if (GameManager.status() == Status.end) {
+                return null;
             }
             if (p.isDead()) {
                 it.remove();

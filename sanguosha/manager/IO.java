@@ -31,12 +31,12 @@ public class IO {
     public static String input(String s) {
         if (GameLauncher.isGraphic()) {
             printToIO(">>>" + s + " ");
-            return GraphicRunner.getInput();
+            return GraphicRunner.getInput().trim();
         }
         String ans = "";
         while (ans.isEmpty()) {
             printToIO(">>>" + s + " ");
-            ans = sn.nextLine();
+            ans = sn.nextLine().trim();
         }
         return ans;
     }
@@ -72,7 +72,7 @@ public class IO {
         try {
             int num = Integer.parseInt(input("choose a number"));
             if (num < min || num > max) {
-                printToIO("out of range");
+                printlnToIO("out of range");
                 return chooseNumber(min, max);
             }
             return num;
@@ -114,7 +114,7 @@ public class IO {
         for (Person p1 : people) {
             options.add(p1.toString());
         }
-        printlnToIO("choose a player:");
+        printlnToIO("choose a psoner:");
         String option = chooseFromProvided(options);
         for (Person p1 : people) {
             if (p1.toString().equals(option)) {

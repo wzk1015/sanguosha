@@ -88,6 +88,10 @@ public class GameManager {
                 for (Person p : players) {
                     currentPerson = p;
                     p.run();
+                    if (gameIsEnd()) {
+                        endGame();
+                        return;
+                    }
                     Utils.checkCardsNum();
                     currentIOrequest = "";
                 }
@@ -148,6 +152,10 @@ public class GameManager {
         if (GameLauncher.isCommandLine()) {
             System.exit(1);
         }
+    }
+
+    public static Status status() {
+        return gameStatus;
     }
 
     public static void linkHurt(ArrayList<Card> cards, Person source, int num, HurtType type) {

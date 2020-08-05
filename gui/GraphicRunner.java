@@ -154,7 +154,7 @@ public class GraphicRunner {
         optionsPanel.add(subPanel2);
 
         makeLabel("每人可选武将数", optionsPanel);
-        comboBoxOptionsPerPerson = makeComboBox(2, 10, optionsPanel);
+        comboBoxOptionsPerPerson = makeComboBox(1, 10, optionsPanel);
         makeLabel("主公数", optionsPanel);
         makeComboBox(1, 1, optionsPanel, false);
         makeLabel("忠臣数", optionsPanel);
@@ -210,7 +210,7 @@ public class GraphicRunner {
 
             if (radioButtonDefault.isSelected() && comboBoxNumPlayers.getSelectedItem() != null) {
                 int numPlayers = Integer.parseInt((String) comboBoxNumPlayers.getSelectedItem());
-                comboBoxOptionsPerPerson.setSelectedItem("5");
+                comboBoxOptionsPerPerson.setSelectedItem("1");
                 comboBoxMinister.setSelectedItem("" + PeoplePool.defaultMinister(numPlayers));
                 comboBoxTraitor.setSelectedItem("" + PeoplePool.defaultTraitor(numPlayers));
                 comboBoxRebel.setSelectedItem("" + PeoplePool.defaultRebel(numPlayers));
@@ -229,7 +229,8 @@ public class GraphicRunner {
         GameManager.setNumPlayers(Integer.parseInt(
                 (String) Objects.requireNonNull(comboBoxNumPlayers.getSelectedItem())));
         PeoplePool.setNumPlayers(GameManager.getNumPlayers());
-        PeoplePool.addStandard();
+        PeoplePool.addAI();
+//        PeoplePool.addStandard();
         if (checkBoxFeng.isSelected()) {
             PeoplePool.addFeng();
         } if (checkBoxHuo.isSelected()) {

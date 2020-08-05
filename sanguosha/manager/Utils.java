@@ -39,6 +39,10 @@ public class Utils {
         Random r = new Random();
         return num1 + r.nextInt(num2 - num1 + 1);
     }
+
+    public static <E> E choice(List<E> options) {
+        return options.get(randint(0, options.size() - 1));
+    }
     
     public static void checkCardsNum() {
         int ans = CardsHeap.getDrawCards(0).size() + CardsHeap.getUsedCards().size();
